@@ -1,2 +1,5 @@
-# Paste Steam Workshop URLs or IDs below (one per line)
-https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566
+# Paste Steam Workshop URLs or IDs below.
+# Format: URL/ID # Tag (Optional)
+# Example: 450814997 # Weekend Ops, Core
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566 # Training Map | Dagger Island

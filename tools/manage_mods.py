@@ -13,23 +13,33 @@ ADDONS_DIR = "addons"
 KEYS_DIR = "keys"
 STEAMAPP_ID = "107410"  # Arma 3
 
-def get_mod_ids():
+def get_mod_info():
+    mods = {}
     if not os.path.exists(MOD_SOURCES_FILE):
-        return set()
+        return mods
     
     with open(MOD_SOURCES_FILE, "r") as f:
-        content = f.read()
-    
-    # Extract numbers that look like IDs (at least 8 digits or following id=)
-    ids = re.findall(r"(?:id=)?(\d{8,})", content)
-    return set(ids)
+        for line in f:
+            clean_line = line.strip()
+            if not clean_line or clean_line.startswith("#"):
+                continue
+            
+            # Extract ID
+            match = re.search(r"(?:id=)?(\d{8,})", clean_line)
+            if match:
+                mod_id = match.group(1)
+                # Extract Tag (everything after #)
+                tag = ""
+                if "#" in clean_line:
+                    tag = clean_line.split("#", 1)[1].strip()
+                mods[mod_id] = tag
+    return mods
 
 def run_steamcmd(mod_ids):
     if not mod_ids:
         return
     
     # Prepare steamcmd command
-    # +login anonymous is usually enough for workshop downloads
     cmd = ["steamcmd", "+login", "anonymous"]
     for mid in mod_ids:
         cmd.extend(["+workshop_download_item", STEAMAPP_ID, mid])
@@ -38,7 +48,8 @@ def run_steamcmd(mod_ids):
     print(f"--- Updating {len(mod_ids)} mods via SteamCMD ---")
     subprocess.run(cmd, check=True)
 
-def sync_mods(mod_ids):
+def sync_mods(mod_info):
+    mod_ids = set(mod_info.keys())
     # tracked_files = { mod_id: [relative_paths_to_installed_files] }
     if os.path.exists(LOCK_FILE):
         with open(LOCK_FILE, "r") as f:
@@ -48,9 +59,7 @@ def sync_mods(mod_ids):
 
     current_files = {}
     
-    # Path where SteamCMD downloads workshop items on Linux
-    # Typically: ~/Steam/steamapps/workshop/content/107410/<mod_id>
-    # Or defined by where steamcmd is run. We'll check common locations.
+    # Path where SteamCMD downloads workshop items
     home = os.path.expanduser("~")
     possible_paths = [
         os.path.join(home, ".steam/steam/steamapps/workshop/content", STEAMAPP_ID),
@@ -74,13 +83,14 @@ def sync_mods(mod_ids):
     os.makedirs(ADDONS_DIR, exist_ok=True)
     os.makedirs(KEYS_DIR, exist_ok=True)
 
-    for mid in mod_ids:
+    for mid, tag in mod_info.items():
         mod_path = os.path.join(base_workshop_path, mid)
         if not os.path.exists(mod_path):
             print(f"Warning: Mod {mid} not found in workshop cache.")
             continue
             
-        print(f"--- Syncing Mod ID: {mid} ---")
+        tag_display = f" [{tag}]" if tag else ""
+        print(f"--- Syncing Mod ID: {mid}{tag_display} ---")
         current_files[mid] = []
         
         for root, dirs, files in os.walk(mod_path):
@@ -150,14 +160,14 @@ def sync_hemtt_launch(mod_ids):
         f.writelines(new_lines)
 
 if __name__ == "__main__":
-    ids = get_mod_ids()
-    if not ids:
+    mod_info = get_mod_info()
+    if not mod_info:
         print("No mod IDs found in mod_sources.txt")
         sys.exit(0)
     
     try:
-        run_steamcmd(ids)
-        sync_mods(ids)
+        run_steamcmd(set(mod_info.keys()))
+        sync_mods(mod_info)
         print("\nSuccess: Mods synced and cleaned.")
     except Exception as e:
         print(f"\nError: {e}")
