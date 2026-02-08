@@ -1,5 +1,9 @@
 # Paste Steam Workshop URLs or IDs below.
 # Format: URL/ID # Tag (Optional)
 # Example: 450814997 # Weekend Ops, Core
+#
+# To ignore specific dependencies (e.g. CBA/ACE):
+# @ignore 450814997 583496184
 
 https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566 # Training Map | Dagger Island
+https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212 # Side Operation | Green Sea
