@@ -74,7 +74,7 @@ def generate_content_list():
     if os.path.exists(LOCK_FILE):
         with open(LOCK_FILE, "r") as f:
             lock_data = json.load(f)
-            if "mods" not in lock_data: # handle legacy
+            if "mods" not in lock_data:
                 lock_data = {"mods": {}}
 
     if not os.path.exists("mod_sources.txt"):
@@ -87,26 +87,40 @@ def generate_content_list():
             if not clean_line or clean_line.startswith("#"):
                 continue
             
-            # Extract ID to look up in lock
             match = re.search(r"(?:id=)?(\d{8,})", clean_line)
             if not match: continue
             mid = match.group(1)
             
-            # Get name from tag if present, else from lock
             tag = ""
             if "#" in clean_line:
                 tag = clean_line.split("#", 1)[1].strip()
             
-            mod_name = tag if tag else lock_data["mods"].get(mid, {}).get("name", f"Mod {mid}")
+            mod_info = lock_data["mods"].get(mid, {})
+            mod_name = tag if tag else mod_info.get("name", f"Mod {mid}")
+            mod_url = f"https://steamcommunity.com/sharedfiles/filedetails/?id={mid}"
 
             # Parse "Category | Name" format if present
+            display_name = mod_name
+            category = ""
             if "|" in mod_name:
                 parts = mod_name.split("|")
-                cat = parts[0].strip()
-                name = parts[1].strip()
-                content_list += f"[*] [b]{name}[/b] ({cat})\n"
+                category = parts[0].strip()
+                display_name = parts[1].strip()
+
+            content_list += f"[*] [url={mod_url}][b]{display_name}[/b][/url]"
+            if category:
+                content_list += f" ({category})"
+            
+            # Add dependencies
+            deps = mod_info.get("dependencies", [])
+            if deps:
+                content_list += "\n[list]\n"
+                for dep in deps:
+                    dep_url = f"https://steamcommunity.com/sharedfiles/filedetails/?id={dep['id']}"
+                    content_list += f"[*] [i]Dependency Included:[/i] [url={dep_url}]{dep['name']}[/url]\n"
+                content_list += "[/list]\n"
             else:
-                content_list += f"[*] [b]{mod_name}[/b]\n"
+                content_list += "\n"
     
     if not content_list:
         return "[*] [i]Content list pending update.[/i]"
@@ -114,6 +128,20 @@ def generate_content_list():
     return content_list
 
 LOCK_FILE = "mods.lock"
+
+def generate_changelog(last_tag):
+    try:
+        if last_tag == "HEAD":
+            # No tags yet, get all commits
+            cmd = ["git", "log", "--oneline", "--no-merges"]
+        else:
+            # Get commits since last tag
+            cmd = ["git", "log", f"{last_tag}..HEAD", "--oneline", "--no-merges"]
+            
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        return "Maintenance update."
 
 def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None):
     description = ""
@@ -184,12 +212,12 @@ def main():
     subprocess.run(["hemtt", "release"], check=True)
 
     # 3. Locate and Extract Release
-    # Find latest zip in .hemttout/release
-    zips = glob.glob(os.path.join(RELEASE_DIR, "*.zip"))
-    if not zips:
+    # Find latest zip in .hemttout/release or releases/
+    possible_zips = glob.glob(os.path.join(RELEASE_DIR, "*.zip")) + glob.glob(os.path.join(PROJECT_ROOT, "releases", "*.zip"))
+    if not possible_zips:
         print("Error: No release zip found.")
         sys.exit(1)
-    latest_zip = max(zips, key=os.path.getctime)
+    latest_zip = max(possible_zips, key=os.path.getctime)
     print(f"Found release: {os.path.basename(latest_zip)}")
     
     if os.path.exists(STAGING_DIR):
@@ -237,11 +265,15 @@ def main():
         print("\nSUCCESS: Mod updated on Workshop.")
         
         # 6. Tag and Push
-        if confirm != 'n':
+        if confirm != 'n' or input("Tag this release in Git? [y/N]: ").lower() == 'y':
             tag_name = f"v{new_version}"
             print(f"Tagging and pushing git repository: {tag_name}")
-            subprocess.run(["git", "tag", "-a", tag_name, "-m", f"Release {new_version}"], check=True)
-            subprocess.run(["git", "push", "origin", "main", "--tags"], check=False) # May fail if no remote set
+            
+            # Get current branch
+            branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode().strip()
+            
+            subprocess.run(["git", "tag", "-a", tag_name, "-m", f"Release {new_version}", "-f"], check=True)
+            subprocess.run(["git", "push", "origin", branch, "--tags", "-f"], check=False)
 
             # 7. GitHub Release
             if shutil.which("gh"):
@@ -250,7 +282,8 @@ def main():
                     "gh", "release", "create", tag_name,
                     latest_zip,
                     "--title", f"Release {new_version}",
-                    "--notes", changelog
+                    "--notes", changelog,
+                    "--latest"
                 ]
                 subprocess.run(gh_cmd, check=False)
             else:
