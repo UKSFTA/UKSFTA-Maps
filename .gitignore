@@ -1,5 +1,6 @@
 *.pbo
 *.bisign
+*.vdf
 /keys/
 mods.lock
 __pycache__/
