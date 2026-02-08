@@ -1,1 +1,1 @@
-/ext/Development/UKSFTA-Maps/.uksf_tools/tools/config_style_checker.py
+../.uksf_tools/tools/config_style_checker.py

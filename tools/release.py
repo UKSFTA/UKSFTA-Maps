@@ -1,1 +1,1 @@
-/ext/Development/UKSFTA-Maps/.uksf_tools/tools/release.py
+../.uksf_tools/tools/release.py

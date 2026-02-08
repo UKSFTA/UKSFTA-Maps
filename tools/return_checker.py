@@ -1,1 +1,1 @@
-/ext/Development/UKSFTA-Maps/.uksf_tools/tools/return_checker.py
+../.uksf_tools/tools/return_checker.py
