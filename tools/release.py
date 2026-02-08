@@ -173,11 +173,25 @@ def main():
         subprocess.run(cmd, check=True)
         print("\nSUCCESS: Mod updated on Workshop.")
         
-        # 6. Tag Release
+        # 6. Tag and Push
         if confirm != 'n':
             tag_name = f"v{new_version}"
-            print(f"Tagging git repository: {tag_name}")
+            print(f"Tagging and pushing git repository: {tag_name}")
             subprocess.run(["git", "tag", "-a", tag_name, "-m", f"Release {new_version}"], check=True)
+            subprocess.run(["git", "push", "origin", "main", "--tags"], check=False) # May fail if no remote set
+
+            # 7. GitHub Release
+            if shutil.which("gh"):
+                print(f"Creating GitHub Release for {tag_name}...")
+                gh_cmd = [
+                    "gh", "release", "create", tag_name,
+                    latest_zip,
+                    "--title", f"Release {new_version}",
+                    "--notes", changelog
+                ]
+                subprocess.run(gh_cmd, check=False)
+            else:
+                print("Warning: 'gh' CLI not found. Skipping GitHub Release creation.")
             
     except subprocess.CalledProcessError as e:
         print(f"\nError during upload: {e}")
