@@ -11,7 +11,6 @@ class CfgPatches {
         requiredAddons[] = {};
         author = "UKSF Taskforce Alpha Team";
         authors[] = {"UKSF Taskforce Alpha Team"};
-        url = "https://uksfta.github.io/";
         version = QUOTE(MAJOR.MINOR.PATCHLVL);
         versionStr = QUOTE(MAJOR.MINOR.PATCHLVL);
         versionAr[] = {MAJOR,MINOR,PATCHLVL};
@@ -19,8 +18,6 @@ class CfgPatches {
 };
 
 class CfgMods {
-    action = "https://uksfta.github.io/";
-    actionName = "Website";
     author = "UKSF Taskforce Alpha Team";
     logo = "z\uksfta\addons\main\data\icon_128_ca.paa";
     logoOver = "z\uksfta\addons\main\data\icon_128_highlight_ca.paa";
