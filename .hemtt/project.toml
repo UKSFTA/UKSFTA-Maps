@@ -3,5 +3,8 @@ author = "UKSF Taskforce Alpha Team"
 prefix = "UKSFTA"
 mainprefix = "z"
 
+[version]
+path = "addons/main/script_version.hpp"
+
 workshop_id = "0"
 workshop_tags = ["Mod", "Map", "Addon"]
