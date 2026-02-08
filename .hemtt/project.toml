@@ -1,10 +1,21 @@
 name = "UKSF Taskforce Alpha - Maps Modpack"
 author = "UKSF Taskforce Alpha Team"
-prefix = "UKSFTA"
+prefix = "UKSFTA-Maps"
 mainprefix = "z"
 
 [version]
 path = "addons/main/script_version.hpp"
+
+[files]
+include = [
+    "addons/*.pbo",
+    "addons/*.bisign",
+    "keys/*.bikey",
+    "mod.cpp",
+    "meta.cpp",
+    "LICENSE",
+    "README.md"
+]
 
 workshop_id = "0"
 workshop_tags = ["Mod", "Map", "Addon"]
