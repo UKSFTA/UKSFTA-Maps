@@ -7,3 +7,8 @@
 
 https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566 # Training Map | Dagger Island
 https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212 # Side Operation | Green Sea
+
+[ignore]
+# List mods to exclude from download/sync below
+https://steamcommunity.com/sharedfiles/filedetails/?id=450814997 # Base | CBA_3
+https://steamcommunity.com/sharedfiles/filedetails/?id=463939057 # Overhaul | ACE
