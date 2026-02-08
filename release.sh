@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # UKSFTA Release Shortcut
-# Ensures release builds have corrected timestamps.
+# Packages the mod and fixes timestamps.
 
 bash build.sh release "$@"
