@@ -1,0 +1,1 @@
+../../../.uksf_tools/hemtt/hooks/pre_build/01_set_version.rhai

@@ -1,0 +1,1 @@
+../../../.uksf_tools/hemtt/hooks/post_release/01_rename_zip.rhai
