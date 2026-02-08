@@ -10,3 +10,6 @@ hemtt
 hemtt.exe
 *.biprivatekey
 *.hemttprivatekey
+
+# Added by UKSFTA Tools
+/releases/*.zip
