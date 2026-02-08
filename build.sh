@@ -1,43 +1,42 @@
 #!/bin/bash
-
-# UKSFTA HEMTT Wrapper
-# This script handles building, timestamp fixing, and manual archiving with unit-standard folder structure.
-
+PROJECT_ROOT=$(pwd)
 export SOURCE_DATE_EPOCH=$(date +%s)
 
-# 1. Run HEMTT command
-echo "HEMTT: Executing '$@'..."
-if [[ " $* " == *"release"* ]]; then
-    echo "HEMTT: Running release (no-archive)..."
-    hemtt release --no-archive "$@"
-    STATUS=$?
+# Extract Project Name from mod.cpp for meta.cpp synchronization
+PROJECT_NAME=$(grep 'name =' mod.cpp | head -n 1 | cut -d'"' -f2)
+
+# 1. Run HEMTT
+# We add --no-sign as the default unit standard
+if [[ " $* " == *" release "* ]]; then
+    CLEAN_ARGS=$(echo "$@" | sed 's/release//g')
+    echo "HEMTT: Running unsigned release (no-archive) $CLEAN_ARGS..."
+    hemtt release --no-archive --no-sign $CLEAN_ARGS
+    IS_RELEASE=true
 else
     echo "HEMTT: Running '$@'..."
     hemtt "$@"
-    STATUS=$?
+    IS_RELEASE=false
 fi
+STATUS=$?
 
 if [ $STATUS -eq 0 ]; then
-    # 2. Fix timestamps in .hemttout immediately
+    # 2. Fix timestamps and Sync meta.cpp name
     if [ -f "tools/fix_timestamps.py" ]; then
-        python3 tools/fix_timestamps.py .hemttout
+        python3 tools/fix_timestamps.py .hemttout "$PROJECT_NAME"
     fi
 
-    # 3. Manual Archiving for releases
-    if [[ " $* " == *"release"* ]]; then
-        echo "HEMTT: Manually packaging unit-standard ZIP..."
+    # 3. Manual Packaging for releases
+    if [ "$IS_RELEASE" = true ]; then
+        echo "HEMTT: Manually packaging ZIP..."
         mkdir -p releases
-        
-        PREFIX=$(grep "prefix =" .hemtt/project.toml | head -n 1 | cut -d'"' -f2 | tr -d '\n\r ')
+        PREFIX=$(grep "prefix =" .hemtt/project.toml | head -n 1 | sed -E 's/prefix = "(.*)"/\1/' | xargs)
+        VERSION=$(grep "#define PATCHLVL" addons/main/script_version.hpp | awk '{print $3}' | tr -d '\n\r ')
         MAJOR=$(grep "#define MAJOR" addons/main/script_version.hpp | awk '{print $3}' | tr -d '\n\r ')
         MINOR=$(grep "#define MINOR" addons/main/script_version.hpp | awk '{print $3}' | tr -d '\n\r ')
-        PATCH=$(grep "#define PATCHLVL" addons/main/script_version.hpp | awk '{print $3}' | tr -d '\n\r ')
         
         MOD_FOLDER_NAME="@${PREFIX}"
-        ZIP_NAME="uksf task force alpha - ${PREFIX,,}_${MAJOR}.${MINOR}.${PATCH}.zip"
-        LATEST_ZIP="${PREFIX}-latest.zip"
+        ZIP_NAME="uksf task force alpha - ${PREFIX,,}_${MAJOR}.${MINOR}.${VERSION}.zip"
         
-        # Prepare staging for ZIP
         STAGING_DIR=".hemttout/zip_staging"
         rm -rf "$STAGING_DIR"
         mkdir -p "$STAGING_DIR/$MOD_FOLDER_NAME"
@@ -45,22 +44,14 @@ if [ $STATUS -eq 0 ]; then
         # Copy release contents into the @Folder
         cp -r .hemttout/release/* "$STAGING_DIR/$MOD_FOLDER_NAME/"
         
-        # Normalize timestamps in staging
-        python3 tools/fix_timestamps.py "$STAGING_DIR"
+        # Ensure staging metadata is also fixed and name is synced
+        python3 tools/fix_timestamps.py "$STAGING_DIR" "$PROJECT_NAME"
         
-        # Package from the staging dir so the @Folder is the root of the ZIP
-        (
-            cd "$STAGING_DIR"
-            zip -q -r "../../releases/$ZIP_NAME" "$MOD_FOLDER_NAME"
-        )
-        
-        cp "releases/$ZIP_NAME" "releases/$LATEST_ZIP"
-        
-        # Final timestamp fix on the new ZIP files
+        (cd "$STAGING_DIR" && zip -q -r "$PROJECT_ROOT/releases/$ZIP_NAME" "$MOD_FOLDER_NAME")
+        cp "releases/$ZIP_NAME" "releases/${PREFIX}-latest.zip"
         python3 tools/fix_timestamps.py releases
-        echo "Release packaged successfully: releases/$ZIP_NAME"
+        echo "Release packaged: releases/$ZIP_NAME"
         rm -rf "$STAGING_DIR"
     fi
 fi
-
 exit $STATUS
