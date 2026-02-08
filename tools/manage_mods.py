@@ -10,12 +10,11 @@ import html
 # Configuration
 MOD_SOURCES_FILE = "mod_sources.txt"
 LOCK_FILE = "mods.lock"
-CACHE_DIR = ".workshop_cache"
 ADDONS_DIR = "addons"
 KEYS_DIR = "keys"
 STEAMAPP_ID = "107410"  # Arma 3
 
-def get_mod_info():
+def get_mod_ids_from_file():
     mods = {}
     if not os.path.exists(MOD_SOURCES_FILE):
         return mods
@@ -26,11 +25,9 @@ def get_mod_info():
             if not clean_line or clean_line.startswith("#"):
                 continue
             
-            # Extract ID
             match = re.search(r"(?:id=)?(\d{8,})", clean_line)
             if match:
                 mod_id = match.group(1)
-                # Extract Tag (everything after #)
                 tag = ""
                 if "#" in clean_line:
                     tag = clean_line.split("#", 1)[1].strip()
@@ -50,18 +47,48 @@ def get_workshop_metadata(mod_id):
             if match:
                 info["name"] = html.unescape(match.group(1).strip())
             
-            # Dependencies (Required Items)
-            deps_section = re.search(r'<div id="requiredItemsContainer">(.*?)</div>\s*</div>', page, re.DOTALL)
+            # Dependencies (Required Items) - Robust search
+            # Look for links within the RequiredItems container
+            deps_section = re.search(r'id="RequiredItems">(.*?)</div>\s*</div>', page, re.DOTALL)
             if deps_section:
-                dep_matches = re.findall(r'href=".*?id=(\d+)".*?class="requiredItem">.*?<div class="requiredItemText">(.*?)</div>', deps_section.group(1), re.DOTALL)
-                for dep_id, dep_name in dep_matches:
+                # Find all hrefs with id= in that section
+                items = re.findall(r'href=".*?id=(\d+)".*?>(.*?)</a>', deps_section.group(1), re.DOTALL)
+                for dep_id, dep_html in items:
+                    # Clean up the name (it might be wrapped in divs or have whitespace)
+                    dep_name = re.sub(r'<[^>]+>', '', dep_html).strip()
                     info["dependencies"].append({
                         "id": dep_id.strip(),
-                        "name": html.unescape(dep_name.strip())
+                        "name": html.unescape(dep_name)
                     })
     except Exception as e:
         print(f"Warning: Could not fetch info for mod {mod_id}: {e}")
     return info
+
+def resolve_dependencies(initial_mods):
+    print("--- Resolving Dependencies ---")
+    resolved_info = {}
+    to_check = list(initial_mods.keys())
+    processed = set()
+    
+    while to_check:
+        mid = to_check.pop(0)
+        if mid in processed:
+            continue
+            
+        print(f"Checking {mid}...")
+        meta = get_workshop_metadata(mid)
+        if mid in initial_mods and initial_mods[mid]:
+            meta["name"] = initial_mods[mid]
+            
+        resolved_info[mid] = meta
+        processed.add(mid)
+        
+        for dep in meta["dependencies"]:
+            if dep["id"] not in processed:
+                print(f"  Found dependency: {dep['name']} ({dep['id']})")
+                to_check.append(dep["id"])
+                
+    return resolved_info
 
 def run_steamcmd(mod_ids):
     if not mod_ids:
@@ -70,11 +97,10 @@ def run_steamcmd(mod_ids):
     for mid in mod_ids:
         cmd.extend(["+workshop_download_item", STEAMAPP_ID, mid])
     cmd.append("+quit")
-    print(f"--- Updating {len(mod_ids)} mods via SteamCMD ---")
+    print(f"\n--- Updating {len(mod_ids)} mods via SteamCMD ---")
     subprocess.run(cmd, check=True)
 
-def sync_mods(mod_info):
-    mod_ids = set(mod_info.keys())
+def sync_mods(resolved_info):
     if os.path.exists(LOCK_FILE):
         with open(LOCK_FILE, "r") as f:
             lock_data = json.load(f)
@@ -106,28 +132,17 @@ def sync_mods(mod_info):
     os.makedirs(ADDONS_DIR, exist_ok=True)
     os.makedirs(KEYS_DIR, exist_ok=True)
 
-    for mid, tag in mod_info.items():
+    for mid, info in resolved_info.items():
         mod_path = os.path.join(base_workshop_path, mid)
         if not os.path.exists(mod_path):
-            print(f"Warning: Mod {mid} not found in workshop cache.")
+            print(f"Warning: Mod {info['name']} ({mid}) not found in workshop cache.")
             continue
-        
-        cached_info = lock_data["mods"].get(mid, {})
-        # If we have a tag, it overrides the fetched name, but we still want dependencies
-        if not cached_info.get("name") or (not tag and cached_info.get("name").startswith("Mod ")):
-            print(f"Fetching metadata for Mod {mid}...")
-            ws_info = get_workshop_metadata(mid)
-            mod_name = tag if tag else ws_info["name"]
-            dependencies = ws_info["dependencies"]
-        else:
-            mod_name = tag if tag else cached_info.get("name")
-            dependencies = cached_info.get("dependencies", [])
             
-        print(f"--- Syncing: {mod_name} ({mid}) ---")
+        print(f"--- Syncing: {info['name']} ---")
         current_mods[mid] = {
             "files": [], 
-            "name": mod_name,
-            "dependencies": dependencies
+            "name": info["name"],
+            "dependencies": info["dependencies"]
         }
         
         for root, dirs, files in os.walk(mod_path):
@@ -144,7 +159,7 @@ def sync_mods(mod_info):
                     current_mods[mid]["files"].append(os.path.relpath(dest_path))
 
     for old_mid in list(lock_data["mods"].keys()):
-        if old_mid not in mod_ids:
+        if old_mid not in resolved_info:
             print(f"--- Cleaning up Mod ID: {old_mid} ---")
             for rel_path in lock_data["mods"][old_mid].get("files", []):
                 if os.path.exists(rel_path):
@@ -154,7 +169,7 @@ def sync_mods(mod_info):
     with open(LOCK_FILE, "w") as f:
         json.dump({"mods": current_mods}, f, indent=2)
     
-    sync_hemtt_launch(mod_ids)
+    sync_hemtt_launch(set(resolved_info.keys()))
 
 def sync_hemtt_launch(mod_ids):
     launch_path = ".hemtt/launch.toml"
@@ -182,14 +197,18 @@ def sync_hemtt_launch(mod_ids):
         f.writelines(new_lines)
 
 if __name__ == "__main__":
-    mod_info = get_mod_info()
-    if not mod_info:
+    initial_mods = get_mod_ids_from_file()
+    if not initial_mods:
         print("No mod IDs found in mod_sources.txt")
         sys.exit(0)
+    
     try:
-        run_steamcmd(set(mod_info.keys()))
-        sync_mods(mod_info)
-        print("\nSuccess: Mods synced and cleaned.")
+        resolved_info = resolve_dependencies(initial_mods)
+        run_steamcmd(set(resolved_info.keys()))
+        sync_mods(resolved_info)
+        print("\nSuccess: All mods and dependencies synced.")
     except Exception as e:
         print(f"\nError: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
