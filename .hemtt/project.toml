@@ -3,8 +3,6 @@ author = "UKSF Taskforce Alpha Team"
 prefix = "UKSFTA-Maps"
 mainprefix = "z"
 
-keyname = "UKSFTA"
-signame = "UKSFTA"
 
 [version]
 path = "addons/main/script_version.hpp"
@@ -25,3 +23,6 @@ directory = "releases"
 
 workshop_id = "3662499431"
 workshop_tags = ["Mod", "Map", "Addon"]
+
+[hemtt.signing]
+authority = "UKSFTA"
