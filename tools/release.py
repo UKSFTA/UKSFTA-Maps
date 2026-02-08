@@ -52,28 +52,36 @@ def bump_version(part="patch"):
         
     return new_version
 
-def get_workshop_id():
-    # Read from project.toml if available
+def get_workshop_config():
+    config = {
+        "id": None,
+        "tags": ["Mod", "Map"]
+    }
     if os.path.exists(PROJECT_TOML):
         with open(PROJECT_TOML, "r") as f:
             for line in f:
                 if "workshop_id" in line:
-                    parts = line.split("=")
-                    if len(parts) > 1:
-                        return parts[1].strip().strip('"')
-    return None
-
-def generate_changelog(last_tag):
-    try:
-        # Get commits since last tag
-        cmd = ["git", "log", f"{last_tag}..HEAD", "--oneline", "--no-merges"]
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        return "Maintenance update."
+                    config["id"] = line.split("=")[1].strip().strip('"')
+                if "workshop_tags" in line:
+                    # Expecting: workshop_tags = ["Tag1", "Tag2"]
+                    tags_match = re.search(r"\[(.*?)\]", line)
+                    if tags_match:
+                        config["tags"] = [t.strip().strip('"').strip("'") for t in tags_match.group(1).split(",")]
+    return config
 
 def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None):
+    description = ""
+    if os.path.exists("workshop_description.txt"):
+        with open("workshop_description.txt", "r") as f:
+            description = f.read()
+
+    config = get_workshop_config()
+    tags_vdf = ""
+    for i, tag in enumerate(config["tags"]):
+        tags_vdf += f'        "{i}" "{tag}"\n'
+
     preview_line = f'"previewfile" "{preview_image}"' if preview_image else ""
+    
     vdf_content = f"""
 "workshopitem"
 {{
@@ -81,6 +89,10 @@ def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None)
     "publishedfileid" "{workshop_id}"
     "contentfolder" "{content_path}"
     "changenote" "{changelog}"
+    "description" "{description}"
+    "tags"
+    {{
+{tags_vdf}    }}
     {preview_line}
 }}
 """
@@ -138,7 +150,8 @@ def main():
     subprocess.run(["unzip", "-q", latest_zip, "-d", STAGING_DIR], check=True)
     
     # 4. Prepare Upload
-    workshop_id = get_workshop_id()
+    ws_config = get_workshop_config()
+    workshop_id = ws_config["id"]
     if not workshop_id or workshop_id == "0":
         workshop_id = input("Enter Workshop ID to update: ").strip()
         

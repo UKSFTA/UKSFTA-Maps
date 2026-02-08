@@ -2,3 +2,6 @@ name = "UKSF Taskforce Alpha - Maps Modpack"
 author = "UKSF Taskforce Alpha Team"
 prefix = "UKSFTA"
 mainprefix = "z"
+
+workshop_id = "0"
+workshop_tags = ["Mod", "Map", "Addon"]
