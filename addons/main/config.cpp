@@ -1,3 +1,7 @@
+#include "script_version.hpp"
+
+#define QUOTE(var) #var
+
 class CfgPatches {
     class UKSFTA_Maps_Main {
         name = "UKSF Taskforce Alpha Maps - Main";
@@ -8,9 +12,9 @@ class CfgPatches {
         author = "UKSF Taskforce Alpha Team";
         authors[] = {"UKSF Taskforce Alpha Team"};
         url = "https://uksfta.github.io/";
-        version = "1.0.1";
-        versionStr = "1.0.1";
-        versionAr[] = {1,0,1};
+        version = QUOTE(MAJOR.MINOR.PATCHLVL);
+        versionStr = QUOTE(MAJOR.MINOR.PATCHLVL);
+        versionAr[] = {MAJOR,MINOR,PATCHLVL};
     };
 };
 
