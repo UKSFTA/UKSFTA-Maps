@@ -3,10 +3,9 @@
 [b]Production-grade terrains for UKSFTA operations.[/b]
 This collection provides the essential geographical assets and terrains required for UKSFTA missions. Optimized for performance and organized for seamless integration with our internal frameworks.
 
-[h2]🗺 Included Terrains[/h2]
+[h2]🗺 Included Content[/h2]
 [list]
-[*] [b]Dagger Island[/b] - Summer/Autumn variants
-[*] [i]More terrains pending integration...[/i]
+{{INCLUDED_CONTENT}}
 [/list]
 
 [h2]🛠 Requirements[/h2]

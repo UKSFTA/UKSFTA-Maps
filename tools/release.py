@@ -69,11 +69,43 @@ def get_workshop_config():
                         config["tags"] = [t.strip().strip('"').strip("'") for t in tags_match.group(1).split(",")]
     return config
 
+def generate_content_list():
+    if not os.path.exists("mod_sources.txt"):
+        return "[*] [i]No external content listed.[/i]"
+    
+    content_list = ""
+    with open("mod_sources.txt", "r") as f:
+        for line in f:
+            clean_line = line.strip()
+            if not clean_line or clean_line.startswith("#"):
+                continue
+            
+            # Check for tag
+            if "#" in clean_line:
+                tag = clean_line.split("#", 1)[1].strip()
+                # Parse "Category | Name" format if present
+                if "|" in tag:
+                    parts = tag.split("|")
+                    name = parts[1].strip()
+                    cat = parts[0].strip()
+                    content_list += f"[*] [b]{name}[/b] ({cat})\n"
+                else:
+                    content_list += f"[*] [b]{tag}[/b]\n"
+    
+    if not content_list:
+        return "[*] [i]Content list pending update.[/i]"
+        
+    return content_list
+
 def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None):
     description = ""
     if os.path.exists("workshop_description.txt"):
         with open("workshop_description.txt", "r") as f:
             description = f.read()
+
+    # Inject Included Content
+    included_content = generate_content_list()
+    description = description.replace("{{INCLUDED_CONTENT}}", included_content)
 
     config = get_workshop_config()
     tags_vdf = ""
