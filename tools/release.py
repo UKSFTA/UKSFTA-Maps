@@ -6,6 +6,8 @@ import shutil
 import getpass
 import json
 import glob
+import urllib.request
+import html
 
 # Configuration
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,6 +16,21 @@ HEMTT_OUT = os.path.join(PROJECT_ROOT, ".hemttout")
 RELEASE_DIR = os.path.join(HEMTT_OUT, "release")
 STAGING_DIR = os.path.join(HEMTT_OUT, "upload_staging")
 PROJECT_TOML = os.path.join(PROJECT_ROOT, ".hemtt", "project.toml")
+LOCK_FILE = "mods.lock"
+
+def load_env():
+    env_path = os.path.join(PROJECT_ROOT, ".env")
+    if os.path.exists(env_path):
+        with open(env_path, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    parts = line.split("=", 1)
+                    if len(parts) == 2:
+                        key, value = parts
+                        os.environ[key.strip()] = value.strip()
 
 def get_current_version():
     with open(VERSION_FILE, "r") as f:
@@ -63,7 +80,6 @@ def get_workshop_config():
                 if "workshop_id" in line:
                     config["id"] = line.split("=")[1].strip().strip('"')
                 if "workshop_tags" in line:
-                    # Expecting: workshop_tags = ["Tag1", "Tag2"]
                     tags_match = re.search(r"\[(.*?)\]", line)
                     if tags_match:
                         config["tags"] = [t.strip().strip('"').strip("'") for t in tags_match.group(1).split(",")]
@@ -99,7 +115,6 @@ def generate_content_list():
             mod_name = tag if tag else mod_info.get("name", f"Mod {mid}")
             mod_url = f"https://steamcommunity.com/sharedfiles/filedetails/?id={mid}"
 
-            # Parse "Category | Name" format if present
             display_name = mod_name
             category = ""
             if "|" in mod_name:
@@ -111,7 +126,6 @@ def generate_content_list():
             if category:
                 content_list += f" ({category})"
             
-            # Add dependencies
             deps = mod_info.get("dependencies", [])
             if deps:
                 content_list += "\n[list]\n"
@@ -122,25 +136,17 @@ def generate_content_list():
             else:
                 content_list += "\n"
     
-    if not content_list:
-        return "[*] [i]Content list pending update.[/i]"
-        
-    return content_list
-
-LOCK_FILE = "mods.lock"
+    return content_list if content_list else "[*] [i]Content list pending update.[/i]"
 
 def generate_changelog(last_tag):
     try:
         if last_tag == "HEAD":
-            # No tags yet, get all commits
             cmd = ["git", "log", "--oneline", "--no-merges"]
         else:
-            # Get commits since last tag
             cmd = ["git", "log", f"{last_tag}..HEAD", "--oneline", "--no-merges"]
-            
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
         return result.stdout.strip()
-    except subprocess.CalledProcessError:
+    except:
         return "Maintenance update."
 
 def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None):
@@ -149,7 +155,6 @@ def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None)
         with open("workshop_description.txt", "r") as f:
             description = f.read()
 
-    # Inject Included Content
     included_content = generate_content_list()
     description = description.replace("{{INCLUDED_CONTENT}}", included_content)
 
@@ -179,12 +184,8 @@ def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None)
         f.write(vdf_content)
     return vdf_path
 
-def run_step(description, func, *args):
-    print(f"\n=== {description} ===")
-    return func(*args)
-
 def main():
-    # 0. Check prerequisites
+    load_env()
     if not shutil.which("hemtt"):
         print("Error: 'hemtt' not found in PATH.")
         sys.exit(1)
@@ -192,7 +193,6 @@ def main():
         print("Error: 'steamcmd' not found in PATH.")
         sys.exit(1)
 
-    # 1. Get/Bump Version
     print(f"Current version: {get_current_version()[0]}")
     confirm = input("Bump version? [p]atch/[m]inor/[M]ajor/[n]one: ").lower()
     
@@ -202,92 +202,69 @@ def main():
         if confirm == 'm': part = "minor"
         if confirm == 'major': part = "major"
         new_version = bump_version(part)
-        
-        # Git commit version bump
         subprocess.run(["git", "add", VERSION_FILE], check=True)
         subprocess.run(["git", "commit", "-S", "-m", f"chore: bump version to {new_version}"], check=True)
 
-    # 2. Build with HEMTT
     print("Running HEMTT Release Build...")
     subprocess.run(["hemtt", "release"], check=True)
 
-    # 3. Locate and Extract Release
-    # Find latest zip in .hemttout/release or releases/
     possible_zips = glob.glob(os.path.join(RELEASE_DIR, "*.zip")) + glob.glob(os.path.join(PROJECT_ROOT, "releases", "*.zip"))
     if not possible_zips:
         print("Error: No release zip found.")
         sys.exit(1)
     latest_zip = max(possible_zips, key=os.path.getctime)
-    print(f"Found release: {os.path.basename(latest_zip)}")
     
     if os.path.exists(STAGING_DIR):
         shutil.rmtree(STAGING_DIR)
     os.makedirs(STAGING_DIR)
-    
-    print(f"Extracting to {STAGING_DIR}...")
     subprocess.run(["unzip", "-q", latest_zip, "-d", STAGING_DIR], check=True)
     
-    # 4. Prepare Upload
     ws_config = get_workshop_config()
     workshop_id = ws_config["id"]
     if not workshop_id or workshop_id == "0":
         workshop_id = input("Enter Workshop ID to update: ").strip()
         
-    # Generate changelog
     try:
         last_tag = subprocess.check_output(["git", "describe", "--tags", "--abbrev=0"]).decode().strip()
     except:
         try:
             last_tag = subprocess.check_output(["git", "rev-list", "--max-parents=0", "HEAD"]).decode().strip()
         except:
-            last_tag = "HEAD" # Fallback
+            last_tag = "HEAD"
         
     changelog = generate_changelog(last_tag)
-    print(f"Changelog:\n{changelog}")
-    
-    # VDF
     vdf_path = create_vdf("107410", workshop_id, STAGING_DIR, changelog)
     
-    # 5. Upload
     print("\n--- Steam Workshop Upload ---")
-    username = input("Steam Username: ").strip()
+    username = os.getenv("STEAM_USERNAME")
+    password = os.getenv("STEAM_PASSWORD")
+
+    if not username:
+        username = input("Steam Username: ").strip()
     
-    cmd = [
-        "steamcmd", 
-        "+login", username, 
-        "+workshop_build_item", vdf_path,
-        "+quit"
-    ]
+    cmd = ["steamcmd", "+login", username]
+    if password:
+        cmd.append(password)
+    cmd.extend(["+workshop_build_item", vdf_path, "+quit"])
     
-    print("Launching SteamCMD... (You may be prompted for password/2FA)")
+    print(f"Launching SteamCMD for user: {username}...")
+    if not password:
+        print("(You will be prompted for password/2FA if not cached)")
+    
     try:
         subprocess.run(cmd, check=True)
         print("\nSUCCESS: Mod updated on Workshop.")
         
-        # 6. Tag and Push
         if confirm != 'n' or input("Tag this release in Git? [y/N]: ").lower() == 'y':
             tag_name = f"v{new_version}"
-            print(f"Tagging and pushing git repository: {tag_name}")
-            
-            # Get current branch
             branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode().strip()
-            
             subprocess.run(["git", "tag", "-a", tag_name, "-m", f"Release {new_version}", "-f"], check=True)
             subprocess.run(["git", "push", "origin", branch, "--tags", "-f"], check=False)
 
-            # 7. GitHub Release
             if shutil.which("gh"):
                 print(f"Creating GitHub Release for {tag_name}...")
-                gh_cmd = [
-                    "gh", "release", "create", tag_name,
-                    latest_zip,
-                    "--title", f"Release {new_version}",
-                    "--notes", changelog,
-                    "--latest"
-                ]
+                gh_cmd = ["gh", "release", "create", tag_name, latest_zip, "--title", f"Release {new_version}", "--notes", changelog, "--latest"]
                 subprocess.run(gh_cmd, check=False)
-            else:
-                print("Warning: 'gh' CLI not found. Skipping GitHub Release creation.")
             
     except subprocess.CalledProcessError as e:
         print(f"\nError during upload: {e}")
