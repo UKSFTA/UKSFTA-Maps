@@ -8,6 +8,7 @@ import json
 import glob
 import urllib.request
 import html
+import argparse
 
 # Configuration
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,6 +34,8 @@ def load_env():
                         os.environ[key.strip()] = value.strip()
 
 def get_current_version():
+    if not os.path.exists(VERSION_FILE):
+        return "0.0.0", (0, 0, 0)
     with open(VERSION_FILE, "r") as f:
         content = f.read()
     
@@ -185,6 +188,16 @@ def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None)
     return vdf_path
 
 def main():
+    parser = argparse.ArgumentParser(description="UKSFTA Release Tool")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-p", "--patch", action="store_true", help="Bump patch version")
+    group.add_argument("-m", "--minor", action="store_true", help="Bump minor version")
+    group.add_argument("-M", "--major", action="store_true", help="Bump major version")
+    group.add_argument("-n", "--none", action="store_true", help="Don't bump version")
+    parser.add_argument("-y", "--yes", action="store_true", help="Skip confirmation for tagging")
+    
+    args = parser.parse_args()
+
     load_env()
     if not shutil.which("hemtt"):
         print("Error: 'hemtt' not found in PATH.")
@@ -193,10 +206,19 @@ def main():
         print("Error: 'steamcmd' not found in PATH.")
         sys.exit(1)
 
-    print(f"Current version: {get_current_version()[0]}")
-    confirm = input("Bump version? [p]atch/[m]inor/[M]ajor/[n]one: ").lower()
+    current_v_str, _ = get_current_version()
+    print(f"Current version: {current_v_str}")
     
-    new_version = get_current_version()[0]
+    confirm = None
+    if args.patch: confirm = 'p'
+    elif args.minor: confirm = 'm'
+    elif args.major: confirm = 'major'
+    elif args.none: confirm = 'n'
+    
+    if confirm is None:
+        confirm = input("Bump version? [p]atch/[m]inor/[M]ajor/[n]one: ").lower()
+    
+    new_version = current_v_str
     if confirm in ['p', 'm', 'major']:
         part = "patch"
         if confirm == 'm': part = "minor"
@@ -255,7 +277,14 @@ def main():
         subprocess.run(cmd, check=True)
         print("\nSUCCESS: Mod updated on Workshop.")
         
-        if confirm != 'n' or input("Tag this release in Git? [y/N]: ").lower() == 'y':
+        do_tag = args.yes
+        if not do_tag:
+            if confirm != 'n':
+                do_tag = True
+            else:
+                do_tag = input("Tag this release in Git? [y/N]: ").lower() == 'y'
+
+        if do_tag:
             tag_name = f"v{new_version}"
             branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode().strip()
             subprocess.run(["git", "tag", "-a", tag_name, "-m", f"Release {new_version}", "-f"], check=True)
