@@ -5,7 +5,7 @@ class CfgMods {
     logo = "z\uksfta\addons\main\data\icon_128_ca.paa";
     logoOver = "z\uksfta\addons\main\data\icon_128_highlight_ca.paa";
     logoSmall = "z\uksfta\addons\main\data\icon_64_ca.paa";
-    name = "UKSF Taskforce Alpha Mods";
+    name = "UKSF Taskforce Alpha Maps";
     overview = "UKSF Taskforce Alpha";
     picture = "z\uksfta\addons\main\data\title_co.paa";
     tooltip = "UKSFTA";

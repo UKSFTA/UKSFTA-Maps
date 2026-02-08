@@ -1,4 +1,4 @@
-name = "UKSF Taskforce Alpha - Maps Modpack"
+name = "UKSF Task Force Alpha - Maps Modpack"
 author = "UKSF Taskforce Alpha Team"
 prefix = "UKSFTA-Maps"
 mainprefix = "z"
@@ -17,5 +17,5 @@ include = [
     "README.md"
 ]
 
-workshop_id = "0"
+workshop_id = "3662499431"
 workshop_tags = ["Mod", "Map", "Addon"]
