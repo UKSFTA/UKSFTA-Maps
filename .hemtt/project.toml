@@ -3,6 +3,9 @@ author = "UKSF Taskforce Alpha Team"
 prefix = "UKSFTA-Maps"
 mainprefix = "z"
 
+keyname = "UKSFTA"
+signame = "UKSFTA"
+
 [version]
 path = "addons/main/script_version.hpp"
 
