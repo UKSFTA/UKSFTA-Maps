@@ -48,17 +48,43 @@ def run_steamcmd(mod_ids):
     print(f"--- Updating {len(mod_ids)} mods via SteamCMD ---")
     subprocess.run(cmd, check=True)
 
+import urllib.request
+import html
+
+# ... (rest of imports)
+
+def get_workshop_title(mod_id):
+    url = f"https://steamcommunity.com/sharedfiles/filedetails/?id={mod_id}"
+    try:
+        # User-Agent is often required by Steam to prevent 403
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            page = response.read().decode('utf-8')
+            # Look for the title in the HTML
+            match = re.search(r'<div class="workshopItemTitle">(.*?)</div>', page)
+            if match:
+                title = match.group(1).strip()
+                return html.unescape(title)
+    except Exception as e:
+        print(f"Warning: Could not fetch title for mod {mod_id}: {e}")
+    return None
+
 def sync_mods(mod_info):
     mod_ids = set(mod_info.keys())
-    # tracked_files = { mod_id: [relative_paths_to_installed_files] }
+    # lock_data = { "mods": { mod_id: { "files": [], "name": "" } } }
     if os.path.exists(LOCK_FILE):
         with open(LOCK_FILE, "r") as f:
-            tracked_files = json.load(f)
+            lock_data = json.load(f)
+            # Handle legacy format if needed
+            if "mods" not in lock_data:
+                lock_data = {"mods": {}}
     else:
-        tracked_files = {}
+        lock_data = {"mods": {}}
 
-    current_files = {}
+    current_mods = {}
     
+    # ... (path detection logic remains same)
+
     # Path where SteamCMD downloads workshop items
     home = os.path.expanduser("~")
     possible_paths = [
@@ -88,10 +114,20 @@ def sync_mods(mod_info):
         if not os.path.exists(mod_path):
             print(f"Warning: Mod {mid} not found in workshop cache.")
             continue
+        
+        # Get or Fetch Name
+        mod_name = tag
+        if not mod_name:
+            # Check if we already have it in lock
+            mod_name = lock_data["mods"].get(mid, {}).get("name")
+            if not mod_name:
+                print(f"Fetching title for Mod {mid}...")
+                mod_name = get_workshop_title(mid)
+                if not mod_name:
+                    mod_name = f"Workshop Mod {mid}"
             
-        tag_display = f" [{tag}]" if tag else ""
-        print(f"--- Syncing Mod ID: {mid}{tag_display} ---")
-        current_files[mid] = []
+        print(f"--- Syncing: {mod_name} ({mid}) ---")
+        current_mods[mid] = {"files": [], "name": mod_name}
         
         for root, dirs, files in os.walk(mod_path):
             for file in files:
@@ -102,26 +138,26 @@ def sync_mods(mod_info):
                 if file_lower.endswith((".pbo", ".bisign")):
                     dest_path = os.path.join(ADDONS_DIR, file)
                     shutil.copy2(src_path, dest_path)
-                    current_files[mid].append(os.path.relpath(dest_path))
+                    current_mods[mid]["files"].append(os.path.relpath(dest_path))
                 
                 # Handle Keys (.bikey)
                 elif file_lower.endswith(".bikey"):
                     dest_path = os.path.join(KEYS_DIR, file)
                     shutil.copy2(src_path, dest_path)
-                    current_files[mid].append(os.path.relpath(dest_path))
+                    current_mods[mid]["files"].append(os.path.relpath(dest_path))
 
     # Cleanup removed mods
-    for old_mid in list(tracked_files.keys()):
+    for old_mid in list(lock_data["mods"].keys()):
         if old_mid not in mod_ids:
             print(f"--- Cleaning up Mod ID: {old_mid} ---")
-            for rel_path in tracked_files[old_mid]:
+            for rel_path in lock_data["mods"][old_mid].get("files", []):
                 if os.path.exists(rel_path):
                     print(f"Removing {rel_path}")
                     os.remove(rel_path)
     
     # Save lockfile
     with open(LOCK_FILE, "w") as f:
-        json.dump(current_files, f, indent=2)
+        json.dump({"mods": current_mods}, f, indent=2)
     
     sync_hemtt_launch(mod_ids)
 

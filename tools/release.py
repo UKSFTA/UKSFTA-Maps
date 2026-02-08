@@ -70,6 +70,13 @@ def get_workshop_config():
     return config
 
 def generate_content_list():
+    lock_data = {"mods": {}}
+    if os.path.exists(LOCK_FILE):
+        with open(LOCK_FILE, "r") as f:
+            lock_data = json.load(f)
+            if "mods" not in lock_data: # handle legacy
+                lock_data = {"mods": {}}
+
     if not os.path.exists("mod_sources.txt"):
         return "[*] [i]No external content listed.[/i]"
     
@@ -80,22 +87,33 @@ def generate_content_list():
             if not clean_line or clean_line.startswith("#"):
                 continue
             
-            # Check for tag
+            # Extract ID to look up in lock
+            match = re.search(r"(?:id=)?(\d{8,})", clean_line)
+            if not match: continue
+            mid = match.group(1)
+            
+            # Get name from tag if present, else from lock
+            tag = ""
             if "#" in clean_line:
                 tag = clean_line.split("#", 1)[1].strip()
-                # Parse "Category | Name" format if present
-                if "|" in tag:
-                    parts = tag.split("|")
-                    name = parts[1].strip()
-                    cat = parts[0].strip()
-                    content_list += f"[*] [b]{name}[/b] ({cat})\n"
-                else:
-                    content_list += f"[*] [b]{tag}[/b]\n"
+            
+            mod_name = tag if tag else lock_data["mods"].get(mid, {}).get("name", f"Mod {mid}")
+
+            # Parse "Category | Name" format if present
+            if "|" in mod_name:
+                parts = mod_name.split("|")
+                cat = parts[0].strip()
+                name = parts[1].strip()
+                content_list += f"[*] [b]{name}[/b] ({cat})\n"
+            else:
+                content_list += f"[*] [b]{mod_name}[/b]\n"
     
     if not content_list:
         return "[*] [i]Content list pending update.[/i]"
         
     return content_list
+
+LOCK_FILE = "mods.lock"
 
 def create_vdf(app_id, workshop_id, content_path, changelog, preview_image=None):
     description = ""
