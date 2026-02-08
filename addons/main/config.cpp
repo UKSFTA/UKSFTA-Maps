@@ -1,3 +1,19 @@
+class CfgPatches {
+    class UKSFTA_Maps_Main {
+        name = "UKSF Taskforce Alpha Maps - Main";
+        units[] = {};
+        weapons[] = {};
+        requiredVersion = 1.62;
+        requiredAddons[] = {};
+        author = "UKSF Taskforce Alpha Team";
+        authors[] = {"UKSF Taskforce Alpha Team"};
+        url = "https://uksfta.github.io/";
+        version = "1.0.1";
+        versionStr = "1.0.1";
+        versionAr[] = {1,0,1};
+    };
+};
+
 class CfgMods {
     action = "https://uksfta.github.io/";
     actionName = "Website";
