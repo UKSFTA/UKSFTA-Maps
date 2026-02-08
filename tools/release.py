@@ -9,6 +9,7 @@ import glob
 import urllib.request
 import html
 import argparse
+import multiprocessing
 
 # Configuration
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -194,7 +195,10 @@ def main():
     group.add_argument("-m", "--minor", action="store_true", help="Bump minor version")
     group.add_argument("-M", "--major", action="store_true", help="Bump major version")
     group.add_argument("-n", "--none", action="store_true", help="Don't bump version")
-    parser.add_argument("-y", "--yes", action="store_true", help="Skip confirmation for tagging")
+    
+    parser.add_argument("-t", "--tag", action="store_true", help="Force git tagging")
+    parser.add_argument("-y", "--yes", action="store_true", help="Skip confirmation for tagging (implies --tag)")
+    parser.add_argument("-j", "--threads", type=int, default=multiprocessing.cpu_count(), help="Number of threads for HEMTT (default: all cores)")
     
     args = parser.parse_args()
 
@@ -227,8 +231,8 @@ def main():
         subprocess.run(["git", "add", VERSION_FILE], check=True)
         subprocess.run(["git", "commit", "-S", "-m", f"chore: bump version to {new_version}"], check=True)
 
-    print("Running HEMTT Release Build...")
-    subprocess.run(["hemtt", "release"], check=True)
+    print(f"Running HEMTT Release Build with {args.threads} threads...")
+    subprocess.run(["hemtt", "release", "-t", str(args.threads)], check=True)
 
     possible_zips = glob.glob(os.path.join(RELEASE_DIR, "*.zip")) + glob.glob(os.path.join(PROJECT_ROOT, "releases", "*.zip"))
     if not possible_zips:
@@ -277,7 +281,7 @@ def main():
         subprocess.run(cmd, check=True)
         print("\nSUCCESS: Mod updated on Workshop.")
         
-        do_tag = args.yes
+        do_tag = args.tag or args.yes
         if not do_tag:
             if confirm != 'n':
                 do_tag = True
