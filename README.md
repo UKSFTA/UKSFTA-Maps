@@ -1,30 +1,25 @@
-# UKSF Taskforce Alpha - Maps Modpack
+# UKSFTA Maps
 
-Production-grade terrain collection and geographical assets for UKSFTA operations.
+**Specialized terrains and environmental assets for the UKSF Taskforce Alpha Community.**
 
-## 🚀 Quick Start
+This repository contains high-performance terrains and environmental modifications designed specifically for UKSFTA operations.
 
-1. **Initialize Tools**:
-   ```bash
-   git submodule update --init --remote
-   python3 .uksf_tools/setup.py
-   ```
+## 🛠 Features
 
-2. **Sync Dependencies**:
-   ```bash
-   python3 tools/manage_mods.py
-   ```
+- **Strategic Terrains**: Custom map assets optimized for large-scale unit operations.
+- **Visual Fidelity**: High-quality SAT and Mask data for immersive environments.
+- **Unified Prefix**: Integrated seamlessly into the `z\uksfta` global namespace.
 
-3. **Build & Release**:
-   ```bash
-   python3 tools/release.py
-   ```
+## 📋 Requirements
 
-## 📂 Structure
+- **CBA_A3**: Community Base Addons.
+- **UKSFTA Core**: Required for unit-standard environmental assets.
 
-- `addons/`: Terrain source files and synced PBOs.
-- `keys/`: Public signing keys.
-- `.uksf_tools/`: Centralized automation submodule.
+## 🔧 Technical Logic
 
-## 📋 Mod Sources
-Terrains and their dependencies are managed in `mod_sources.txt`. Use the `[ignore]` block to exclude large base mods like CBA or ACE if they are handled elsewhere.
+- **VFS Prefix**: `z\uksfta\maps`
+- **Build System**: Automated via [**UKSFTA-Tools**](https://github.com/UKSFTA/UKSFTA-Tools).
+
+## ⚖ License
+
+This project is licensed under the **Arma Public License - Share Alike (APL-SA)**. See the `LICENSE` file for full details.
