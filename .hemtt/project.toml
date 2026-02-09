@@ -1,11 +1,11 @@
 name = "UKSF Task Force Alpha - Maps Modpack"
 author = "UKSF Taskforce Alpha Team"
-prefix = "UKSFTA-Maps"
-mainprefix = "z"
+prefix = "uksfta"
+mapsprefix = "z"
 
 
 [version]
-path = "addons/main/script_version.hpp"
+path = "addons/maps/script_version.hpp"
 
 [files]
 include = [

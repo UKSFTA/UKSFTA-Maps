@@ -1,0 +1,1 @@
+../../../../UKSFTA-Tools/hemtt/hooks/pre_build/02_sync_cfgpatches.rhai

@@ -1,0 +1,1 @@
+../../../UKSFTA-Tools/hemtt/scripts/bump_major.rhai

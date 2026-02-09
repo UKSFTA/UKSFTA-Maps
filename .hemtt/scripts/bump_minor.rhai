@@ -1,1 +1,1 @@
-../../.uksf_tools/hemtt/scripts/bump_minor.rhai
+../../../UKSFTA-Tools/hemtt/scripts/bump_minor.rhai
