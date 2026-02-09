@@ -248,6 +248,59 @@ def cmd_workshop_tags(args):
     else:
         print("Workshop tags reference file not found.")
 
+def cmd_audit_deps(args):
+    projects = get_projects()
+    defined_patches = set()
+    dependencies = {}
+
+    # 1. Discover all patches defined in the workspace
+    for p in projects:
+        for config in p.glob("addons/*/config.cpp"):
+            with open(config, 'r', errors='ignore') as f:
+                content = f.read()
+                # Find class CfgPatches { class NAME
+                matches = re.finditer(r'class\s+CfgPatches\s*\{[^}]*class\s+([a-zA-Z0-9_]+)', content, re.MULTILINE | re.DOTALL)
+                for m in matches:
+                    patch_name = m.group(1)
+                    defined_patches.add(patch_name)
+                    
+                # Find requiredAddons[] = { "A", "B" };
+                req_match = re.search(r'requiredAddons\[\]\s*=\s*\{([^}]*)\}', content, re.MULTILINE | re.DOTALL)
+                if req_match:
+                    reqs = [r.strip().replace('"', '').replace("'", "") for r in req_match.group(1).split(',')]
+                    reqs = [r for r in reqs if r] # Filter empty
+                    dependencies[config] = reqs
+
+    # 2. Validate
+    print(f"\n[bold blue]=== Workspace Dependency Audit ===[/bold blue]")
+    print(f"Found {len(defined_patches)} local patches defined.\n")
+    
+    errors = 0
+    known_externals = ["A3_", "cba_", "ace_", "task_force_radio", "acre_", "rhsusf_", "rhs_"]
+
+    for config, reqs in dependencies.items():
+        rel_path = config.relative_to(Path(__file__).parent.parent.parent)
+        missing = []
+        for r in reqs:
+            if r in defined_patches:
+                continue
+            if any(r.lower().startswith(ext.lower()) for ext in known_externals):
+                continue
+            missing.append(r)
+        
+        if missing:
+            print(f"[red]❌ {rel_path}[/red]")
+            for m in missing:
+                print(f"   - Missing dependency: [bold]{m}[/bold]")
+            errors += 1
+        else:
+            print(f"[green]✓[/green] {rel_path} (All dependencies resolved)")
+
+    if errors == 0:
+        print(f"\n[bold green]Success: All workspace dependencies are healthy![/bold green]")
+    else:
+        print(f"\n[bold red]Failed: Found {errors} configs with unresolved dependencies.[/bold red]")
+
 def cmd_gh_runs(args):
     projects = get_projects()
     for p in projects:
@@ -311,6 +364,7 @@ def main():
     subparsers.add_parser("update", help="Push latest tools")
     subparsers.add_parser("workshop-tags", help="List Workshop Tags")
     subparsers.add_parser("gh-runs", help="GitHub Action status")
+    subparsers.add_parser("audit-deps", help="Audit project requiredAddons dependencies")
 
     convert_parser = subparsers.add_parser("convert", help="Convert media (.ogg/.ogv/.paa)")
     convert_parser.add_argument("files", nargs="+", help="Files to convert")
@@ -331,6 +385,7 @@ def main():
     elif args.command == "update": cmd_update(args)
     elif args.command == "workshop-tags": cmd_workshop_tags(args)
     elif args.command == "gh-runs": cmd_gh_runs(args)
+    elif args.command == "audit-deps": cmd_audit_deps(args)
     elif args.command == "convert": cmd_convert(args)
     else: parser.print_help()
 
