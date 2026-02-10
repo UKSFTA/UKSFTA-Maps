@@ -3,7 +3,8 @@
 # Example: 450814997 # Weekend Ops, Core
 
 https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566 # Training Map | Dagger Island
-https://steamcommunity.com/sharedfiles/filedetails/?id=2645015212 # Side Operation | Green Sea
+https://steamcommunity.com/sharedfiles/filedetails/?id=2852097448 # Main Campaign | Zagorsk
+https://steamcommunity.com/sharedfiles/filedetails/?id=1128256978 # Side Operation | Chernarus Redux
 
 [ignore]
 # List mods to exclude from download/sync below
