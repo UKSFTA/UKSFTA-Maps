@@ -1,1 +1,1 @@
-../../.uksf_tools/hemtt/scripts/bump_patch.rhai
+../../../UKSFTA-Tools/hemtt/scripts/bump_patch.rhai

@@ -1,1 +1,1 @@
-../../.uksf_tools/hemtt/scripts/check_prefixes.rhai
+../../../UKSFTA-Tools/hemtt/scripts/check_prefixes.rhai
