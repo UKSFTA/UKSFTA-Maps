@@ -26,3 +26,7 @@ workshop_tags = ["Mod", "Map", "Addon"]
 
 [hemtt.signing]
 authority = "UKSFTA"
+
+[hemtt.include]
+"include" = ""
+"include/x/cba/addons/main" = "x/cba/addons/main"
