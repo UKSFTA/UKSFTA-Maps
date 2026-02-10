@@ -47,9 +47,12 @@ def generate_total_manifest(workspace_path):
     report.append("")
 
     report.append("--- EXTERNAL WORKSHOP DEPENDENCIES ---")
-    for mid in sorted(external_mods.keys()):
+    # Sort external mods by name instead of ID
+    sorted_mids = sorted(external_mods.keys(), key=lambda x: external_mods[x]["name"].lower())
+    
+    for mid in sorted_mids:
         data = external_mods[mid]
-        sources_str = ", ".join(data["sources"])
+        sources_str = ", ".join(sorted(data["sources"]))
         report.append(f"  Mod:    {data['name']}")
         report.append(f"  Link:   https://steamcommunity.com/sharedfiles/filedetails/?id={mid}")
         report.append(f"  ID:     {mid}")
