@@ -1,0 +1,105 @@
+{
+  "mods": {
+    "2983546566": {
+      "files": [
+        "addons/dagger_island_summer.pbo",
+        "addons/drc_custom_billboards.pbo",
+        "addons/drc_flags.pbo"
+      ],
+      "name": "Training Map | Dagger Island",
+      "dependencies": [],
+      "updated": "1765955022"
+    },
+    "2852097448": {
+      "files": [
+        "addons/WL_Buildings.pbo",
+        "addons/xin_ponds.pbo",
+        "addons/zagor_hag_objects.pbo",
+        "addons/zagor_zagorsk.pbo",
+        "addons/zagor_zagorsk_biglakes.pbo",
+        "addons/zagor_zagorsk_big_city.pbo",
+        "addons/zagor_zagorsk_countryside.pbo",
+        "addons/zagor_zagorsk_khotkovo.pbo",
+        "addons/zagor_zagorsk_longlake.pbo",
+        "addons/zagor_zagorsk_quarries.pbo",
+        "addons/zagor_zagorsk_reserved_forest.pbo",
+        "addons/zagor_zagorsk_trud.pbo"
+      ],
+      "name": "Main Campaign | Zagorsk",
+      "dependencies": [
+        {
+          "id": "583496184",
+          "name": "CUP Terrains - Core"
+        },
+        {
+          "id": "2288691268",
+          "name": "RHSTERRACORE"
+        },
+        {
+          "id": "3221554602",
+          "name": "Zagorsk road signs"
+        }
+      ],
+      "updated": "1764370790"
+    },
+    "1128256978": {
+      "files": [
+        "addons/chernarusredux.pbo",
+        "addons/chernarusredux_animals.pbo",
+        "addons/chernarusredux_buildings.pbo",
+        "addons/chernarusredux_c.pbo",
+        "addons/chernarusredux_chz.pbo",
+        "addons/chernarusredux_data.pbo",
+        "addons/chernarusredux_flashlight.pbo",
+        "addons/chernarusredux_functions.pbo",
+        "addons/chernarusredux_lang.pbo",
+        "addons/chernarusredux_layers.pbo",
+        "addons/chernarusredux_objects.pbo",
+        "addons/chernarusredux_ponds.pbo",
+        "addons/chernarusredux_scenes.pbo",
+        "addons/chernarusredux_sounds.pbo",
+        "addons/chernarusredux_soundtrack.pbo",
+        "addons/chernarusredux_vegetation.pbo",
+        "addons/chernarusredux_wrecks.pbo",
+        "addons/chernarusredux_cbacompatible.pbo"
+      ],
+      "name": "Side Operation | Chernarus Redux",
+      "dependencies": [
+        {
+          "id": "583496184",
+          "name": "CUP Terrains - Core"
+        }
+      ],
+      "updated": "1733421447"
+    },
+    "2288691268": {
+      "files": [
+        "addons/rhs_structures_a2_port.pbo",
+        "addons/rhs_structures_civilian.pbo",
+        "addons/rhs_structures_civilian_2.pbo",
+        "addons/rhs_structures_data.pbo",
+        "addons/rhs_structures_misc.pbo",
+        "addons/rhs_structures_misc_2.pbo",
+        "addons/rhs_structures_public.pbo",
+        "addons/rhs_structures_public_2.pbo",
+        "addons/rhs_structures_public_3.pbo",
+        "addons/rhs_structures_village.pbo",
+        "addons/rhs_terracore_3denpreviews.pbo",
+        "addons/rhs_terracore_main.pbo",
+        "addons/rhs_terracore_plants.pbo",
+        "addons/rhs_terracore_roads.pbo"
+      ],
+      "name": "RHSTERRACORE",
+      "dependencies": [],
+      "updated": "0"
+    },
+    "3221554602": {
+      "files": [
+        "addons/zagorsk_sign.pbo"
+      ],
+      "name": "Zagorsk road signs",
+      "dependencies": [],
+      "updated": "1746484035"
+    }
+  }
+}
