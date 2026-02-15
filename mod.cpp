@@ -1,9 +1,9 @@
 name = "UKSF Taskforce Alpha - Maps Modpack";
 author = "UKSF Taskforce Alpha Team";
-logo = "\z\uksfta\addons\main\data\icon_128_ca.paa";
-logoOver = "\z\uksfta\addons\main\data\icon_128_highlight_ca.paa";
-logoSmall = "\z\uksfta\addons\main\data\icon_64_ca.paa";
+logo = "\z\z\z\uksfta\addons\maps\addons\maps\addons\main\data\icon_128_ca.paa";
+logoOver = "\z\z\z\uksfta\addons\maps\addons\maps\addons\main\data\icon_128_highlight_ca.paa";
+logoSmall = "\z\z\z\uksfta\addons\maps\addons\maps\addons\main\data\icon_64_ca.paa";
 overview = "UKSF Taskforce Alpha - Maps Modpack. Production-grade terrain collection for UKSFTA operations.";
-picture = "\z\uksfta\addons\main\data\title_co.paa";
+picture = "\z\z\z\uksfta\addons\maps\addons\maps\addons\main\data\title_co.paa";
 tooltip = "UKSFTA Maps";
 tooltipOwned = "UKSF Taskforce Alpha";

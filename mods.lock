@@ -6,9 +6,9 @@
         "addons/drc_custom_billboards.pbo",
         "addons/drc_flags.pbo"
       ],
-      "name": "Training Map | Dagger Island",
+      "name": "Dagger Island Training Complex (2025)",
       "dependencies": [],
-      "updated": "1765955022"
+      "updated": "1759721994"
     },
     "2852097448": {
       "files": [
@@ -25,22 +25,18 @@
         "addons/zagor_zagorsk_reserved_forest.pbo",
         "addons/zagor_zagorsk_trud.pbo"
       ],
-      "name": "Main Campaign | Zagorsk",
+      "name": "Zagorsk",
       "dependencies": [
         {
-          "id": "583496184",
-          "name": "CUP Terrains - Core"
+          "id": "3221554602",
+          "name": "Zagorsk road signs"
         },
         {
           "id": "2288691268",
           "name": "RHSTERRACORE"
-        },
-        {
-          "id": "3221554602",
-          "name": "Zagorsk road signs"
         }
       ],
-      "updated": "1764370790"
+      "updated": "1768978877"
     },
     "1128256978": {
       "files": [
@@ -63,14 +59,17 @@
         "addons/chernarusredux_wrecks.pbo",
         "addons/chernarusredux_cbacompatible.pbo"
       ],
-      "name": "Side Operation | Chernarus Redux",
-      "dependencies": [
-        {
-          "id": "583496184",
-          "name": "CUP Terrains - Core"
-        }
+      "name": "Chernarus Redux",
+      "dependencies": [],
+      "updated": "1595268913"
+    },
+    "3221554602": {
+      "files": [
+        "addons/zagorsk_sign.pbo"
       ],
-      "updated": "1733421447"
+      "name": "Zagorsk road signs",
+      "dependencies": [],
+      "updated": "1735325138"
     },
     "2288691268": {
       "files": [
@@ -91,15 +90,7 @@
       ],
       "name": "RHSTERRACORE",
       "dependencies": [],
-      "updated": "0"
-    },
-    "3221554602": {
-      "files": [
-        "addons/zagorsk_sign.pbo"
-      ],
-      "name": "Zagorsk road signs",
-      "dependencies": [],
-      "updated": "1746484035"
+      "updated": "1728231898"
     }
   }
 }

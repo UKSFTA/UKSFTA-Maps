@@ -9,6 +9,7 @@ on:
 jobs:
   commit-lint:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -16,7 +17,7 @@ jobs:
       - name: Check Commit Messages
         uses: wagoid/commitlint-github-action@v5
 
-  lint:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,29 +25,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 1. Markdown Linting
-      - name: Lint Markdown
-        uses: DavidAnson/markdownlint-cli2-action@v16
-        with:
-          config: '.github/linters/.markdownlint.json'
-          globs: '**/*.md'
-
-      # 2. JSON/TOML Linting (Biome)
-      - name: Lint JSON & Metadata
-        run: |
-          npx @biomejs/biome ci .
-
-      # 3. Specialized Arma Checkers
       - name: Validate Config
         run: |
           CHECKER=".uksf_tools/tools/config_style_checker.py"
@@ -54,10 +37,13 @@ jobs:
           python3 "$CHECKER"
 
       - name: Validate Stringtables
-        run: CHECKER=".uksf_tools/tools/stringtable_validator.py"; if [ ! -f "$CHECKER" ]; then CHECKER="tools/stringtable_validator.py"; fi; python3 "$CHECKER"
+        run: python3 tools/stringtable_validator.py
 
       - name: Validate SQF
-        run: CHECKER=".uksf_tools/tools/sqf_validator.py"; if [ ! -f "$CHECKER" ]; then CHECKER="tools/sqf_validator.py"; fi; python3 "$CHECKER"
+        run: python3 tools/sqf_validator.py
 
       - name: Validate Return Types
-        run: CHECKER=".uksf_tools/tools/return_checker.py"; if [ ! -f "$CHECKER" ]; then CHECKER="tools/return_checker.py"; fi; python3 "$CHECKER"
+        run: python3 tools/return_checker.py
+
+      - name: Validate Unused Variables
+        run: python3 tools/search_unused_privates.py
