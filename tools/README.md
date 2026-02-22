@@ -2,7 +2,7 @@
 
 This directory contains the Python-based logic for the UKSFTA automation pipeline.
 
-### Core Tools
+## Core Tools
 
 | Script | Purpose |
 | :--- | :--- |
@@ -12,7 +12,7 @@ This directory contains the Python-based logic for the UKSFTA automation pipelin
 | `fix_timestamps.py` | Normalizes `meta.cpp` metadata and Win32 timestamps. |
 | `release.py` | Orchestrates versioning, building, and Steam uploading. |
 
-### Validation Suite
+## Validation Suite
 
 These scripts are run automatically by `workspace_manager.py test` and GitHub Actions:
 - `config_style_checker.py`: Enforces standard formatting in `.cpp` files.
@@ -21,7 +21,7 @@ These scripts are run automatically by `workspace_manager.py test` and GitHub Ac
 - `return_checker.py`: Verifies SQF return types match documentation blocks.
 - `search_unused_privates.py`: Identifies local variables not declared as private.
 
-### Usage
+## Usage
 
 Most tools are designed to be run via the **Workspace Manager**:
 ```bash
