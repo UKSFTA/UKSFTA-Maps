@@ -28,6 +28,7 @@ while {uksfta_environment_enabled} do {
         setTIParameter ["noise", _noise];
         setTIParameter ["grain", _noise * 0.5];
 
+        // CORRECT ENGINE COMMAND: lightnings
         if (uksfta_environment_preset == "REALISM" && (lightnings > 0.8) && (_overcast > 0.9)) then {
             if (random 100 > 90) then {
                 setTIParameter ["noise", 1.0];
