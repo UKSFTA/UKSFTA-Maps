@@ -18,5 +18,5 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// Dynamic Execution Bridge: Silences sqflint while serving the engine
-#define UKSFTA_SET_TI(index, val) [index, val] call { params ['_i', '_v']; setTIParameter [_i, _v]; }
+// Reverting to Strings: RPT logs definitively show the engine expects String constants ("noise", "grain")
+#define UKSFTA_SET_TI(type, val) setTIParameter [type, val]

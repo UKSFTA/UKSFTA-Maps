@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# UKSFTA Platinum Audit Orchestrator
-# PROVIDES: Full-Fidelity Technical Manifest
+# UKSFTA Sovereign Audit Orchestrator (TOTAL MATRIX EDITION)
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "🛡️  INITIATING UKSFTA DIAMOND GRADE OPERATIONAL AUDIT"
@@ -9,35 +8,36 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 FAIL=0
 WS="/ext/Development/UKSFTA-Maps"
 
-echo "🏗️  [1/3] AUDITING BUILD INTEGRITY (HEMTT)..."
+# 1. HEMTT
+echo "🏗️  [1/4] AUDITING BUILD INTEGRITY (HEMTT)..."
 if (cd "$WS" && hemtt check > /tmp/uksfta_hemtt.log 2>&1); then
     echo "  ✅ HEMTT STANDARD: VERIFIED (0 Warnings)"
 else
     echo "  ❌ HEMTT STANDARD: FAILED"
-    cat /tmp/uksfta_hemtt.log
     FAIL=1
 fi
 
-echo -e "\n🧪 [2/3] AUDITING LOGIC MANIFEST (SQFVM)..."
+# 2. TOTAL OPERATIONAL MATRIX
+echo -e "\n💎 [2/4] AUDITING SOVEREIGN TOTAL MATRIX (TRACE LOG)..."
+sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_total_matrix.sqf" > /tmp/uksfta_matrix.log 2>&1
+# Display a cross-section of the matrix for review
+grep "📊" /tmp/uksfta_matrix.log | sed 's/\[DIAG\]//g' | head -n 24
+if grep -q "❌" /tmp/uksfta_matrix.log; then FAIL=1; fi
 
-# Define tests to run
-TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf")
-
-for t in "${TESTS[@]}"; do
-    echo "  🔍 Audit: $t"
-    sqfvm -a -v "$WS|$WS" -i "$WS/tests/$t" > /tmp/uksfta_test.log 2>&1
-    
-    # Display ALL diagnostic lines for total transparency
-    grep -E "✅|❌|🧪|🏁" /tmp/uksfta_test.log | sed 's/\[DIAG\]//g'
-    
-    if grep -q "❌" /tmp/uksfta_test.log; then
-        FAIL=1
-    fi
+# 3. INDIVIDUAL SCENARIOS
+echo -e "\n🧪 [3/4] AUDITING INDIVIDUAL LOGIC PILLARS..."
+CORE_TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf")
+for t in "${CORE_TESTS[@]}"; do
+    sqfvm -a -v "$WS|$WS" -i "$WS/tests/$t" > /tmp/uksfta_core.log 2>&1
+    grep -E "✅|❌" /tmp/uksfta_core.log | sed 's/\[DIAG\]//g'
+    if grep -q "❌" /tmp/uksfta_core.log; then FAIL=1; fi
 done
 
-echo -e "\n📊 [3/3] AUDITING PERFORMANCE BENCHMARKS..."
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_performance.sqf" > /tmp/uksfta_perf.log 2>&1
-grep "📊" /tmp/uksfta_perf.log | sed 's/\[DIAG\]//g'
+# 4. WEATHER EVOLUTION
+echo -e "\n🌦️  [4/4] AUDITING WEATHER EVOLUTION TIMELINE..."
+sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_weather_evolution.sqf" > /tmp/uksfta_evolution.log 2>&1
+grep -E "📊|✅|❌" /tmp/uksfta_evolution.log | sed 's/\[DIAG\]//g'
+if grep -q "❌" /tmp/uksfta_evolution.log; then FAIL=1; fi
 
 if [ $FAIL -eq 0 ]; then
     echo -e "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -1,12 +1,4 @@
-#define COMPONENT cartography
-#define COMPONENT_BEAUTIFIED Cartography
-#define PREFIX uksfta
-
-#define QUOTE(var) #var
-#define QQUOTE(var) QUOTE(var)
-
-#define ADDON uksfta_cartography
-#define ADDON_NAME UKSFTA Cartography
+#include "script_component.hpp"
 
 class CfgPatches {
     class ADDON {
@@ -14,34 +6,38 @@ class CfgPatches {
         units[] = {};
         weapons[] = {};
         requiredVersion = 1.62;
-        requiredAddons[] = {"UKSFTA_Maps_Main", "cba_main", "cba_settings"};
+        requiredAddons[] = {"UKSFTA_Maps_Main", "cba_main"};
         author = "UKSF Taskforce Alpha";
-        version = "1.0.0";
+        VERSION_CONFIG;
     };
 };
 
-class Extended_PreInit_EventHandlers {
-    class ADDON {
-        init = "call uksfta_cartography_fnc_preInit";
+class CBA_Settings {
+    class uksfta_cartography_mode {
+        category = "UKSFTA Cartography";
+        displayName = "Active Map Layer";
+        tooltip = "Choose the high-performance tactical overlay.";
+        settingType = "LIST";
+        values[] = {"STANDARD", "SATELLITE", "TOPOGRAPHIC", "OS_HYBRID"};
+        labels[] = {"Standard (A3)", "High-Fidelity Satellite", "Topographic (Survey)", "OS-Hybrid (Tactical)"};
+        default = "STANDARD";
+        onSettingChanged = "missionNamespace setVariable ['UKSFTA_Cartography_Mode', _this];";
     };
 };
 
 class Extended_PostInit_EventHandlers {
     class ADDON {
-        init = "call uksfta_cartography_fnc_init";
+        init = "call uksfta_cartography_fnc_initCartography";
     };
 };
 
 class CfgFunctions {
     class uksfta_cartography {
         tag = "uksfta_cartography";
-        class cartography {
-            // Mapping: z\uksfta\addons\cartography\functions\fn_NAME.sqf
+        class functions {
             file = "z\uksfta\addons\cartography\functions";
-            class preInit {};
-            class init {};
+            class initCartography {};
             class handleMapDraw {};
-            class toggleMode {};
         };
     };
 };

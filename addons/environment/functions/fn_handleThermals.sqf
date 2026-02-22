@@ -25,20 +25,21 @@ while {uksfta_environment_enabled} do {
             _noise = (_noise + _heatFactor) min 1.0;
         };
 
-        UKSFTA_SET_TI(0,_noise);
-        UKSFTA_SET_TI(1,_noise * 0.5);
+        // RPT Audit Fix: Engine expects Strings "noise" and "grain"
+        UKSFTA_SET_TI("noise",_noise);
+        UKSFTA_SET_TI("grain",_noise * 0.5);
 
         if (uksfta_environment_preset == "REALISM" && (lightnings > 0.8) && (_overcast > 0.9)) then {
             if (random 100 > 90) then {
-                UKSFTA_SET_TI(0,1.0);
-                UKSFTA_SET_TI(1,1.0);
+                UKSFTA_SET_TI("noise",1.0);
+                UKSFTA_SET_TI("grain",1.0);
                 sleep (0.1 + random 0.5);
             };
         };
 
     } else {
-        UKSFTA_SET_TI(0,0);
-        UKSFTA_SET_TI(1,0);
+        UKSFTA_SET_TI("noise",0);
+        UKSFTA_SET_TI("grain",0);
     };
 
     sleep 10;

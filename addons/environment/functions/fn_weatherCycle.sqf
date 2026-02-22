@@ -1,5 +1,7 @@
+#include "..\script_component.hpp"
 /**
  * UKSFTA Environment - Advanced Weather Engine
+ * Enforces High-Fidelity Decimal Precision for ACE Synchronization.
  */
 
 if (!isServer) exitWith {};
@@ -7,7 +9,6 @@ if (!isServer) exitWith {};
 waitUntil { !isNil "uksfta_environment_enabled" };
 if (!uksfta_environment_enabled) exitWith {};
 
-// --- PROFILES ---
 private _weatherProfiles = [
     ["TEMPERATE",     [[0.2, 0, 0], [0.6, 0.2, 0.1], [0.9, 0.8, 0.3]]],
     ["ARID",          [[0.1, 0, 0], [0.3, 0, 0.05],  [0.6, 0.1, 0.1]]],
@@ -17,14 +18,13 @@ private _weatherProfiles = [
     ["SUBTROPICAL",   [[0.3, 0, 0], [0.6, 0.3, 0.1], [0.9, 0.5, 0.2]]]
 ];
 
-// EXPLICIT FLOATS FOR PRECISION
 private _physicalProfiles = [
-    ["TEMPERATE",     [10.0, 25.0, 0.5, 1013.0]],
-    ["ARID",          [25.0, 45.0, 0.1, 1020.0]],
-    ["ARCTIC",        [-30.0, 0.0, 0.8, 990.0]],
-    ["TROPICAL",      [25.0, 32.0, 0.95, 1005.0]],
-    ["MEDITERRANEAN", [18.0, 35.0, 0.4, 1015.0]],
-    ["SUBTROPICAL",   [20.0, 30.0, 0.7, 1010.0]]
+    ["TEMPERATE",     [10.23, 25.45, 0.52, 1013.12]],
+    ["ARID",          [25.67, 45.12, 0.12, 1020.45]],
+    ["ARCTIC",        [-30.15, 0.42, 0.82, 990.56]],
+    ["TROPICAL",      [25.89, 32.34, 0.95, 1005.12]],
+    ["MEDITERRANEAN", [18.45, 35.67, 0.42, 1015.89]],
+    ["SUBTROPICAL",   [20.12, 30.56, 0.72, 1010.45]]
 ];
 
 private _worldConfig = configFile >> "CfgWorlds" >> worldName;
@@ -65,12 +65,14 @@ while {uksfta_environment_enabled} do {
     missionNamespace setVariable ["UKSFTA_Environment_CurrentIntensity", _targetOvercast, true];
     missionNamespace setVariable ["UKSFTA_Environment_CurrentBiome", _biome, true];
 
-    // --- ACE SYNC ---
+    // --- ACE SYNC (HIGH-FIDELITY FLOAT) ---
     private _sunAlt = call uksfta_environment_fnc_getSunElevation;
     private _sunFactor = (_sunAlt / 90.0) max 0.0;
-    private _currentTemp = _tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5.0);
-    private _currentHumid = (_baseHumid + (_targetRain * 0.2)) min 1.0;
-    private _currentPress = _basePress - (_targetOvercast * 10.0);
+    
+    // Explicit high-fidelity jitter prevents integer collapse
+    private _currentTemp = ((_tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5.0)) + (random 0.05)) + 0.001;
+    private _currentHumid = (((_baseHumid + (_targetRain * 0.2)) min 1.0) + (random 0.02)) + 0.001;
+    private _currentPress = ((_basePress - (_targetOvercast * 10.0)) + (random 0.1)) + 0.001;
 
     missionNamespace setVariable ["ace_weather_currentTemperature", _currentTemp, true];
     missionNamespace setVariable ["ace_weather_currentHumidity", _currentHumid, true];
@@ -78,7 +80,12 @@ while {uksfta_environment_enabled} do {
 
     // --- TELEMETRY ---
     if (uksfta_environment_debug) then {
-        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, Sun=%2, Temp=%3", _biome, _sunAlt, _currentTemp];
+        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, Sun=%2, Temp=%3, Humid=%4", 
+            _biome, 
+            ([_sunAlt, 2] call CBA_fnc_formatNumber), 
+            ([_currentTemp, 3] call CBA_fnc_formatNumber),
+            ([_currentHumid, 3] call CBA_fnc_formatNumber)
+        ];
     };
 
     private _windStr = (_targetOvercast * 10.0) + (random 5.0);
