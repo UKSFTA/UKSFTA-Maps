@@ -6,7 +6,8 @@ if (!hasInterface) exitWith {};
 
 // --- DISPLAY HANDLER REGISTRATION ---
 // IDD 12 is the main map display
-["scripted_map_draw", "onLoad", {
+// Correct CBA Signature: [IDD, EVENT, CODE]
+[12, "onLoad", {
     params ["_display"];
     private _mapCtrl = _display displayCtrl 51;
     
@@ -15,7 +16,9 @@ if (!hasInterface) exitWith {};
         _this call uksfta_cartography_fnc_handleMapDraw;
     }];
     
-    if (uksfta_environment_debug) then { systemChat "[UKSFTA-MAPS] Render Hook Active"; };
-}, 12] call CBA_fnc_addDisplayHandler;
+    if (missionNamespace getVariable ["uksfta_environment_debug", false]) then { 
+        systemChat "[UKSFTA-MAPS] Render Hook Active"; 
+    };
+}] call CBA_fnc_addDisplayHandler;
 
 true
