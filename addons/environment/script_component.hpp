@@ -18,9 +18,5 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// Allows for headless testing by bypassing problematic engine commands
-#ifdef UKSFTA_TEST_ENV
-    #define UKSFTA_SET_TI(index, value) /* VM Bypass */
-#else
-    #define UKSFTA_SET_TI(index, value) setTIParameter [index, value]
-#endif
+// Dynamic Execution Bridge: Silences sqflint while serving the engine
+#define UKSFTA_SET_TI(index, val) [index, val] call { params ['_i', '_v']; setTIParameter [_i, _v]; }

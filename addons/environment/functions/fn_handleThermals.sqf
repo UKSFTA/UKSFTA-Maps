@@ -1,4 +1,4 @@
-#include "\z\uksfta\addons\environment\script_component.hpp"
+#include "..\script_component.hpp"
 /**
  * UKSFTA Environment - Thermal Interference Engine
  */

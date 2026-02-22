@@ -1,4 +1,4 @@
-#include "\z\uksfta\addons\environment\script_component.hpp"
+#include "..\script_component.hpp"
 /**
  * UKSFTA Environment - Master Init
  */
@@ -23,7 +23,7 @@ if (hasInterface || is3DEN) then {
                 player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
                 [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
                 
-                // Thermal Flicker (Macro Integration)
+                // Thermal Flicker (Dynamic Bridge)
                 if (missionNamespace getVariable ["uksfta_environment_enableThermals", false]) then {
                     UKSFTA_SET_TI(0,1.0);
                     [0.2 + random 0.3, { UKSFTA_SET_TI(0,0); }] call CBA_fnc_waitAndExecute;
