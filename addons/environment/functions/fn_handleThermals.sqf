@@ -1,3 +1,4 @@
+#include "\z\uksfta\addons\environment\script_component.hpp"
 /**
  * UKSFTA Environment - Thermal Interference Engine
  */
@@ -5,12 +6,6 @@
 if (!hasInterface) exitWith {};
 
 waitUntil { !isNil "uksfta_environment_enableThermals" };
-
-// Linter Override: Using integer indices for engine stability
-private _fn_setTI = {
-    params ["_index", "_value"];
-    setTIParameter [_index, _value];
-};
 
 while {uksfta_environment_enabled} do {
     if (uksfta_environment_enabled && uksfta_environment_enableThermals) then {
@@ -30,20 +25,20 @@ while {uksfta_environment_enabled} do {
             _noise = (_noise + _heatFactor) min 1.0;
         };
 
-        [0, _noise] call _fn_setTI;
-        [1, _noise * 0.5] call _fn_setTI;
+        UKSFTA_SET_TI(0,_noise);
+        UKSFTA_SET_TI(1,_noise * 0.5);
 
         if (uksfta_environment_preset == "REALISM" && (lightnings > 0.8) && (_overcast > 0.9)) then {
             if (random 100 > 90) then {
-                [0, 1.0] call _fn_setTI;
-                [1, 1.0] call _fn_setTI;
+                UKSFTA_SET_TI(0,1.0);
+                UKSFTA_SET_TI(1,1.0);
                 sleep (0.1 + random 0.5);
             };
         };
 
     } else {
-        [0, 0] call _fn_setTI;
-        [1, 0] call _fn_setTI;
+        UKSFTA_SET_TI(0,0);
+        UKSFTA_SET_TI(1,0);
     };
 
     sleep 10;

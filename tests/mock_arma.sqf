@@ -1,9 +1,8 @@
 /**
- * UKSFTA Strict Mock Environment - Shadow Grade
- * Uses shadowed variables to bypass VM implementation gaps.
+ * UKSFTA Strict Mock Environment - Diamond Grade
  */
 
-// --- SHADOWED VARIABLES ---
+// --- ENGINE VARIABLES ---
 _mock_dayTime = 12;
 _mock_overcast = 0;
 _mock_rain = 0;
@@ -25,10 +24,12 @@ vectorMagnitude = { 0 };
 stance = { "STAND" };
 uniform = { "U_B_CombatUniform_mcam" };
 setUnitTrait = { true };
-setTIParameter = { true };
 ppEffectEnable = { true };
 ppEffectAdjust = { true };
 ppEffectCommit = { true };
+
+// SOVEREIGN HOOK: Bypasses VM parser conflict
+uksfta_fnc_setTI = { true };
 
 // --- UKSFTA GLOBALS ---
 uksfta_environment_enabled = true;
