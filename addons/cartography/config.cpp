@@ -12,15 +12,17 @@ class CfgPatches {
     };
 };
 
+// --- NATIVE UI HOOK ---
+// IDD 12 is the main map. RscDisplayEmpty is often used as a base.
+class RscDisplayMission {
+    onLoad = "[_this select 0] call uksfta_cartography_fnc_initCartography";
+};
+
+class RscDisplayGetReady: RscDisplayMission {};
+
 class Extended_PreInit_EventHandlers {
     class ADDON {
         init = "call uksfta_cartography_fnc_preInit";
-    };
-};
-
-class Extended_PostInit_EventHandlers {
-    class ADDON {
-        init = "call uksfta_cartography_fnc_initCartography";
     };
 };
 

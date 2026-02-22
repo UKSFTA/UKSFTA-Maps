@@ -10,7 +10,6 @@ if (!hasInterface) exitWith {};
 waitUntil { !isNil "uksfta_environment_enabled" };
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
-    private _unit = player;
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
     
     // Check for KAT presence
