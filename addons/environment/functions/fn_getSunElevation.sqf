@@ -3,17 +3,10 @@
  * Returns the approximate sun elevation in degrees (-90 to 90).
  */
 
-// Simple approximation based on time of day
-private _time = dayTime;
+// ENGINE WRAPPER: Use _mock_dayTime if defined (for tests), otherwise native dayTime
+private _time = if (!isNil "_mock_dayTime") then { _mock_dayTime } else { dayTime };
 private _elevation = 0;
 
-// Shift time so 12:00 is 0
-private _offset = _time - 12;
-
-// Map 24h cycle to a Sine wave
-// 12:00 (0) -> sin(90) = 1 (Max Elevation)
-// 18:00 (6) -> sin(0) = 0 (Horizon)
-// 00:00 (-12) -> sin(-90) = -1 (Nadir)
-_elevation = (sin ((12 - abs _offset) * 15)) * 90;
+_elevation = sin ((_time - 6) * 15) * 90;
 
 _elevation
