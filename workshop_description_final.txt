@@ -5,17 +5,20 @@ This collection provides the essential geographical assets and terrains required
 
 [h2]🗺 Included Content[/h2]
 [list]
- • [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566]Dagger Island (Training Map)[/url]
- • [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2852097448]Zagorsk (Main Campaign)[/url]
- • [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1128256978]Chernarus Redux (Side Operation)[/url]
+ [*] Dagger Island (Training Map) (Workshop ID: 2983546566)
+ [*] Zagorsk (Main Campaign) (Workshop ID: 2852097448)
+ [*] Chernarus Redux (Side Operation) (Workshop ID: 1128256978)
+ [*] IFA3_Terrains_LITE (Weekend Operation) (Workshop ID: 867438623)
 
 [/list]
 
 [h2]🛠 Requirements[/h2]
-
-[b]Required Mod Dependencies:[/b]
- • [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2288691268]RHSTERRACORE (Transitive Dependency)[/url]
- • [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3221554602]Zagorsk road signs (Transitive Dependency)[/url]
+[b]Repacked Dependencies:[/b]
+[i]Included in this modpack:[/i]
+[list]
+ [*] RHSTERRACORE (Included) (Workshop ID: 2288691268)
+ [*] Zagorsk road signs (Included) (Workshop ID: 3221554602)
+[/list]
 
 This pack is intended for use by [b]UKSFTA members[/b] and mission makers.
 Please ensure all necessary dependencies are loaded.

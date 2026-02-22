@@ -2,9 +2,17 @@
 # Format: URL/ID # Tag (Optional)
 # Example: 450814997 # Weekend Ops, Core
 
+# Training Map
 https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566 # Training Map | Dagger Island
+
+# Main Campaign
 https://steamcommunity.com/sharedfiles/filedetails/?id=2852097448 # Main Campaign | Zagorsk
+
+# Side Operations
 https://steamcommunity.com/sharedfiles/filedetails/?id=1128256978 # Side Operation | Chernarus Redux
+
+# Weekend Operation
+https://steamcommunity.com/sharedfiles/filedetails/?id=867438623 # Weekend Operation | IFA3_Terrains_LITE
 
 [ignore]
 # List mods to exclude from download/sync below
