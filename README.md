@@ -23,3 +23,5 @@ This repository contains high-performance terrains and environmental modificatio
 ## ⚖ License
 
 This project is licensed under the **Arma Public License - Share Alike (APL-SA)**. See the `LICENSE` file for full details.
+
+**Operational Status**: 🛡️  Real-time Sync Active
