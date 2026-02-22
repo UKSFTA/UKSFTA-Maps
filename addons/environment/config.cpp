@@ -11,12 +11,19 @@ class CfgPatches {
             "A3_Data_F", 
             "A3_Data_F_Curator", 
             "cba_main", 
-            "cba_settings",
-            "ace_weather",
-            "kat_main",
-            "3den"
+            "cba_settings"
         };
-        optionalAddons[] = {"task_force_radio", "acre_main", "ace_uav"};
+        // Explicitly list all supported realism mods as optional
+        optionalAddons[] = {
+            "ace_weather",
+            "ace_goggles",
+            "ace_uav",
+            "kat_main",
+            "task_force_radio",
+            "acre_main",
+            "lambs_danger",
+            "VCOM_AI"
+        };
         author = "UKSF Taskforce Alpha";
         VERSION_CONFIG;
     };
@@ -52,6 +59,7 @@ class CfgFunctions {
             class aviationTurbulence {};
             class uavInterference {};
             class initDebug {};
+            class handleThermals {};
         };
     };
 };

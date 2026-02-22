@@ -1,6 +1,5 @@
 /**
  * UKSFTA Environment - Aviation Turbulence Engine
- * COMPAT LAYER: Conflict-aware physics injection.
  */
 
 if (!hasInterface) exitWith {};
@@ -8,18 +7,18 @@ if (!hasInterface) exitWith {};
 while {true} do {
     private _veh = objectParent player;
     
-    if (uksfta_environment_enableTurbulence && !isNull _veh && { _veh isKindOf "Air" } && { (driver _veh == player || gunner _veh == player) }) then {
+    if (uksfta_environment_enabled && uksfta_environment_enableTurbulence && !isNull _veh && { _veh isKindOf "Air" } && { (driver _veh == player || gunner _veh == player) }) then {
         
-        // --- CONFLICT CHECK ---
-        // Checks if vehicle has native turbulence or specific high-fidelity flight systems
-        // (e.g. AFM enabled or specific mod variables)
         private _hasNativePhys = _veh getVariable ["UKSFTA_HasCustomFlightModel", false];
-        if (difficultyEnabled "RTD") then { _hasNativePhys = true; }; // Skip if Advanced Flight Model is on
+        if (difficultyEnabled "RTD") then { _hasNativePhys = true; }; 
 
         if (!_hasNativePhys && {overcast > 0.4}) then {
             private _speed = speed _veh;
             private _alt = (getPosATL _veh) select 2;
-            private _intensity = (overcast * uksfta_environment_turbulenceIntensity);
+            
+            // --- PRESET SCALING (Optimized) ---
+            private _multiplier = [1.0, 0.2] select (uksfta_environment_preset == "ARCADE");
+            private _intensity = (overcast * uksfta_environment_turbulenceIntensity * _multiplier);
             
             if (_alt < 400) then { _intensity = _intensity * 1.4; };
             if (_speed < 40) then { _intensity = _intensity * 0.1; }; 
@@ -38,3 +37,4 @@ while {true} do {
         sleep 5;
     };
 };
+true

@@ -1,6 +1,22 @@
 /**
  * UKSFTA Environment - PreInit Settings
+ * Implements Operational Presets (Arcade vs Realism)
  */
+
+// --- GLOBAL PRESET ---
+[
+    "uksfta_environment_preset", "LIST",
+    ["Operational Mode", "ARCADE: Easier visibility, less interference. REALISM: Full-fidelity Diamond Standard."],
+    "UKSFTA Environment", 
+    [
+        ["ARCADE", "REALISM"],
+        ["Arcade (Relaxed)", "Realism (Diamond Standard)"],
+        1
+    ], 1, {
+        params ["_value"];
+        // Logic handled at runtime in function loops
+    }, true
+] call CBA_fnc_addSetting;
 
 // --- GLOBAL MASTER ---
 [
@@ -9,29 +25,42 @@
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
-// --- DIAGNOSTICS & DEBUG ---
+// --- THERMAL REALISM ---
+[
+    "uksfta_environment_enableThermals", "CHECKBOX",
+    ["Enable Thermal Realism", "Atmospheric conditions will degrade Thermal Imaging (TI) clarity."],
+    "UKSFTA Environment", true, 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_thermalIntensity", "SLIDER",
+    ["Thermal Degradation Strength", "Higher = more grain/noise in TI."],
+    "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
+] call CBA_fnc_addSetting;
+
+// --- DIAGNOSTICS ---
 [
     "uksfta_environment_debug", "CHECKBOX",
-    ["Enable Engine Debug", "Log technical telemetry (Biomes, Ballistics, Comms) to RPT."],
+    ["Enable Engine Debug", "Log telemetry to RPT."],
     "UKSFTA Environment", false, 0, {}, false
 ] call CBA_fnc_addSetting;
 
 [
     "uksfta_environment_debugHUD", "CHECKBOX",
-    ["Enable Visual Debug HUD", "Show real-time camouflage and environmental data on screen."],
+    ["Enable Visual Debug HUD", "Show real-time telemetry on screen."],
     "UKSFTA Environment", false, 0, {}, false
 ] call CBA_fnc_addSetting;
 
 // --- AVIATION & EW ---
 [
     "uksfta_environment_enableTurbulence", "CHECKBOX",
-    ["Enable Aviation Turbulence", "Apply physical forces to aircraft during poor weather."],
+    ["Enable Aviation Turbulence", "Physical forces on aircraft during poor weather."],
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
 [
     "uksfta_environment_enableUavInterference", "CHECKBOX",
-    ["Enable UAV/GPS Interference", "Degrade UAV feeds and GPS precision in storms."],
+    ["Enable UAV/GPS Interference", "Degrade UAV feeds and GPS precision."],
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
@@ -48,10 +77,16 @@
     "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
-// --- CLIENT PERFORMANCE ---
+// --- CLIENT-SIDE ---
 [
     "uksfta_environment_enableParticles", "CHECKBOX",
     ["Enable Storm Particles", "Visual sandstorm/snowstorm effects."],
+    "UKSFTA Environment", true, 0, {}, false
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_enableColdBreath", "CHECKBOX",
+    ["Enable Cold Breath", "Visible breath in cold environments."],
     "UKSFTA Environment", true, 0, {}, false
 ] call CBA_fnc_addSetting;
 

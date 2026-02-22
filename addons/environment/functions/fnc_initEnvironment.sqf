@@ -2,7 +2,7 @@
  * UKSFTA Environment - Master Init
  */
 
-// 1. Client-Side Orchestration (Offloaded from Server)
+// 1. Client-Side Orchestration
 if (hasInterface || is3DEN) then {
     [] spawn uksfta_environment_fnc_applyVisuals;
     
@@ -13,6 +13,7 @@ if (hasInterface || is3DEN) then {
         [] spawn uksfta_environment_fnc_aviationTurbulence;
         [] spawn uksfta_environment_fnc_uavInterference;
         [] spawn uksfta_environment_fnc_initDebug;
+        [] spawn uksfta_environment_fnc_handleThermals;
 
         // --- EVENT-DRIVEN EMI ---
         private _lightningEvent = "Lightning";
@@ -20,7 +21,12 @@ if (hasInterface || is3DEN) then {
             if (uksfta_environment_enableSignalInterference && {overcast > 0.8}) then {
                 player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
                 [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
-                if (uksfta_environment_debug) then { diag_log "[UKSFTA-ENV] EMI: LIGHTNING SPIKE DETECTED"; };
+                
+                // Thermal Flicker during lightning (Verified Strings)
+                if (uksfta_environment_enableThermals) then {
+                    setTIParameter ["noise", 1.0];
+                    [0.2 + random 0.3, { setTIParameter ["noise", 0]; }] call CBA_fnc_waitAndExecute;
+                };
             };
         }];
     };
