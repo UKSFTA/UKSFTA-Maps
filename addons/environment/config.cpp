@@ -51,6 +51,7 @@ class CfgFunctions {
             class signalInterference {};
             class aviationTurbulence {};
             class uavInterference {};
+            class initDebug {};
         };
     };
 };

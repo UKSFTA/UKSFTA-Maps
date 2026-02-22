@@ -1,6 +1,5 @@
 /**
  * UKSFTA Environment - Advanced Weather Engine
- * Uses Verified Global Variables for ACE Sync.
  */
 
 if (!isServer) exitWith {};
@@ -27,7 +26,6 @@ private _physicalProfiles = [
     ["SUBTROPICAL",   [20, 30, 0.7, 1010]]
 ];
 
-// --- INITIAL CALIBRATION ---
 private _worldConfig = configFile >> "CfgWorlds" >> worldName;
 private _nativeMaxWave = getNumber (_worldConfig >> "Sea" >> "MaxWave");
 if (_nativeMaxWave == 0) then { _nativeMaxWave = 0.25; };
@@ -37,7 +35,6 @@ private _currentStateIdx = 0;
 while {uksfta_environment_enabled} do {
     private _biome = call uksfta_environment_fnc_analyzeBiome;
     
-    // Manual Profile Lookup (Compatible)
     private _activeProfile = [];
     { if (_x select 0 == _biome) exitWith { _activeProfile = _x select 1; }; } forEach _weatherProfiles;
     if (count _activeProfile == 0) then { _activeProfile = (_weatherProfiles select 0) select 1; };
@@ -48,11 +45,9 @@ while {uksfta_environment_enabled} do {
     
     _phys params ["_tMin", "_tMax", "_baseHumid", "_basePress"];
     
-    // 1. Next State
     _currentStateIdx = [_currentStateIdx, _activeProfile] call uksfta_environment_fnc_getNextState;
     (_activeProfile select _currentStateIdx) params ["_targetOvercast", "_targetRain", "_targetFog"];
 
-    // 2. Transition
     private _baseTime = 1800 + (random 1800);
     private _transitionTime = _baseTime / (uksfta_environment_transitionSpeed max 0.1);
     private _finalTime = [_transitionTime, 0] select (time < 10);
@@ -69,18 +64,21 @@ while {uksfta_environment_enabled} do {
     missionNamespace setVariable ["UKSFTA_Environment_CurrentIntensity", _targetOvercast, true];
     missionNamespace setVariable ["UKSFTA_Environment_CurrentBiome", _biome, true];
 
-    // 3. ACE Ballistics Sync (VERIFIED METHOD)
+    // --- ACE SYNC ---
     private _sunFactor = (sunElevation / 90) max 0;
     private _currentTemp = _tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5);
     private _currentHumid = (_baseHumid + (_targetRain * 0.2)) min 1;
     private _currentPress = _basePress - (_targetOvercast * 10);
 
-    // Broadcast explicitly for ACE to pick up
     missionNamespace setVariable ["ace_weather_currentTemperature", _currentTemp, true];
     missionNamespace setVariable ["ace_weather_currentHumidity", _currentHumid, true];
     missionNamespace setVariable ["ace_weather_currentBarometricPressure", _currentPress, true];
 
-    // 4. Physics
+    // --- TELEMETRY LOGGING ---
+    if (uksfta_environment_debug) then {
+        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, State=%2, Temp=%3C, Humid=%4, Press=%5", _biome, _currentStateIdx, _currentTemp, _currentHumid, _currentPress];
+    };
+
     private _windStr = (_targetOvercast * 10) + (random 5);
     setWind [random _windStr, random _windStr, true];
     0 setGusts (_targetOvercast * 0.6);

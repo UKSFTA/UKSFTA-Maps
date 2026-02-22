@@ -2,30 +2,36 @@
  * UKSFTA Environment - PreInit Settings
  */
 
-// --- PERFORMANCE & MASTER (Server) ---
+// --- GLOBAL MASTER ---
 [
     "uksfta_environment_enabled", "CHECKBOX",
     ["Enable Framework (Server)", "Master toggle for the universal environment system."],
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
-// --- AVIATION PHYSICS ---
+// --- DIAGNOSTICS & DEBUG ---
+[
+    "uksfta_environment_debug", "CHECKBOX",
+    ["Enable Engine Debug", "Log technical telemetry (Biomes, Ballistics, Comms) to RPT."],
+    "UKSFTA Environment", false, 0, {}, false
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_debugHUD", "CHECKBOX",
+    ["Enable Visual Debug HUD", "Show real-time camouflage and environmental data on screen."],
+    "UKSFTA Environment", false, 0, {}, false
+] call CBA_fnc_addSetting;
+
+// --- AVIATION & EW ---
 [
     "uksfta_environment_enableTurbulence", "CHECKBOX",
-    ["Enable Aviation Turbulence", "Apply physical turbulence forces to aircraft during poor weather."],
+    ["Enable Aviation Turbulence", "Apply physical forces to aircraft during poor weather."],
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
 [
-    "uksfta_environment_turbulenceIntensity", "SLIDER",
-    ["Turbulence Intensity", "Multiplier for physical forces applied to aircraft."],
-    "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
-] call CBA_fnc_addSetting;
-
-// --- ELECTRONIC WARFARE ---
-[
     "uksfta_environment_enableUavInterference", "CHECKBOX",
-    ["Enable UAV/GPS Interference", "Atmospheric conditions will degrade UAV signals and GPS precision."],
+    ["Enable UAV/GPS Interference", "Degrade UAV feeds and GPS precision in storms."],
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
@@ -42,16 +48,10 @@
     "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
-// --- CLIENT-SIDE ---
+// --- CLIENT PERFORMANCE ---
 [
     "uksfta_environment_enableParticles", "CHECKBOX",
     ["Enable Storm Particles", "Visual sandstorm/snowstorm effects."],
-    "UKSFTA Environment", true, 0, {}, false
-] call CBA_fnc_addSetting;
-
-[
-    "uksfta_environment_enableColdBreath", "CHECKBOX",
-    ["Enable Cold Breath", "Visible breath in cold environments."],
     "UKSFTA Environment", true, 0, {}, false
 ] call CBA_fnc_addSetting;
 
