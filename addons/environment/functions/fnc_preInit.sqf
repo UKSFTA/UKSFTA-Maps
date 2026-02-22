@@ -1,9 +1,23 @@
 /**
  * UKSFTA Environment - PreInit Settings
- * Optimized for performance and client-side control.
+ * Signal Interference Controls
  */
 
-// --- SERVER-SIDE CONTROLS ---
+// ... (Existing settings) ...
+
+[
+    "uksfta_environment_enableSignalInterference", "CHECKBOX",
+    ["Enable Signal Interference", "Weather conditions (storms/lightning) will degrade TFAR/ACRE radio range."],
+    "UKSFTA Environment", true, 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_interferenceIntensity", "SLIDER",
+    ["Interference Strength", "Multiplier for radio signal loss (1.0 = Standard)."],
+    "UKSFTA Environment", [0, 2, 1, 1], 1, {}, true
+] call CBA_fnc_addSetting;
+
+// Re-writing the full file to maintain integrity
 [
     "uksfta_environment_enabled", "CHECKBOX",
     ["Enable Framework (Server)", "Master toggle for the universal environment system."],
@@ -22,7 +36,6 @@
     "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
-// --- CLIENT-SIDE PERFORMANCE CONTROLS ---
 [
     "uksfta_environment_enableParticles", "CHECKBOX",
     ["Enable Storm Particles", "Enable sandstorm/snowstorm visual hazards."],
@@ -47,7 +60,6 @@
     "UKSFTA Environment", [0, 2, 1, 1], 0, { [] call uksfta_environment_fnc_applyVisuals; }, false
 ] call CBA_fnc_addSetting;
 
-// --- BIOME CONTROL ---
 [
     "uksfta_environment_forcedBiome", "LIST",
     ["Force Biome (Global)", "Override automatic biome detection for all clients."],

@@ -9,6 +9,7 @@ if (hasInterface || is3DEN) then {
     if (!is3DEN) then {
         [] spawn uksfta_environment_fnc_coldBreath;
         [] spawn uksfta_environment_fnc_katMedicalHook;
+        [] spawn uksfta_environment_fnc_signalInterference;
     };
 };
 
