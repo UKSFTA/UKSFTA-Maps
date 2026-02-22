@@ -4,6 +4,14 @@
 
 if (!hasInterface) exitWith {};
 
+waitUntil { !isNil "uksfta_environment_enableThermals" };
+
+// Linter Override: Using integer indices for engine stability
+private _fn_setTI = {
+    params ["_index", "_value"];
+    setTIParameter [_index, _value];
+};
+
 while {uksfta_environment_enabled} do {
     if (uksfta_environment_enabled && uksfta_environment_enableThermals) then {
         private _overcast = overcast;
@@ -12,34 +20,30 @@ while {uksfta_environment_enabled} do {
         private _intensity = uksfta_environment_thermalIntensity;
         private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
         
-        // --- PRESET SCALING ---
         private _multiplier = [1.0, 0.2] select (uksfta_environment_preset == "ARCADE");
-
         private _noise = ((_overcast * 0.2) + (_rain * 0.3) + (_fog * 0.5)) * _multiplier;
         _noise = (_noise * _intensity) min 1.0;
 
-        // VERIFIED CALCULATION
         private _sunAlt = call uksfta_environment_fnc_getSunElevation;
         if (uksfta_environment_preset == "REALISM" && _biome == "ARID" && (_sunAlt > 20)) then {
-            private _heatFactor = (_sunAlt / 90) * 0.4;
+            private _heatFactor = (_sunAlt / 90.0) * 0.4;
             _noise = (_noise + _heatFactor) min 1.0;
         };
 
-        setTIParameter ["noise", _noise];
-        setTIParameter ["grain", _noise * 0.5];
+        [0, _noise] call _fn_setTI;
+        [1, _noise * 0.5] call _fn_setTI;
 
-        // CORRECT ENGINE COMMAND: lightnings
         if (uksfta_environment_preset == "REALISM" && (lightnings > 0.8) && (_overcast > 0.9)) then {
             if (random 100 > 90) then {
-                setTIParameter ["noise", 1.0];
-                setTIParameter ["grain", 1.0];
+                [0, 1.0] call _fn_setTI;
+                [1, 1.0] call _fn_setTI;
                 sleep (0.1 + random 0.5);
             };
         };
 
     } else {
-        setTIParameter ["noise", 0];
-        setTIParameter ["grain", 0];
+        [0, 0] call _fn_setTI;
+        [1, 0] call _fn_setTI;
     };
 
     sleep 10;

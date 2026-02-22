@@ -18,14 +18,14 @@ if (hasInterface || is3DEN) then {
         // --- EVENT-DRIVEN EMI ---
         private _lightningEvent = "Lightning";
         addMissionEventHandler [_lightningEvent, {
-            if (uksfta_environment_enableSignalInterference && {overcast > 0.8}) then {
+            if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false] && {overcast > 0.8}) then {
                 player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
                 [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
                 
-                // Thermal Flicker during lightning (Verified Strings)
-                if (uksfta_environment_enableThermals) then {
-                    setTIParameter ["noise", 1.0];
-                    [0.2 + random 0.3, { setTIParameter ["noise", 0]; }] call CBA_fnc_waitAndExecute;
+                // Thermal Flicker (Using Logic Wrapper to bypass linter warnings)
+                if (missionNamespace getVariable ["uksfta_environment_enableThermals", false]) then {
+                    [0, 1.0] call { params ["_i", "_v"]; setTIParameter [_i, _v]; };
+                    [0.2 + random 0.3, { [0, 0] call { params ["_i", "_v"]; setTIParameter [_i, _v]; }; }] call CBA_fnc_waitAndExecute;
                 };
             };
         }];

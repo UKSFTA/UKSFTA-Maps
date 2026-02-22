@@ -4,7 +4,8 @@
 
 if (!hasInterface) exitWith {};
 
-waitUntil { time > 10 };
+// Ensure settings exist
+waitUntil { !isNil "uksfta_environment_enableSignalInterference" };
 
 while {uksfta_environment_enabled} do {
     if (uksfta_environment_enableSignalInterference) then {
@@ -12,7 +13,6 @@ while {uksfta_environment_enabled} do {
         private _rain = rain;
         private _intensity = uksfta_environment_interferenceIntensity;
         
-        // --- PRESET SCALING (Optimized) ---
         private _multiplier = [1.0, 0.1] select (uksfta_environment_preset == "ARCADE");
 
         private _signalLoss = 1.0 + (_overcast * 0.3 * _intensity * _multiplier);

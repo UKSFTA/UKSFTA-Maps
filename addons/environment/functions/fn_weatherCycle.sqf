@@ -17,13 +17,14 @@ private _weatherProfiles = [
     ["SUBTROPICAL",   [[0.3, 0, 0], [0.6, 0.3, 0.1], [0.9, 0.5, 0.2]]]
 ];
 
+// EXPLICIT FLOATS FOR PRECISION
 private _physicalProfiles = [
-    ["TEMPERATE",     [10, 25, 0.5, 1013]],
-    ["ARID",          [25, 45, 0.1, 1020]],
-    ["ARCTIC",        [-30, 0, 0.8, 990]],
-    ["TROPICAL",      [25, 32, 0.95, 1005]],
-    ["MEDITERRANEAN", [18, 35, 0.4, 1015]],
-    ["SUBTROPICAL",   [20, 30, 0.7, 1010]]
+    ["TEMPERATE",     [10.0, 25.0, 0.5, 1013.0]],
+    ["ARID",          [25.0, 45.0, 0.1, 1020.0]],
+    ["ARCTIC",        [-30.0, 0.0, 0.8, 990.0]],
+    ["TROPICAL",      [25.0, 32.0, 0.95, 1005.0]],
+    ["MEDITERRANEAN", [18.0, 35.0, 0.4, 1015.0]],
+    ["SUBTROPICAL",   [20.0, 30.0, 0.7, 1010.0]]
 ];
 
 private _worldConfig = configFile >> "CfgWorlds" >> worldName;
@@ -53,7 +54,7 @@ while {uksfta_environment_enabled} do {
     private _finalTime = [_transitionTime, 0] select (time < 10);
     
     _finalTime setOvercast _targetOvercast;
-    _finalTime setFog [_targetFog, 0.03, 0];
+    _finalTime setFog [_targetFog, 0.03, 0.0];
     
     [_finalTime, _targetRain] spawn {
         params ["_time", "_rain"];
@@ -64,12 +65,12 @@ while {uksfta_environment_enabled} do {
     missionNamespace setVariable ["UKSFTA_Environment_CurrentIntensity", _targetOvercast, true];
     missionNamespace setVariable ["UKSFTA_Environment_CurrentBiome", _biome, true];
 
-    // --- ACE SYNC (Verified Solar Utility) ---
+    // --- ACE SYNC ---
     private _sunAlt = call uksfta_environment_fnc_getSunElevation;
-    private _sunFactor = (_sunAlt / 90) max 0;
-    private _currentTemp = _tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5);
-    private _currentHumid = (_baseHumid + (_targetRain * 0.2)) min 1;
-    private _currentPress = _basePress - (_targetOvercast * 10);
+    private _sunFactor = (_sunAlt / 90.0) max 0.0;
+    private _currentTemp = _tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5.0);
+    private _currentHumid = (_baseHumid + (_targetRain * 0.2)) min 1.0;
+    private _currentPress = _basePress - (_targetOvercast * 10.0);
 
     missionNamespace setVariable ["ace_weather_currentTemperature", _currentTemp, true];
     missionNamespace setVariable ["ace_weather_currentHumidity", _currentHumid, true];
@@ -77,10 +78,10 @@ while {uksfta_environment_enabled} do {
 
     // --- TELEMETRY ---
     if (uksfta_environment_debug) then {
-        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, State=%2, Sun=%3, Temp=%4C", _biome, _currentStateIdx, _sunAlt, _currentTemp];
+        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, Sun=%2, Temp=%3", _biome, _sunAlt, _currentTemp];
     };
 
-    private _windStr = (_targetOvercast * 10) + (random 5);
+    private _windStr = (_targetOvercast * 10.0) + (random 5.0);
     setWind [random _windStr, random _windStr, true];
     0 setGusts (_targetOvercast * 0.6);
     0 setWaves (_targetOvercast * _nativeMaxWave);

@@ -48,6 +48,26 @@ class CBA_Settings {
         settingType = "CHECKBOX";
         default = 1;
     };
+    class uksfta_environment_enableSignalInterference {
+        category = "UKSFTA Environment";
+        displayName = "Enable Signal Interference";
+        settingType = "CHECKBOX";
+        default = 1;
+    };
+    class uksfta_environment_thermalIntensity {
+        category = "UKSFTA Environment";
+        displayName = "Thermal Degradation Strength";
+        settingType = "SLIDER";
+        values[] = {0, 5, 1, 1};
+        default = 1;
+    };
+    class uksfta_environment_interferenceIntensity {
+        category = "UKSFTA Environment";
+        displayName = "Signal Interference Intensity";
+        settingType = "SLIDER";
+        values[] = {0, 5, 1, 1};
+        default = 1;
+    };
 };
 
 class Extended_PreInit_EventHandlers {
