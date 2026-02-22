@@ -3,8 +3,8 @@
  * Returns the approximate sun elevation in degrees (-90 to 90).
  */
 
-// ENGINE WRAPPER: Use _mock_dayTime if defined (for tests), otherwise native dayTime
-private _time = if (!isNil "_mock_dayTime") then { _mock_dayTime } else { dayTime };
+// Safe hook for headless testing, defaults to engine dayTime
+private _time = missionNamespace getVariable ["uksfta_test_mock_dayTime", dayTime];
 private _elevation = 0;
 
 _elevation = sin ((_time - 6) * 15) * 90;
