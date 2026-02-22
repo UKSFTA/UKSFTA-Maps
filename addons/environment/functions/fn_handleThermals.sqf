@@ -18,9 +18,10 @@ while {uksfta_environment_enabled} do {
         private _noise = ((_overcast * 0.2) + (_rain * 0.3) + (_fog * 0.5)) * _multiplier;
         _noise = (_noise * _intensity) min 1.0;
 
-        // CORRECT ENGINE COMMAND: sunElevation
-        if (uksfta_environment_preset == "REALISM" && _biome == "ARID" && (sunElevation > 20)) then {
-            private _heatFactor = (sunElevation / 90) * 0.4;
+        // VERIFIED CALCULATION
+        private _sunAlt = call uksfta_environment_fnc_getSunElevation;
+        if (uksfta_environment_preset == "REALISM" && _biome == "ARID" && (_sunAlt > 20)) then {
+            private _heatFactor = (_sunAlt / 90) * 0.4;
             _noise = (_noise + _heatFactor) min 1.0;
         };
 

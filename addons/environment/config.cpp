@@ -26,8 +26,6 @@ class CfgPatches {
     };
 };
 
-// --- CBA SETTINGS REGISTRY (Sovereign Method) ---
-// This ensures settings are visible in the menu even if scripts fail
 class CBA_Settings {
     class uksfta_environment_preset {
         category = "UKSFTA Environment";
@@ -83,6 +81,7 @@ class CfgFunctions {
             class uavInterference {};
             class initDebug {};
             class handleThermals {};
+            class getSunElevation {};
         };
     };
 };

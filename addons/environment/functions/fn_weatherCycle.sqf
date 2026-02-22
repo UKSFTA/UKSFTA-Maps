@@ -64,8 +64,9 @@ while {uksfta_environment_enabled} do {
     missionNamespace setVariable ["UKSFTA_Environment_CurrentIntensity", _targetOvercast, true];
     missionNamespace setVariable ["UKSFTA_Environment_CurrentBiome", _biome, true];
 
-    // --- ACE SYNC ---
-    private _sunFactor = (sunElevation / 90) max 0;
+    // --- ACE SYNC (Verified Solar Utility) ---
+    private _sunAlt = call uksfta_environment_fnc_getSunElevation;
+    private _sunFactor = (_sunAlt / 90) max 0;
     private _currentTemp = _tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5);
     private _currentHumid = (_baseHumid + (_targetRain * 0.2)) min 1;
     private _currentPress = _basePress - (_targetOvercast * 10);
@@ -74,9 +75,9 @@ while {uksfta_environment_enabled} do {
     missionNamespace setVariable ["ace_weather_currentHumidity", _currentHumid, true];
     missionNamespace setVariable ["ace_weather_currentBarometricPressure", _currentPress, true];
 
-    // --- TELEMETRY LOGGING ---
+    // --- TELEMETRY ---
     if (uksfta_environment_debug) then {
-        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, State=%2, Temp=%3C, Humid=%4, Press=%5", _biome, _currentStateIdx, _currentTemp, _currentHumid, _currentPress];
+        diag_log format ["[UKSFTA-ENV] CYCLE: Biome=%1, State=%2, Sun=%3, Temp=%4C", _biome, _currentStateIdx, _sunAlt, _currentTemp];
     };
 
     private _windStr = (_targetOvercast * 10) + (random 5);
@@ -86,3 +87,4 @@ while {uksfta_environment_enabled} do {
 
     sleep _finalTime;
 };
+true

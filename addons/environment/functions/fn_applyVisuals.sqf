@@ -23,8 +23,8 @@ if (count _profile == 0) then { _profile = (_visuals select 0) select 1; };
 
 _profile params ["_tint", "_haze", "_fogColor"];
 
-// --- SUN CALCULATION ---
-private _sunAlt = sunElevation; // Correct engine command
+// --- SUN CALCULATION (Verified Utility) ---
+private _sunAlt = call uksfta_environment_fnc_getSunElevation;
 private _isNight = (_sunAlt < -5);
 
 // Apply PP Intensity from settings
@@ -49,8 +49,7 @@ private _grain = [0, 0.15] select (_intensity > 0.7 || _isNight);
 "FilmGrain" ppEffectCommit 5;
 
 // 3. Volumetric Haze (Biome Specific)
-// Note: setHorizonTint was invalid. We rely on ColorCorrection for global tint.
-// We can use setFog to simulate local density if needed.
+// Haze logic handled by engine overcast/fog commands
 
 // 4. Storm Logic Hook
 [_biome, _intensity] call uksfta_environment_fnc_handleStorms;
