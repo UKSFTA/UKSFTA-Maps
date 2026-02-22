@@ -18,5 +18,5 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// Reverting to Strings: RPT logs definitively show the engine expects String constants ("noise", "grain")
-#define UKSFTA_SET_TI(type, val) setTIParameter [type, val]
+// RPT Audit Fix: Engine requires String constants ("noise", "grain") for thermal params.
+#define UKSFTA_SET_TI(typeStr, val) setTIParameter [typeStr, val]

@@ -1,57 +1,77 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Visual Engine
+ * UKSFTA Environment - Advanced Visual Engine
+ * Uses verified engine handles to prevent post-FX crashes.
  */
 
 if (!hasInterface) exitWith {};
 
-private _cfg = missionNamespace getVariable ["UKSFTA_Environment_CurrentIntensity", 0];
-private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+// --- HANDLES ---
+// We use high-range handles to avoid conflicts with ACE/KAT/Vanilla
+private _ccHandle = 1500;
+private _filmHandle = 1501;
 
-private _intensity = _cfg;
-private _visuals = [
-    ["TEMPERATE",     [[1, 1, 1], [0.05, 0.05, 0.05], [0.1, 0.1, 0.15]]],
-    ["ARID",          [[1.1, 1.0, 0.9], [0.1, 0.05, 0.02], [0.2, 0.15, 0.1]]],
-    ["ARCTIC",        [[0.9, 1.0, 1.1], [0.02, 0.05, 0.1], [0.05, 0.05, 0.08]]],
-    ["TROPICAL",      [[1.0, 1.1, 0.9], [0.05, 0.1, 0.05], [0.1, 0.15, 0.1]]],
-    ["MEDITERRANEAN", [[1.05, 1.0, 0.95], [0.08, 0.05, 0.02], [0.15, 0.1, 0.05]]],
-    ["SUBTROPICAL",   [[1.0, 1.05, 1.0], [0.05, 0.08, 0.05], [0.1, 0.1, 0.1]]]
-];
+// --- INITIALIZATION ---
+_ccHandle ppEffectEnable true;
+_ccHandle ppEffectForceInNVG true;
 
-private _profile = [];
-{ if (_x select 0 == _biome) exitWith { _profile = _x select 1; }; } forEach _visuals;
-if (count _profile == 0) then { _profile = (_visuals select 0) select 1; };
+_filmHandle ppEffectEnable true;
 
-_profile params ["_tint", "_haze", "_fogColor"];
+while {uksfta_environment_enabled} do {
+    private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+    private _intensity = uksfta_environment_visualIntensity;
+    
+    // --- DYNAMIC TINT MATRIX ---
+    private _tint = [1, 1, 1]; // Default
+    private _sat = 1.0;
+    private _contrast = 1.0;
 
-// --- SUN CALCULATION (Verified Utility) ---
-private _sunAlt = call uksfta_environment_fnc_getSunElevation;
-private _isNight = (_sunAlt < -5);
+    switch (_biome) do {
+        case "ARID": {
+            _tint = [1.05, 1.0, 0.9]; // Desert Warmth
+            _sat = 0.95;
+            _contrast = 1.05;
+        };
+        case "ARCTIC": {
+            _tint = [0.9, 1.0, 1.1]; // Arctic Cool
+            _sat = 0.8;
+            _contrast = 1.1;
+        };
+        case "TROPICAL": {
+            _tint = [0.95, 1.1, 0.95]; // Jungle Lush
+            _sat = 1.2;
+            _contrast = 1.0;
+        };
+        case "MEDITERRANEAN": {
+            _tint = [1.0, 1.0, 0.95]; // Malden/Altis Clarity
+            _sat = 1.05;
+            _contrast = 1.0;
+        };
+    };
 
-// Apply PP Intensity from settings
-private _masterIntensity = uksfta_environment_visualIntensity;
+    // --- APPLY COLOR CORRECTION ---
+    _ccHandle ppEffectAdjust [
+        1.0, 
+        _contrast, 
+        0, 
+        [0, 0, 0, 0], 
+        [_tint select 0, _tint select 1, _tint select 2, _sat], 
+        [0.299, 0.587, 0.114, 0],
+        [-1, -1, 0, 0, 0, 0, 0]
+    ];
+    _ccHandle ppEffectCommit 5;
 
-// 1. Color Correction
-"ColorCorrection" ppEffectEnable true;
-"ColorCorrection" ppEffectAdjust [
-    1, 
-    1 + (_intensity * 0.2 * _masterIntensity), 
-    0, 
-    [0, 0, 0, 0], 
-    [(_tint select 0), (_tint select 1), (_tint select 2), 1], 
-    [1, 1, 1, 0]
-];
-"ColorCorrection" ppEffectCommit 5;
+    // --- APPLY FILM GRAIN ---
+    private _grain = [0.02, 1.25, 1.0, 0.75, 1.0, true] select (uksfta_environment_preset == "REALISM");
+    if (uksfta_environment_preset == "ARCADE") then { _grain = 0; };
+    
+    _filmHandle ppEffectAdjust [_grain * _intensity, 1.25, 1.0, 0.75, 1.0, true];
+    _filmHandle ppEffectCommit 5;
 
-// 2. Film Grain (Stormy/Night effect)
-"FilmGrain" ppEffectEnable true;
-private _grain = [0, 0.15] select (_intensity > 0.7 || _isNight);
-"FilmGrain" ppEffectAdjust [_grain * _masterIntensity, 1, 1, 0, 1];
-"FilmGrain" ppEffectCommit 5;
+    sleep 30;
+};
 
-// 3. Volumetric Haze (Biome Specific)
-// Haze logic handled by engine overcast/fog commands
-
-// 4. Storm Logic Hook
-[_biome, _intensity] call uksfta_environment_fnc_handleStorms;
-
+// --- CLEANUP ---
+_ccHandle ppEffectEnable false;
+_filmHandle ppEffectEnable false;
 true
