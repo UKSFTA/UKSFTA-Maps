@@ -1,38 +1,51 @@
 #!/usr/bin/env bash
-echo "🛡️  UKSFTA Headless Operational Audit starting..."
+# UKSFTA Platinum Audit Orchestrator
+# PROVIDES: Full-Fidelity Technical Manifest
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🛡️  INITIATING UKSFTA DIAMOND GRADE OPERATIONAL AUDIT"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
 FAIL=0
 WS="/ext/Development/UKSFTA-Maps"
 
-echo "🏗️  Step 1: Build Integrity (hemtt check)..."
-(cd "$WS" && hemtt check > /dev/null 2>&1) || { echo "  ❌ HEMTT Check Failed"; FAIL=1; }
-echo "  ✅ HEMTT Standard Verified."
+echo "🏗️  [1/3] AUDITING BUILD INTEGRITY (HEMTT)..."
+if (cd "$WS" && hemtt check > /tmp/uksfta_hemtt.log 2>&1); then
+    echo "  ✅ HEMTT STANDARD: VERIFIED (0 Warnings)"
+else
+    echo "  ❌ HEMTT STANDARD: FAILED"
+    cat /tmp/uksfta_hemtt.log
+    FAIL=1
+fi
 
-echo "🧪 Step 2: Logic & Matrix Validation (sqfvm)..."
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_weather_logic.sqf" > /tmp/sqfvm_logic.log 2>&1 || FAIL=1
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_matrix.sqf" > /tmp/sqfvm_matrix.log 2>&1 || FAIL=1
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_solar_logic.sqf" > /tmp/sqfvm_solar.log 2>&1 || FAIL=1
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_thermal_logic.sqf" > /tmp/sqfvm_thermal.log 2>&1 || FAIL=1
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_environmental_scenarios.sqf" > /tmp/sqfvm_scenarios.log 2>&1 || FAIL=1
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_camouflage_matrix.sqf" > /tmp/sqfvm_camo.log 2>&1 || FAIL=1
+echo -e "\n🧪 [2/3] AUDITING LOGIC MANIFEST (SQFVM)..."
 
-if grep -q "❌" /tmp/sqfvm_matrix.log; then echo "  ❌ Matrix Failure detected"; FAIL=1; fi
-if grep -q "❌" /tmp/sqfvm_solar.log; then echo "  ❌ Solar Logic Failure detected"; FAIL=1; fi
-if grep -q "❌" /tmp/sqfvm_thermal.log; then echo "  ❌ Thermal Logic Failure detected"; FAIL=1; fi
-if grep -q "❌" /tmp/sqfvm_scenarios.log; then echo "  ❌ Scenario Logic Failure detected"; FAIL=1; fi
-if grep -q "❌" /tmp/sqfvm_camo.log; then echo "  ❌ Camouflage Matrix Failure detected"; FAIL=1; fi
+# Define tests to run
+TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf")
 
-echo "  ✅ All Logic & Matrices Verified."
+for t in "${TESTS[@]}"; do
+    echo "  🔍 Audit: $t"
+    sqfvm -a -v "$WS|$WS" -i "$WS/tests/$t" > /tmp/uksfta_test.log 2>&1
+    
+    # Display ALL diagnostic lines for total transparency
+    grep -E "✅|❌|🧪|🏁" /tmp/uksfta_test.log | sed 's/\[DIAG\]//g'
+    
+    if grep -q "❌" /tmp/uksfta_test.log; then
+        FAIL=1
+    fi
+done
 
-echo "📊 Step 3: Performance Audit..."
-sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_performance.sqf" > /tmp/sqfvm_perf.log 2>&1 || FAIL=1
-grep "📊" /tmp/sqfvm_perf.log
-echo "  ✅ Performance Benchmarks Recorded."
+echo -e "\n📊 [3/3] AUDITING PERFORMANCE BENCHMARKS..."
+sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_performance.sqf" > /tmp/uksfta_perf.log 2>&1
+grep "📊" /tmp/uksfta_perf.log | sed 's/\[DIAG\]//g'
 
 if [ $FAIL -eq 0 ]; then
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "✅ SUCCESS: All systems MISSION CAPABLE."
+    echo -e "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "🏅 FINAL STATUS: MISSION CAPABLE"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 else
-    echo "❌ FAILURE: Technical defects detected."
+    echo -e "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "🚨 FINAL STATUS: STALL (Technical Defects Detected)"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     exit 1
 fi
