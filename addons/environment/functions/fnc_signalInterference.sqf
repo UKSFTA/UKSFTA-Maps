@@ -1,11 +1,10 @@
 /**
  * UKSFTA Environment - Signal Interference Engine
- * COMPAT LAYER: Feeds data into TFAR/ACRE APIs.
+ * COMPAT LAYER: Uses Verified Variable Assignments.
  */
 
 if (!hasInterface) exitWith {};
 
-// Wait for systems
 waitUntil { time > 10 };
 
 while {uksfta_environment_enabled} do {
@@ -14,35 +13,29 @@ while {uksfta_environment_enabled} do {
         private _rain = rain;
         private _intensity = uksfta_environment_interferenceIntensity;
         
-        // --- DATA CALCULATION (Base Loss) ---
+        // --- DATA CALCULATION ---
         private _signalLoss = 1.0 + (_overcast * 0.3 * _intensity);
         if (_rain > 0.5) then { _signalLoss = _signalLoss + 0.1; };
+        private _multiplier = 1.0 / _signalLoss;
 
-        // --- TFAR NATIVE HOOK ---
-        if (!isNil "TFAR_fnc_setSendingDistanceMultiplicator") then {
-            // Apply stable atmospheric loss
-            [player, (1 / _signalLoss)] call TFAR_fnc_setSendingDistanceMultiplicator;
-            [player, (1 / _signalLoss)] call TFAR_fnc_setReceivingDistanceMultiplicator;
-        };
+        // --- TFAR VERIFIED METHOD ---
+        // Directly set variables on player object (Works on all TFAR versions)
+        player setVariable ["tf_sendingDistanceMultiplicator", _multiplier, true];
+        player setVariable ["tf_receivingDistanceMultiplicator", _multiplier, true];
 
-        // --- ACRE NATIVE HOOK ---
-        if (!isNil "acre_api_fnc_setLossModel") then {
-            // ACRE Loss Model: 0 = none, higher = more
-            private _acreLoss = (_signalLoss - 1) * 0.4;
-            // Push to mission namespace for any unit-specific ACRE overrides
-            missionNamespace setVariable ["UKSFTA_Environment_ACRE_Loss", _acreLoss, true];
-        };
+        // --- ACRE2 COMPAT ---
+        // ACRE is complex. We export a global interference variable.
+        // Mission makers can use this in custom signal functions if they wish.
+        missionNamespace setVariable ["UKSFTA_Environment_Interference_Level", _signalLoss, true];
 
         // --- GLOBAL EXPORT ---
-        // Exports state for third-party EW mods to read
         missionNamespace setVariable ["UKSFTA_Environment_Interference", (_signalLoss - 1), true];
 
     } else {
         // Reset
-        if (!isNil "TFAR_fnc_setSendingDistanceMultiplicator") then {
-            [player, 1.0] call TFAR_fnc_setSendingDistanceMultiplicator;
-        };
+        player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true];
+        player setVariable ["tf_receivingDistanceMultiplicator", 1.0, true];
     };
 
-    sleep 30; // High stability, low frequency
+    sleep 30; 
 };

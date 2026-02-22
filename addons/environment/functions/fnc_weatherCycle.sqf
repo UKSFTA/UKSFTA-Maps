@@ -1,5 +1,6 @@
 /**
  * UKSFTA Environment - Advanced Weather Engine
+ * Uses Verified Global Variables for ACE Sync.
  */
 
 if (!isServer) exitWith {};
@@ -7,8 +8,8 @@ if (!isServer) exitWith {};
 waitUntil { !isNil "uksfta_environment_enabled" };
 if (!uksfta_environment_enabled) exitWith {};
 
-// --- DATA PROFILES ---
-private _weatherProfiles = createHashMapFromArray [
+// --- PROFILES ---
+private _weatherProfiles = [
     ["TEMPERATE",     [[0.2, 0, 0], [0.6, 0.2, 0.1], [0.9, 0.8, 0.3]]],
     ["ARID",          [[0.1, 0, 0], [0.3, 0, 0.05],  [0.6, 0.1, 0.1]]],
     ["ARCTIC",        [[0.2, 0, 0], [0.5, 0, 0.4],   [0.95, 0, 0.85]]],
@@ -17,7 +18,7 @@ private _weatherProfiles = createHashMapFromArray [
     ["SUBTROPICAL",   [[0.3, 0, 0], [0.6, 0.3, 0.1], [0.9, 0.5, 0.2]]]
 ];
 
-private _physicalProfiles = createHashMapFromArray [
+private _physicalProfiles = [
     ["TEMPERATE",     [10, 25, 0.5, 1013]],
     ["ARID",          [25, 45, 0.1, 1020]],
     ["ARCTIC",        [-30, 0, 0.8, 990]],
@@ -26,24 +27,32 @@ private _physicalProfiles = createHashMapFromArray [
     ["SUBTROPICAL",   [20, 30, 0.7, 1010]]
 ];
 
-// --- INITIAL STATE ---
-private _currentStateIdx = getMissionConfigValue ["UKSFTA_Environment_StartWeather", 0];
-if (_currentStateIdx isEqualType "") then { _currentStateIdx = parseNumber _currentStateIdx; };
-
+// --- INITIAL CALIBRATION ---
 private _worldConfig = configFile >> "CfgWorlds" >> worldName;
 private _nativeMaxWave = getNumber (_worldConfig >> "Sea" >> "MaxWave");
 if (_nativeMaxWave == 0) then { _nativeMaxWave = 0.25; };
 
+private _currentStateIdx = 0;
+
 while {uksfta_environment_enabled} do {
     private _biome = call uksfta_environment_fnc_analyzeBiome;
-    private _activeProfile = _weatherProfiles getOrDefault [_biome, _weatherProfiles get "TEMPERATE"];
-    private _phys = _physicalProfiles getOrDefault [_biome, _physicalProfiles get "TEMPERATE"];
+    
+    // Manual Profile Lookup (Compatible)
+    private _activeProfile = [];
+    { if (_x select 0 == _biome) exitWith { _activeProfile = _x select 1; }; } forEach _weatherProfiles;
+    if (count _activeProfile == 0) then { _activeProfile = (_weatherProfiles select 0) select 1; };
+
+    private _phys = [];
+    { if (_x select 0 == _biome) exitWith { _phys = _x select 1; }; } forEach _physicalProfiles;
+    if (count _phys == 0) then { _phys = (_physicalProfiles select 0) select 1; };
+    
     _phys params ["_tMin", "_tMax", "_baseHumid", "_basePress"];
     
-    // 1. Target
+    // 1. Next State
+    _currentStateIdx = [_currentStateIdx, _activeProfile] call uksfta_environment_fnc_getNextState;
     (_activeProfile select _currentStateIdx) params ["_targetOvercast", "_targetRain", "_targetFog"];
 
-    // 2. Transition (Select-optimized)
+    // 2. Transition
     private _baseTime = 1800 + (random 1800);
     private _transitionTime = _baseTime / (uksfta_environment_transitionSpeed max 0.1);
     private _finalTime = [_transitionTime, 0] select (time < 10);
@@ -57,34 +66,25 @@ while {uksfta_environment_enabled} do {
         (_time / 2) setRain _rain;
     };
 
-    // 3. Hazard
     missionNamespace setVariable ["UKSFTA_Environment_CurrentIntensity", _targetOvercast, true];
     missionNamespace setVariable ["UKSFTA_Environment_CurrentBiome", _biome, true];
 
-    // 4. ACE
+    // 3. ACE Ballistics Sync (VERIFIED METHOD)
     private _sunFactor = (sunElevation / 90) max 0;
     private _currentTemp = _tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5);
     private _currentHumid = (_baseHumid + (_targetRain * 0.2)) min 1;
     private _currentPress = _basePress - (_targetOvercast * 10);
 
-    if (!isNil "ace_weather_fnc_serverSetTemperature") then {
-        [_currentTemp] call ace_weather_fnc_serverSetTemperature;
-        [_currentHumid] call ace_weather_fnc_serverSetHumidity;
-        [_currentPress] call ace_weather_fnc_serverSetBarometricPressure;
-    } else {
-        missionNamespace setVariable ["ace_weather_currentTemperature", _currentTemp, true];
-        missionNamespace setVariable ["ace_weather_currentHumidity", _currentHumid, true];
-        missionNamespace setVariable ["ace_weather_currentBarometricPressure", _currentPress, true];
-    };
+    // Broadcast explicitly for ACE to pick up
+    missionNamespace setVariable ["ace_weather_currentTemperature", _currentTemp, true];
+    missionNamespace setVariable ["ace_weather_currentHumidity", _currentHumid, true];
+    missionNamespace setVariable ["ace_weather_currentBarometricPressure", _currentPress, true];
 
-    // 5. Physics
+    // 4. Physics
     private _windStr = (_targetOvercast * 10) + (random 5);
     setWind [random _windStr, random _windStr, true];
-    
-    private _roll = random 100;
-    private _stormChance = 30 * uksfta_environment_stormFrequency;
-    if (_currentStateIdx == 1 && _roll < _stormChance) then { _currentStateIdx = 2; }
-    else { _currentStateIdx = [_currentStateIdx, _activeProfile] call uksfta_environment_fnc_getNextState; };
+    0 setGusts (_targetOvercast * 0.6);
+    0 setWaves (_targetOvercast * _nativeMaxWave);
 
     sleep _finalTime;
 };

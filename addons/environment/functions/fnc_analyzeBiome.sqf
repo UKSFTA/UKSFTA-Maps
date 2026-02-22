@@ -16,7 +16,6 @@ else {
     else {
         if (_forced != "AUTO") then { _biome = _forced; }
         else {
-            // Heuristic detection logic
             private _world = configFile >> "CfgWorlds" >> worldName;
             private _lat = getNumber (_world >> "latitude");
             if (_lat < 0) then { _lat = abs _lat; };
@@ -46,7 +45,5 @@ else {
     };
 };
 
-// --- GLOBAL EXPORT ---
 missionNamespace setVariable ["UKSFTA_Environment_Biome", _biome, true];
-
 _biome

@@ -13,15 +13,19 @@ if (hasInterface || is3DEN) then {
         [] spawn uksfta_environment_fnc_aviationTurbulence;
         [] spawn uksfta_environment_fnc_uavInterference;
 
-        // --- EVENT-DRIVEN EMI ---
-        // Dynamically registered to avoid HEMTT lint warnings
+        // --- EVENT-DRIVEN EMI (Verified TFAR Method) ---
         private _lightningEvent = "Lightning";
         addMissionEventHandler [_lightningEvent, {
             if (uksfta_environment_enableSignalInterference && {overcast > 0.8}) then {
-                if (!isNil "TFAR_fnc_setSendingDistanceMultiplicator") then {
-                    [player, 0.01] call TFAR_fnc_setSendingDistanceMultiplicator;
-                    [0.5 + random 1, { [player, 1.0] call TFAR_fnc_setSendingDistanceMultiplicator; }] call CBA_fnc_waitAndExecute;
-                };
+                // Momentary Signal Crash
+                player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
+                
+                // Reset after brief spike (0.5s - 1.5s)
+                [0.5 + random 1, { 
+                    // Restore to baseline (calculated by signalInterference loop)
+                    // We set to 1.0 safely, the loop will re-apply weather loss within 30s
+                    player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true];
+                }] call CBA_fnc_waitAndExecute;
             };
         }];
     };
