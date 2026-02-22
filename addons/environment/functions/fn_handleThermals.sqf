@@ -5,10 +5,12 @@
 
 if (!hasInterface) exitWith {};
 
+// Strict guard: Wait for settings to sync
+waitUntil { !isNil "uksfta_environment_enabled" };
 waitUntil { !isNil "uksfta_environment_enableThermals" };
 
-while {uksfta_environment_enabled} do {
-    if (uksfta_environment_enabled && uksfta_environment_enableThermals) then {
+while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
+    if (missionNamespace getVariable ["uksfta_environment_enableThermals", false]) then {
         private _overcast = overcast;
         private _rain = rain;
         private _fog = fog;

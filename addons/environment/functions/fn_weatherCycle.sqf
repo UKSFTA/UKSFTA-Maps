@@ -6,8 +6,9 @@
 
 if (!isServer) exitWith {};
 
+// Strict guard: Wait for settings to sync
 waitUntil { !isNil "uksfta_environment_enabled" };
-if (!uksfta_environment_enabled) exitWith {};
+if !(missionNamespace getVariable ["uksfta_environment_enabled", false]) exitWith {};
 
 private _weatherProfiles = [
     ["TEMPERATE",     [[0.2, 0, 0], [0.6, 0.2, 0.1], [0.9, 0.8, 0.3]]],
@@ -34,7 +35,7 @@ if (_nativeMaxWave == 0) then { _nativeMaxWave = 0.25; };
 private _currentStateIdx = 0;
 private _wasRaining = false;
 
-while {uksfta_environment_enabled} do {
+while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _biome = call uksfta_environment_fnc_analyzeBiome;
     
     private _activeProfile = [];
@@ -51,14 +52,15 @@ while {uksfta_environment_enabled} do {
     (_activeProfile select _currentStateIdx) params ["_targetOvercast", "_targetRain", "_targetFog"];
 
     private _baseTime = 1800 + (random 1800);
-    private _transitionTime = _baseTime / (uksfta_environment_transitionSpeed max 0.1);
+    private _transitionSpeed = missionNamespace getVariable ["uksfta_environment_transitionSpeed", 1.0];
+    private _transitionTime = _baseTime / (_transitionSpeed max 0.1);
     private _finalTime = [_transitionTime, 0] select (time < 10);
     
     // --- ATMOSPHERIC SYNCHRONIZATION ---
     _finalTime setOvercast _targetOvercast;
     _finalTime setFog [_targetFog, 0.03, 0.0];
     
-    // Volumetric Sync (Critical for realistic cloud movement)
+    // Volumetric Sync
     simulWeatherSync;
 
     // Lightning Scaling
@@ -83,9 +85,10 @@ while {uksfta_environment_enabled} do {
     missionNamespace setVariable ["UKSFTA_Environment_CurrentIntensity", _targetOvercast, true];
     missionNamespace setVariable ["UKSFTA_Environment_CurrentBiome", _biome, true];
 
-    // --- ACE SYNC ---
+    // --- ACE SYNC (HIGH-FIDELITY FLOAT) ---
     private _sunAlt = call uksfta_environment_fnc_getSunElevation;
     private _sunFactor = (_sunAlt / 90.0) max 0.0;
+    
     private _currentTemp = ((_tMin + ((_tMax - _tMin) * _sunFactor) - (_targetOvercast * 5.0)) + (random 0.05)) + 0.001;
     private _currentHumid = (((_baseHumid + (_targetRain * 0.2)) min 1.0) + (random 0.02)) + 0.001;
     private _currentPress = ((_basePress - (_targetOvercast * 10.0)) + (random 0.1)) + 0.001;

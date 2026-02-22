@@ -6,8 +6,11 @@
 
 if (!hasInterface) exitWith {};
 
+// Strict guard: Wait for settings to sync
+waitUntil { !isNil "uksfta_environment_enabled" };
+if !(missionNamespace getVariable ["uksfta_environment_enabled", false]) exitWith {};
+
 // --- HANDLES ---
-// We use high-range handles to avoid conflicts with ACE/KAT/Vanilla
 private _ccHandle = 1500;
 private _filmHandle = 1501;
 
@@ -17,9 +20,10 @@ _ccHandle ppEffectForceInNVG true;
 
 _filmHandle ppEffectEnable true;
 
-while {uksfta_environment_enabled} do {
+while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
-    private _intensity = uksfta_environment_visualIntensity;
+    private _intensity = missionNamespace getVariable ["uksfta_environment_visualIntensity", 1.0];
+    private _preset = missionNamespace getVariable ["uksfta_environment_preset", "REALISM"];
     
     // --- DYNAMIC TINT MATRIX ---
     private _tint = [1, 1, 1]; // Default
@@ -43,7 +47,7 @@ while {uksfta_environment_enabled} do {
             _contrast = 1.0;
         };
         case "MEDITERRANEAN": {
-            _tint = [1.0, 1.0, 0.95]; // Malden/Altis Clarity
+            _tint = [1.0, 1.0, 0.95]; // Altis Clarity
             _sat = 1.05;
             _contrast = 1.0;
         };
@@ -62,8 +66,8 @@ while {uksfta_environment_enabled} do {
     _ccHandle ppEffectCommit 5;
 
     // --- APPLY FILM GRAIN ---
-    private _grain = [0.02, 1.25, 1.0, 0.75, 1.0, true] select (uksfta_environment_preset == "REALISM");
-    if (uksfta_environment_preset == "ARCADE") then { _grain = 0; };
+    private _grain = [0.02, 1.25, 1.0, 0.75, 1.0, true] select (_preset == "REALISM");
+    if (_preset == "ARCADE") then { _grain = 0; };
     
     _filmHandle ppEffectAdjust [_grain * _intensity, 1.25, 1.0, 0.75, 1.0, true];
     _filmHandle ppEffectCommit 5;

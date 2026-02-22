@@ -6,12 +6,13 @@
 
 if (!hasInterface) exitWith {};
 
+// Strict guard: Wait for settings to sync
 waitUntil { !isNil "uksfta_camouflage_enabled" };
 
-while {uksfta_camouflage_enabled} do {
+while {missionNamespace getVariable ["uksfta_camouflage_enabled", false]} do {
     private _unit = player;
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
-    private _intensity = uksfta_camouflage_intensity;
+    private _intensity = missionNamespace getVariable ["uksfta_camouflage_intensity", 1.0];
     
     private _camCoef = 1.0;
     private _audCoef = 1.0;
@@ -22,11 +23,9 @@ while {uksfta_camouflage_enabled} do {
 
     switch (_biome) do {
         case "ARID": {
-            // Arid kits in desert (Linter compliant find)
             if ((_uniform find "arid" != -1) || (_uniform find "mc" != -1) || (_uniform find "desert" != -1)) then {
                 _camCoef = 0.7; 
             };
-            // Surface noise amplification
             if ((_surface find "stony" != -1) || (_surface find "gravel" != -1) || (_surface find "rock" != -1)) then {
                 _audCoef = 1.2;
             };
@@ -35,22 +34,20 @@ while {uksfta_camouflage_enabled} do {
             if ((_uniform find "snow" != -1) || (_uniform find "winter" != -1) || (_uniform find "white" != -1)) then {
                 _camCoef = 0.6;
             };
-            // Snow dampening
             _audCoef = 0.7;
         };
         case "TROPICAL": {
             if ((_uniform find "jungle" != -1) || (_uniform find "tropic" != -1)) then {
                 _camCoef = 0.75;
             };
-            // Humidity amplification
             _audCoef = 1.1;
         };
     };
 
     // --- STANCE & GRASS OPTIMIZATION ---
-    if (uksfta_camouflage_grassFix && {stance _unit == "PRONE"}) then {
+    if (missionNamespace getVariable ["uksfta_camouflage_grassFix", true] && {stance _unit == "PRONE"}) then {
         if (_surface find "gras" != -1) then {
-            _camCoef = _camCoef * 0.8; // Prone in grass bonus
+            _camCoef = _camCoef * 0.8;
         };
     };
 
@@ -62,8 +59,7 @@ while {uksfta_camouflage_enabled} do {
     _unit setUnitTrait ["audibleCoef", _finalAud];
 
     // --- AI SYSTEM BALANCING ---
-    if (uksfta_camouflage_aiCompat) then {
-        // Lambs/VCOM Balance
+    if (missionNamespace getVariable ["uksfta_camouflage_aiCompat", true]) then {
         if (!isNil "lambs_danger_fnc_combatMode") then {
             _unit setVariable ["lambs_danger_camouflageModifier", _finalCam, true];
         };
