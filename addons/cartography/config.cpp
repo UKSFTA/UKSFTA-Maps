@@ -12,16 +12,9 @@ class CfgPatches {
     };
 };
 
-class CBA_Settings {
-    class uksfta_cartography_mode {
-        category = "UKSFTA Cartography";
-        displayName = "Active Map Layer";
-        tooltip = "Choose the high-performance tactical overlay.";
-        settingType = "LIST";
-        values[] = {"STANDARD", "SATELLITE", "TOPOGRAPHIC", "OS_HYBRID"};
-        labels[] = {"Standard (A3)", "High-Fidelity Satellite", "Topographic (Survey)", "OS-Hybrid (Tactical)"};
-        default = "STANDARD";
-        onSettingChanged = "missionNamespace setVariable ['UKSFTA_Cartography_Mode', _this];";
+class Extended_PreInit_EventHandlers {
+    class ADDON {
+        init = "call uksfta_cartography_fnc_preInit";
     };
 };
 
@@ -35,9 +28,11 @@ class CfgFunctions {
     class uksfta_cartography {
         tag = "uksfta_cartography";
         class functions {
-            file = "z\uksfta\addons\cartography\functions";
+            file = "\z\uksfta\addons\cartography\functions";
+            class preInit {};
             class initCartography {};
             class handleMapDraw {};
+            class toggleMode {};
         };
     };
 };

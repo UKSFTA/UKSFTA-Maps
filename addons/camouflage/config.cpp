@@ -1,12 +1,4 @@
-#define COMPONENT camouflage
-#define COMPONENT_BEAUTIFIED Camouflage
-#define PREFIX uksfta
-
-#define QUOTE(var) #var
-#define QQUOTE(var) QUOTE(var)
-
-#define ADDON uksfta_camouflage
-#define ADDON_NAME UKSFTA Camouflage
+#include "script_component.hpp"
 
 class CfgPatches {
     class ADDON {
@@ -14,11 +6,15 @@ class CfgPatches {
         units[] = {};
         weapons[] = {};
         requiredVersion = 1.62;
-        requiredAddons[] = {"UKSFTA_Maps_Main", "cba_main", "cba_settings", "uksfta_environment"};
-        // Support AI systems
+        requiredAddons[] = {
+            "UKSFTA_Maps_Main", 
+            "cba_main", 
+            "cba_settings", 
+            "uksfta_environment"
+        };
         optionalAddons[] = {"lambs_danger", "VCOM_AI"};
         author = "UKSF Taskforce Alpha";
-        version = "1.0.0";
+        VERSION_CONFIG;
     };
 };
 
@@ -38,7 +34,7 @@ class CfgFunctions {
     class uksfta_camouflage {
         tag = "uksfta_camouflage";
         class functions {
-            file = "z\uksfta\addons\camouflage\functions";
+            file = "\z\uksfta\addons\camouflage\functions";
             class preInit {};
             class init {};
             class applyCamouflage {};

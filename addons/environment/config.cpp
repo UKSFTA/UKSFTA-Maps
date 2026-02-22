@@ -86,7 +86,7 @@ class CfgFunctions {
     class uksfta_environment {
         tag = "uksfta_environment";
         class environment {
-            file = "z\uksfta\addons\environment\functions";
+            file = "\z\uksfta\addons\environment\functions";
             class preInit {};
             class initEnvironment {};
             class weatherCycle {};
