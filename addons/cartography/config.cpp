@@ -35,7 +35,8 @@ class Extended_PostInit_EventHandlers {
 class CfgFunctions {
     class uksfta_cartography {
         tag = "uksfta_cartography";
-        class functions {
+        class cartography {
+            // Mapping: z\uksfta\addons\cartography\functions\fn_NAME.sqf
             file = "z\uksfta\addons\cartography\functions";
             class preInit {};
             class init {};
