@@ -1,29 +1,35 @@
 /**
  * UKSFTA Environment - PreInit Settings
- * Signal Interference Controls
  */
 
-// ... (Existing settings) ...
-
-[
-    "uksfta_environment_enableSignalInterference", "CHECKBOX",
-    ["Enable Signal Interference", "Weather conditions (storms/lightning) will degrade TFAR/ACRE radio range."],
-    "UKSFTA Environment", true, 1, {}, true
-] call CBA_fnc_addSetting;
-
-[
-    "uksfta_environment_interferenceIntensity", "SLIDER",
-    ["Interference Strength", "Multiplier for radio signal loss (1.0 = Standard)."],
-    "UKSFTA Environment", [0, 2, 1, 1], 1, {}, true
-] call CBA_fnc_addSetting;
-
-// Re-writing the full file to maintain integrity
+// --- PERFORMANCE & MASTER (Server) ---
 [
     "uksfta_environment_enabled", "CHECKBOX",
     ["Enable Framework (Server)", "Master toggle for the universal environment system."],
     "UKSFTA Environment", true, 1, {}, true
 ] call CBA_fnc_addSetting;
 
+// --- AVIATION PHYSICS ---
+[
+    "uksfta_environment_enableTurbulence", "CHECKBOX",
+    ["Enable Aviation Turbulence", "Apply physical turbulence forces to aircraft during poor weather."],
+    "UKSFTA Environment", true, 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_turbulenceIntensity", "SLIDER",
+    ["Turbulence Intensity", "Multiplier for physical forces applied to aircraft."],
+    "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
+] call CBA_fnc_addSetting;
+
+// --- ELECTRONIC WARFARE ---
+[
+    "uksfta_environment_enableUavInterference", "CHECKBOX",
+    ["Enable UAV/GPS Interference", "Atmospheric conditions will degrade UAV signals and GPS precision."],
+    "UKSFTA Environment", true, 1, {}, true
+] call CBA_fnc_addSetting;
+
+// --- WEATHER & TRANSITIONS ---
 [
     "uksfta_environment_transitionSpeed", "SLIDER",
     ["Weather Transition Speed", "Higher = Faster weather changes."],
@@ -36,33 +42,34 @@
     "UKSFTA Environment", [0, 5, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+// --- CLIENT-SIDE ---
 [
     "uksfta_environment_enableParticles", "CHECKBOX",
-    ["Enable Storm Particles", "Enable sandstorm/snowstorm visual hazards."],
+    ["Enable Storm Particles", "Visual sandstorm/snowstorm effects."],
     "UKSFTA Environment", true, 0, {}, false
 ] call CBA_fnc_addSetting;
 
 [
     "uksfta_environment_enableColdBreath", "CHECKBOX",
-    ["Enable Cold Breath", "Enable visible breath vapor in cold environments."],
+    ["Enable Cold Breath", "Visible breath in cold environments."],
     "UKSFTA Environment", true, 0, {}, false
 ] call CBA_fnc_addSetting;
 
 [
     "uksfta_environment_particleMultiplier", "SLIDER",
-    ["Particle Density", "Scale the amount of particles generated (Lower = Better FPS)."],
+    ["Particle Density", "Scale amount of particles (Better FPS)."],
     "UKSFTA Environment", [0, 1, 1, 2], 0, {}, false
 ] call CBA_fnc_addSetting;
 
 [
     "uksfta_environment_visualIntensity", "SLIDER",
-    ["PP Effect Intensity", "Strength of color correction and film grain."],
+    ["PP Effect Intensity", "Strength of color correction/film grain."],
     "UKSFTA Environment", [0, 2, 1, 1], 0, { [] call uksfta_environment_fnc_applyVisuals; }, false
 ] call CBA_fnc_addSetting;
 
 [
     "uksfta_environment_forcedBiome", "LIST",
-    ["Force Biome (Global)", "Override automatic biome detection for all clients."],
+    ["Force Biome (Global)", "Override auto-detection."],
     "UKSFTA Environment", 
     [
         ["AUTO", "TEMPERATE", "ARID", "ARCTIC", "TROPICAL", "MEDITERRANEAN", "SUBTROPICAL"],

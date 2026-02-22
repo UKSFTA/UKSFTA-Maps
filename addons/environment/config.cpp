@@ -16,8 +16,7 @@ class CfgPatches {
             "kat_main",
             "3den"
         };
-        // Optional dependencies for radio systems
-        optionalAddons[] = {"task_force_radio", "acre_main"};
+        optionalAddons[] = {"task_force_radio", "acre_main", "ace_uav"};
         author = "UKSF Taskforce Alpha";
         VERSION_CONFIG;
     };
@@ -50,6 +49,8 @@ class CfgFunctions {
             class coldBreath {};
             class katMedicalHook {};
             class signalInterference {};
+            class aviationTurbulence {};
+            class uavInterference {};
         };
     };
 };
