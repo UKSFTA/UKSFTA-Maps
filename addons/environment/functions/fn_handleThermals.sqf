@@ -12,13 +12,14 @@ while {uksfta_environment_enabled} do {
         private _intensity = uksfta_environment_thermalIntensity;
         private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
         
-        // --- PRESET SCALING (Optimized) ---
+        // --- PRESET SCALING ---
         private _multiplier = [1.0, 0.2] select (uksfta_environment_preset == "ARCADE");
 
         private _noise = ((_overcast * 0.2) + (_rain * 0.3) + (_fog * 0.5)) * _multiplier;
         _noise = (_noise * _intensity) min 1.0;
 
-        if (uksfta_environment_preset == "REALISM" && _biome == "ARID" && sunElevation > 20) then {
+        // CORRECT ENGINE COMMAND: sunElevation
+        if (uksfta_environment_preset == "REALISM" && _biome == "ARID" && (sunElevation > 20)) then {
             private _heatFactor = (sunElevation / 90) * 0.4;
             _noise = (_noise + _heatFactor) min 1.0;
         };
@@ -26,7 +27,7 @@ while {uksfta_environment_enabled} do {
         setTIParameter ["noise", _noise];
         setTIParameter ["grain", _noise * 0.5];
 
-        if (uksfta_environment_preset == "REALISM" && lightnings > 0.8 && _overcast > 0.9) then {
+        if (uksfta_environment_preset == "REALISM" && (lightnings > 0.8) && (_overcast > 0.9)) then {
             if (random 100 > 90) then {
                 setTIParameter ["noise", 1.0];
                 setTIParameter ["grain", 1.0];
