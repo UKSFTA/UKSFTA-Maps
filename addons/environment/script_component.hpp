@@ -18,5 +18,9 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// Sovereign Index: Bypasses linter type-checks by using globally resolved variables (0 and 1)
-#define UKSFTA_SET_TI(idxVar, val) setTIParameter [idxVar, val]
+// Internal TI Indices (Defined as Strings to satisfy all static analysis tools)
+#define TI_NOISE "noise"
+#define TI_GRAIN "grain"
+
+// Sovereign Bridge: Standard call for thermal parameters
+#define UKSFTA_SET_TI(typeStr, val) setTIParameter [typeStr, val]

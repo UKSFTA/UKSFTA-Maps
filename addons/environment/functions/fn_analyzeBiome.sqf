@@ -27,26 +27,25 @@ if (_lat > 60) then { _biome = "ARCTIC"; }
 else {
     if (_lat < 15) then { _biome = "TROPICAL"; }
     else {
-        // Optimization: Use a string comparison on the name first (Instant)
+        // Optimization: Use a string search on the name first (Linter compliant find)
         private _name = toLower worldName;
-        if ("altis" in _name || "malden" in _name || "stratis" in _name || "dagger" in _name || "zagor" in _name) then { 
+        if ((_name find "altis" != -1) || (_name find "malden" != -1) || (_name find "stratis" != -1) || (_name find "dagger" != -1) || (_name find "zagor" != -1)) then { 
             _biome = "MEDITERRANEAN"; 
         } else {
-            if ("sahrani" in _name || "porto" in _name) then { 
+            if ((_name find "sahrani" != -1) || (_name find "porto" != -1)) then { 
                 _biome = "SUBTROPICAL"; 
             } else {
                 // Last Resort: Scan Clutter (Slowest)
-                // We limit the scan to ensure performance
                 private _clutterNames = "";
                 { 
                     _clutterNames = _clutterNames + (toLower (configName _x)) + " "; 
                 } forEach (configProperties [_world >> "Clutter", "isClass _x"] select [0, 5]);
                 
-                if ("sand" in _clutterNames || "desert" in _clutterNames) then { _biome = "ARID"; }
+                if ((_clutterNames find "sand" != -1) || (_clutterNames find "desert" != -1)) then { _biome = "ARID"; }
                 else {
-                    if ("palm" in _clutterNames || "jungle" in _clutterNames) then { _biome = "TROPICAL"; }
+                    if ((_clutterNames find "palm" != -1) || (_clutterNames find "jungle" != -1)) then { _biome = "TROPICAL"; }
                     else {
-                        if ("snow" in _clutterNames || "ice" in _clutterNames) then { _biome = "ARCTIC"; };
+                        if ((_clutterNames find "snow" != -1) || (_clutterNames find "ice" != -1)) then { _biome = "ARCTIC"; };
                     };
                 };
             };

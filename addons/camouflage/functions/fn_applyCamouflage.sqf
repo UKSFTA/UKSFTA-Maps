@@ -1,77 +1,78 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Camouflage - Core Logic
- * Presets: ARCADE (Simplified) vs REALISM (Full)
+ * UKSFTA Camouflage - Ghost Ops Implementation
+ * High-fidelity stealth engine with Lambs/VCOM automated balancing.
  */
 
 if (!hasInterface) exitWith {};
 
-private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
-private _uniform = toLower (uniform player);
-private _stance = stance player;
-private _speed = vectorMagnitude (velocity player);
+waitUntil { !isNil "uksfta_camouflage_enabled" };
 
-private _camoCoef = 1.0;
-private _auditCoef = 1.0;
+while {uksfta_camouflage_enabled} do {
+    private _unit = player;
+    private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+    private _intensity = uksfta_camouflage_intensity;
+    
+    private _camCoef = 1.0;
+    private _audCoef = 1.0;
 
-// --- PRESET LOGIC ---
-if (uksfta_environment_preset == "ARCADE") then {
-    // Fixed high-performance bonus for arcade play
-    _camoCoef = 0.6;
-    _auditCoef = 0.6;
-} else {
-    // REALISM: FULL HEURISTIC LOGIC
-    private _aiBuffer = 1.0;
-    if (uksfta_camouflage_aiCompat) then {
-        private _hasLambs = isClass (configFile >> "CfgPatches" >> "lambs_danger");
-        private _hasVcom = isClass (configFile >> "CfgPatches" >> "VCOM_AI");
-        if (_hasLambs || _hasVcom) then { _aiBuffer = 0.85; };
-    };
+    // --- BIOME CALIBRATION ---
+    private _uniform = toLower (uniform _unit);
+    private _surface = toLower (surfaceType (getPos _unit));
 
-    private _matchBonus = 0.8; 
     switch (_biome) do {
-        case "TEMPERATE": {
-            if ("mtp" in _uniform || "multicam" in _uniform || "wood" in _uniform) then { _camoCoef = _camoCoef * _matchBonus; };
-        };
         case "ARID": {
-            if ("arid" in _uniform || "desert" in _uniform || "sand" in _uniform) then { _camoCoef = _camoCoef * _matchBonus; };
+            // Arid kits in desert (Linter compliant find)
+            if ((_uniform find "arid" != -1) || (_uniform find "mc" != -1) || (_uniform find "desert" != -1)) then {
+                _camCoef = 0.7; 
+            };
+            // Surface noise amplification
+            if ((_surface find "stony" != -1) || (_surface find "gravel" != -1) || (_surface find "rock" != -1)) then {
+                _audCoef = 1.2;
+            };
         };
         case "ARCTIC": {
-            if ("winter" in _uniform || "snow" in _uniform || "white" in _uniform) then { 
-                _camoCoef = _camoCoef * _matchBonus;
-                _auditCoef = _auditCoef * 0.7;
-            } else { 
-                _camoCoef = _camoCoef * 1.5; 
-            }; 
+            if ((_uniform find "snow" != -1) || (_uniform find "winter" != -1) || (_uniform find "white" != -1)) then {
+                _camCoef = 0.6;
+            };
+            // Snow dampening
+            _audCoef = 0.7;
         };
         case "TROPICAL": {
-            if ("tropic" in _uniform || "jungle" in _uniform) then { _camoCoef = _camoCoef * _matchBonus; };
-            _auditCoef = _auditCoef * 1.2;
+            if ((_uniform find "jungle" != -1) || (_uniform find "tropic" != -1)) then {
+                _camCoef = 0.75;
+            };
+            // Humidity amplification
+            _audCoef = 1.1;
         };
     };
 
-    switch (_stance) do {
-        case "PRONE": { _camoCoef = _camoCoef * 0.5; _auditCoef = _auditCoef * 0.4; };
-        case "CROUCH": { _camoCoef = _camoCoef * 0.8; _auditCoef = _auditCoef * 0.7; };
-        case "STAND": { _camoCoef = _camoCoef * 1.0; _auditCoef = _auditCoef * 1.0; };
+    // --- STANCE & GRASS OPTIMIZATION ---
+    if (uksfta_camouflage_grassFix && {stance _unit == "PRONE"}) then {
+        if (_surface find "gras" != -1) then {
+            _camCoef = _camCoef * 0.8; // Prone in grass bonus
+        };
     };
 
-    if (_speed > 2) then { _camoCoef = _camoCoef * 1.2; _auditCoef = _auditCoef * 1.5; };
-    if (_speed > 5) then { _camoCoef = _camoCoef * 2.0; _auditCoef = _auditCoef * 3.0; };
+    // --- APPLY COEFFICIENTS ---
+    private _finalCam = (_camCoef / _intensity) max 0.1;
+    private _finalAud = (_audCoef * _intensity) min 2.0;
 
-    if (uksfta_camouflage_grassFix && _stance == "PRONE") then {
-        private _surface = surfaceType (getPos player);
-        if ("grass" in _surface || "forest" in _surface) then { _camoCoef = _camoCoef * 0.2; };
+    _unit setUnitTrait ["camouflageCoef", _finalCam];
+    _unit setUnitTrait ["audibleCoef", _finalAud];
+
+    // --- AI SYSTEM BALANCING ---
+    if (uksfta_camouflage_aiCompat) then {
+        // Lambs/VCOM Balance
+        if (!isNil "lambs_danger_fnc_combatMode") then {
+            _unit setVariable ["lambs_danger_camouflageModifier", _finalCam, true];
+        };
     };
 
-    _camoCoef = _camoCoef * _aiBuffer;
-    _auditCoef = _auditCoef * _aiBuffer;
+    sleep 10;
 };
 
-// --- FINAL APPLICATION ---
-private _finalCamo = (_camoCoef / (uksfta_camouflage_intensity max 0.1)) min 2.0 max 0.05;
-private _finalAudit = _auditCoef min 2.0 max 0.05;
-
-player setUnitTrait ["camouflageCoef", _finalCamo];
-player setUnitTrait ["audibleCoef", _finalAudit];
-
+// --- CLEANUP ---
+player setUnitTrait ["camouflageCoef", 1.0];
+player setUnitTrait ["audibleCoef", 1.0];
 true

@@ -23,10 +23,10 @@ if (hasInterface || is3DEN) then {
                 player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
                 [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
                 
-                // Thermal Flicker (Sovereign Mapping)
-                if (missionNamespace getVariable ["uksfta_environment_enableThermals", false] && {!isNil "UKSFTA_TI_NOISE"}) then {
-                    UKSFTA_SET_TI(UKSFTA_TI_NOISE,1.0);
-                    [0.2 + random 0.3, { UKSFTA_SET_TI(UKSFTA_TI_NOISE,0); }] call CBA_fnc_waitAndExecute;
+                // Thermal Flicker (String Alias Compliance)
+                if (missionNamespace getVariable ["uksfta_environment_enableThermals", false]) then {
+                    UKSFTA_SET_TI(TI_NOISE,1.0);
+                    [0.2 + random 0.3, { UKSFTA_SET_TI(TI_NOISE,0); }] call CBA_fnc_waitAndExecute;
                 };
             };
         }];

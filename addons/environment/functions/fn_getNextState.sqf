@@ -1,26 +1,24 @@
 /**
- * UKSFTA Environment - State Transition Logic
- * Calculates the next logical weather state based on current conditions.
+ * UKSFTA Environment - Weather State Machine
  */
 
-params ["_currentIdx", "_profile"];
+params ["_current", "_profile"];
 
-// State Map: 0 = Clear, 1 = Overcast, 2 = Storm
-// Transition Matrix (Probabilities):
-// From 0: 70% stay at 0, 30% go to 1
-// From 1: 30% back to 0, 40% stay at 1, 30% go to 2
-// From 2: 40% back to 1, 60% stay at 2
-
-private _nextIdx = _currentIdx;
+// Calculate probabilities for transitions
+private _next = _current;
 private _roll = random 100;
 
-switch (_currentIdx) do {
-    case 0: { if (_roll > 70) then { _nextIdx = 1; }; };
-    case 1: {
-        if (_roll < 30) then { _nextIdx = 0; }
-        else { if (_roll > 70) then { _nextIdx = 2; }; };
+switch (_current) do {
+    case 0: { // CLEAR
+        if (_roll > 85) then { _next = 1; }; // 15% chance to Overcast
     };
-    case 2: { if (_roll < 40) then { _nextIdx = 1; }; };
+    case 1: { // OVERCAST
+        if (_roll < 20) then { _next = 0; }; // 20% chance to Clear
+        if (_roll > 80) then { _next = 2; }; // 20% chance to Storm
+    };
+    case 2: { // STORM
+        if (_roll < 40) then { _next = 1; }; // 40% chance to Overcast
+    };
 };
 
-_nextIdx
+_next
