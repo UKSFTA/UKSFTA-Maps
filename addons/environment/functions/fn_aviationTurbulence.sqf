@@ -1,40 +1,41 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Aviation Turbulence Engine
+ * UKSFTA Environment - Aviation Turbulence
+ * Physically-derived flight instability.
  */
 
 if (!hasInterface) exitWith {};
 
-while {true} do {
+// Strict guard: Wait for settings to sync
+waitUntil { !isNil "uksfta_environment_enabled" };
+
+while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _veh = objectParent player;
     
-    if (uksfta_environment_enabled && uksfta_environment_enableTurbulence && !isNull _veh && { _veh isKindOf "Air" } && { (driver _veh == player || gunner _veh == player) }) then {
+    if (!isNil "_veh" && {(_veh isKindOf "Air") && !(_veh isKindOf "Parachute")}) then {
+        private _overcast = overcast;
+        private _wind = vectorMagnitude wind;
+        private _alt = (getPosVisual _veh) select 2;
         
-        private _hasNativePhys = _veh getVariable ["UKSFTA_HasCustomFlightModel", false];
-        if (difficultyEnabled "RTD") then { _hasNativePhys = true; }; 
-
-        if (!_hasNativePhys && {overcast > 0.4}) then {
-            private _speed = speed _veh;
-            private _alt = (getPosATL _veh) select 2;
+        // Intensity scaling
+        private _intensity = missionNamespace getVariable ["uksfta_environment_turbulenceIntensity", 1.0];
+        private _factor = ((_overcast * 0.5) + (_wind * 0.05)) * _intensity;
+        
+        // Altitude dampening (Turbulence drops as air thins)
+        if (_alt > 2000) then { _factor = _factor * 0.5; };
+        
+        if (_factor > 0.1 && (alive _veh) && (isEngineOn _veh)) then {
+            private _force = [
+                (random _factor) - (_factor / 2),
+                (random _factor) - (_factor / 2),
+                (random _factor) - (_factor / 2)
+            ];
             
-            // --- PRESET SCALING (Optimized) ---
-            private _multiplier = [1.0, 0.2] select (uksfta_environment_preset == "ARCADE");
-            private _intensity = (overcast * uksfta_environment_turbulenceIntensity * _multiplier);
-            
-            if (_alt < 400) then { _intensity = _intensity * 1.4; };
-            if (_speed < 40) then { _intensity = _intensity * 0.1; }; 
-
-            private _forceX = (random 2 - 1) * _intensity * 400;
-            private _forceY = (random 2 - 1) * _intensity * 400;
-            private _forceZ = (random 4 - 2) * _intensity * 800; 
-            
-            _veh addForce [_veh vectorModelToWorld [_forceX, _forceY, _forceZ], [0,0,0]];
-            
-            sleep (0.2 + random 0.3);
-        } else {
-            sleep 2;
+            // Apply physical stress
+            _veh addForce [_veh vectorModelToWorld _force, [0,0,0]];
         };
-    } else {
-        sleep 5;
     };
+
+    sleep 0.5;
 };
 true
