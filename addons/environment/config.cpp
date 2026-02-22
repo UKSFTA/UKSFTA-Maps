@@ -42,6 +42,13 @@ class CBA_Settings {
         settingType = "CHECKBOX";
         default = 1;
     };
+    class uksfta_environment_debugHUD {
+        category = "UKSFTA Environment";
+        displayName = "Show Technical Telemetry (OSD)";
+        tooltip = "Displays real-time data for biomes, ballistics, and sensors.";
+        settingType = "CHECKBOX";
+        default = 0;
+    };
     class uksfta_environment_enableThermals {
         category = "UKSFTA Environment";
         displayName = "Enable Thermal Realism";

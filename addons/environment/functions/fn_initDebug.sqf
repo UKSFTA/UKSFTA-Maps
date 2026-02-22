@@ -5,13 +5,18 @@
 
 if (!hasInterface) exitWith {};
 
+// --- ABSOLUTE STARTUP GUARD ---
+// Wait for settings to physically exist in missionNamespace
+waitUntil { !isNil "uksfta_environment_debugHUD" };
+
 // --- DEBUG HUD LOOP ---
 [] spawn {
     private _header = "<t color='#4caf50' size='1.2' font='RobotoCondensedBold'>UKSFTA TELEMETRY</t><br/>";
     private _div = "<t color='#aaaaaa' size='0.8'>----------------------------</t><br/>";
     
+    // Fail-safe condition
     while {true} do {
-        if (uksfta_environment_debugHUD) then {
+        if (missionNamespace getVariable ["uksfta_environment_debugHUD", false]) then {
             private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "PENDING"];
             private _camo = player getUnitTrait "camouflageCoef";
             private _audit = player getUnitTrait "audibleCoef";
