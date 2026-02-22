@@ -20,10 +20,9 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         private _noise = (_overcast * 0.4) * _intensity;
         
         if (_noise > 0.1) then {
-            // Apply visual noise to feed
-            // 0 = noise, 1 = grain
-            UKSFTA_SET_TI(TI_NOISE, _noise);
-            UKSFTA_SET_TI(TI_GRAIN, _noise * 0.8);
+            // Apply visual noise to feed (No padding for HEMTT compliance)
+            UKSFTA_SET_TI(TI_NOISE,_noise);
+            UKSFTA_SET_TI(TI_GRAIN,_noise * 0.8);
         };
     };
 
