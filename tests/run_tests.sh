@@ -15,19 +15,19 @@ MAPS="$MAPS -v /z/uksfta/addons/environment|$WS/addons/environment"
 MAPS="$MAPS -v /z/uksfta/addons/cartography|$WS/addons/cartography"
 MAPS="$MAPS -v /z/uksfta/addons/camouflage|$WS/addons/camouflage"
 
-# 1. HEMTT (Build Integrity)
+# 1. HEMTT (Build Integrity - STRICT)
 echo "🏗️  [1/6] AUDITING BUILD INTEGRITY (HEMTT)..."
-if (cd "$WS" && hemtt check > /tmp/uksfta_hemtt.log 2>&1); then
-    echo "  ✅ HEMTT STANDARD: VERIFIED (0 Warnings)"
-else
-    echo "  ❌ HEMTT STANDARD: FAILED"
-    cat /tmp/uksfta_hemtt.log | grep -E "error|warning"
+(cd "$WS" && hemtt check) > /tmp/uksfta_hemtt.log 2>&1
+if grep -qi "warning" /tmp/uksfta_hemtt.log || grep -qi "error" /tmp/uksfta_hemtt.log; then
+    echo "  ❌ HEMTT STANDARD: FAILED (Warnings or Errors detected)"
+    grep -E "warning|error" /tmp/uksfta_hemtt.log
     FAIL=1
+else
+    echo "  ✅ HEMTT STANDARD: VERIFIED (0 Warnings)"
 fi
 
 # 2. SQFLINT (Static Analysis)
 echo -e "\n🔍 [2/6] AUDITING STATIC ANALYSIS (SQFLINT)..."
-# We specifically grep out fileExists as it is a known false positive in this tool
 if sqflint -d "$WS/addons" 2>&1 | grep -v "fileExists" | grep -E "error|warning" > /tmp/uksfta_sqflint.log; then
     echo "  ❌ SQFLINT STANDARD: FAILED"
     cat /tmp/uksfta_sqflint.log

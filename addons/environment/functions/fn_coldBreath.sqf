@@ -20,7 +20,8 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     // Only execute in cold conditions
     if (_biome == "ARCTIC" || {overcast > 0.8}) then {
         private _unit = player;
-        if (alive _unit && {vehicle _unit == _unit}) then {
+        // Optimization: HEMTT compliant check
+        if (alive _unit && {isNull objectParent _unit}) then {
             // [Particle Effect Logic]
         };
     };
