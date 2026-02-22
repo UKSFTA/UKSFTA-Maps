@@ -48,7 +48,8 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     
     _phys params ["_tMin", "_tMax", "_baseHumid", "_basePress"];
     
-    _currentStateIdx = [_currentStateIdx, _activeProfile] call uksfta_environment_fnc_getNextState;
+    // Updated Signature: getNextState only takes current index
+    _currentStateIdx = [_currentStateIdx] call uksfta_environment_fnc_getNextState;
     (_activeProfile select _currentStateIdx) params ["_targetOvercast", "_targetRain", "_targetFog"];
 
     private _baseTime = 1800 + (random 1800);

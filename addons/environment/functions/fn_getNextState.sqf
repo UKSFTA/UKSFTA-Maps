@@ -2,7 +2,7 @@
  * UKSFTA Environment - Weather State Machine
  */
 
-params ["_current", "_profile"];
+params ["_current"];
 
 // Calculate probabilities for transitions
 private _next = _current;
