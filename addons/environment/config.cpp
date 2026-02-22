@@ -8,12 +8,9 @@ class CfgPatches {
         requiredVersion = 1.62;
         requiredAddons[] = {
             "UKSFTA_Maps_Main", 
-            "A3_Data_F", 
-            "A3_Data_F_Curator", 
             "cba_main", 
             "cba_settings"
         };
-        // Explicitly list all supported realism mods as optional
         optionalAddons[] = {
             "ace_weather",
             "ace_goggles",
@@ -26,6 +23,32 @@ class CfgPatches {
         };
         author = "UKSF Taskforce Alpha";
         VERSION_CONFIG;
+    };
+};
+
+// --- CBA SETTINGS REGISTRY (Sovereign Method) ---
+// This ensures settings are visible in the menu even if scripts fail
+class CBA_Settings {
+    class uksfta_environment_preset {
+        category = "UKSFTA Environment";
+        displayName = "Operational Mode";
+        tooltip = "ARCADE: Easier visibility. REALISM: Full Diamond Standard.";
+        settingType = "LIST";
+        values[] = {"ARCADE", "REALISM"};
+        labels[] = {"Arcade (Relaxed)", "Realism (Diamond Standard)"};
+        default = "REALISM";
+    };
+    class uksfta_environment_enabled {
+        category = "UKSFTA Environment";
+        displayName = "Enable Framework (Server)";
+        settingType = "CHECKBOX";
+        default = 1;
+    };
+    class uksfta_environment_enableThermals {
+        category = "UKSFTA Environment";
+        displayName = "Enable Thermal Realism";
+        settingType = "CHECKBOX";
+        default = 1;
     };
 };
 
