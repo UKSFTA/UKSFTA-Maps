@@ -12,12 +12,16 @@ sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_weather_logic.sqf" > /tmp/sqfvm_logic.l
 sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_matrix.sqf" > /tmp/sqfvm_matrix.log 2>&1 || FAIL=1
 sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_solar_logic.sqf" > /tmp/sqfvm_solar.log 2>&1 || FAIL=1
 sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_thermal_logic.sqf" > /tmp/sqfvm_thermal.log 2>&1 || FAIL=1
+sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_environmental_scenarios.sqf" > /tmp/sqfvm_scenarios.log 2>&1 || FAIL=1
+sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_camouflage_matrix.sqf" > /tmp/sqfvm_camo.log 2>&1 || FAIL=1
 
 if grep -q "❌" /tmp/sqfvm_matrix.log; then echo "  ❌ Matrix Failure detected"; FAIL=1; fi
 if grep -q "❌" /tmp/sqfvm_solar.log; then echo "  ❌ Solar Logic Failure detected"; FAIL=1; fi
 if grep -q "❌" /tmp/sqfvm_thermal.log; then echo "  ❌ Thermal Logic Failure detected"; FAIL=1; fi
+if grep -q "❌" /tmp/sqfvm_scenarios.log; then echo "  ❌ Scenario Logic Failure detected"; FAIL=1; fi
+if grep -q "❌" /tmp/sqfvm_camo.log; then echo "  ❌ Camouflage Matrix Failure detected"; FAIL=1; fi
 
-echo "  ✅ Environmental & Solar Logic Verified."
+echo "  ✅ All Logic & Matrices Verified."
 
 echo "📊 Step 3: Performance Audit..."
 sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_performance.sqf" > /tmp/sqfvm_perf.log 2>&1 || FAIL=1
