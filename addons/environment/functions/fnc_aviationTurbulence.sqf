@@ -1,6 +1,6 @@
 /**
  * UKSFTA Environment - Aviation Turbulence Engine
- * Applies physical forces to aircraft during high overcast/storms.
+ * COMPAT LAYER: Conflict-aware physics injection.
  */
 
 if (!hasInterface) exitWith {};
@@ -8,36 +8,33 @@ if (!hasInterface) exitWith {};
 while {true} do {
     private _veh = objectParent player;
     
-    // Only run if player is pilot/copilot of an Air vehicle
     if (uksfta_environment_enableTurbulence && !isNull _veh && { _veh isKindOf "Air" } && { (driver _veh == player || gunner _veh == player) }) then {
         
-        private _overcast = overcast;
-        if (_overcast > 0.4) then {
-            
-            // --- CALIBRATION ---
+        // --- CONFLICT CHECK ---
+        // Checks if vehicle has native turbulence or specific high-fidelity flight systems
+        // (e.g. AFM enabled or specific mod variables)
+        private _hasNativePhys = _veh getVariable ["UKSFTA_HasCustomFlightModel", false];
+        if (difficultyEnabled "RTD") then { _hasNativePhys = true; }; // Skip if Advanced Flight Model is on
+
+        if (!_hasNativePhys && {overcast > 0.4}) then {
             private _speed = speed _veh;
             private _alt = (getPosATL _veh) select 2;
+            private _intensity = (overcast * uksfta_environment_turbulenceIntensity);
             
-            // Turbulence is stronger at high speeds and lower altitudes (surface thermals)
-            private _intensity = (_overcast * uksfta_environment_turbulenceIntensity);
-            if (_alt < 500) then { _intensity = _intensity * 1.5; };
-            if (_speed < 50) then { _intensity = _intensity * 0.2; }; // Minimum at hover
+            if (_alt < 400) then { _intensity = _intensity * 1.4; };
+            if (_speed < 40) then { _intensity = _intensity * 0.1; }; 
+
+            private _forceX = (random 2 - 1) * _intensity * 400;
+            private _forceY = (random 2 - 1) * _intensity * 400;
+            private _forceZ = (random 4 - 2) * _intensity * 800; 
             
-            // --- PHYSICS INJECTION ---
-            // Random vector [X, Y, Z]
-            private _forceX = (random 2 - 1) * _intensity * 500;
-            private _forceY = (random 2 - 1) * _intensity * 500;
-            private _forceZ = (random 4 - 2) * _intensity * 1000; // Stronger vertical 'bumps'
-            
-            // Apply relative to vehicle model
             _veh addForce [_veh vectorModelToWorld [_forceX, _forceY, _forceZ], [0,0,0]];
             
-            // Low-latency loop for smooth physics (0.1s - 0.5s)
-            sleep (0.1 + random 0.4);
+            sleep (0.2 + random 0.3);
         } else {
             sleep 2;
         };
     } else {
-        sleep 5; // Deep sleep when not in aircraft
+        sleep 5;
     };
 };
