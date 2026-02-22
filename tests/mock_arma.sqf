@@ -24,6 +24,7 @@ surfaceType = { "#Gras" };
 getVariable = { params ["_obj", "_var", "_def"]; _val = _obj getVariable [_var, _def]; if (isNil "_val") then { _def } else { _val }; };
 setVariable = { params ["_obj", "_var", "_val"]; _obj setVariable [_var, _val]; };
 setUnitTrait = { params ["_trait", "_val"]; player setVariable [_trait, _val]; };
+getUnitTrait = { params ["_trait"]; player getVariable [_trait, 1.0]; };
 ppEffectEnable = { true };
 ppEffectAdjust = { true };
 ppEffectCommit = { true };
@@ -33,6 +34,17 @@ sin = { sin _this }; // VM native
 cos = { cos _this };
 abs = { abs _this };
 finite = { finite _this };
+parseText = { _this }; // Mock
+
+// --- CBA MOCKS ---
+CBA_fnc_formatNumber = { 
+    params ["_num", "_decimals"]; 
+    // Basic rounding mock for display (VM doesn't need perfect string formatting here, just a value)
+    str _num 
+};
+CBA_fnc_waitAndExecute = { true };
+CBA_fnc_addSetting = { true };
+CBA_fnc_addDisplayHandler = { true };
 
 // SOVEREIGN HOOK: Bypasses VM parser conflict for setTIParameter
 uksfta_fnc_setTI = { true };

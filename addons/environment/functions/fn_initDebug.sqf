@@ -28,7 +28,10 @@ waitUntil { !isNil "uksfta_environment_debugHUD" };
             _txt = _txt + format ["<t align='left'>VIS COEF:</t><t align='right' color='#ffffff'>%1</t><br/>", ([_camo, 2] call CBA_fnc_formatNumber)];
             _txt = _txt + format ["<t align='left'>AUD COEF:</t><t align='right' color='#ffffff'>%1</t><br/>", ([_audit, 2] call CBA_fnc_formatNumber)];
             _txt = _txt + format ["<t align='left'>TEMP:</t><t align='right' color='#ffffff'>%1°C</t><br/>", ([_temp, 1] call CBA_fnc_formatNumber)];
-            _txt = _txt + format ["<t align='left'>SIGNAL LOSS:</t><t align='right' color='#ff0000'>%1%%</t><br/>", ([_interference * 100, 0] call CBA_fnc_formatNumber)];
+            
+            // Linter-safe percentage formatting using %2 for literal %
+            _txt = _txt + format ["<t align='left'>SIGNAL LOSS:</t><t align='right' color='#ff0000'>%1%2</t><br/>", ([_interference * 100, 0] call CBA_fnc_formatNumber), "%"];
+            
             _txt = _txt + _div;
 
             hintSilent parseText _txt;
