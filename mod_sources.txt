@@ -11,9 +11,6 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=2852097448 # Main Campaig
 # Side Operations
 https://steamcommunity.com/sharedfiles/filedetails/?id=1128256978 # Side Operation | Chernarus Redux
 
-# Weekend Operation
-https://steamcommunity.com/sharedfiles/filedetails/?id=867438623 # Weekend Operation | IFA3_Terrains_LITE
-
 [ignore]
 # List mods to exclude from download/sync below
 https://steamcommunity.com/sharedfiles/filedetails/?id=583496184 # Terrain | CUP Terrains - Core

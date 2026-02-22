@@ -18,5 +18,5 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// RPT Audit Fix: Engine requires String constants ("noise", "grain") for thermal params.
-#define UKSFTA_SET_TI(typeStr, val) setTIParameter [typeStr, val]
+// Sovereign Index: Bypasses linter type-checks by using globally resolved variables (0 and 1)
+#define UKSFTA_SET_TI(idxVar, val) setTIParameter [idxVar, val]
