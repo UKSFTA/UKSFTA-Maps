@@ -1,32 +1,33 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Signal Interference (TFAR/ACRE)
- * Atmospheric signal attenuation.
+ * UKSFTA Environment - Radio Signal Interference
+ * Attenuates radio range based on atmospheric moisture.
  */
 
 if (!hasInterface) exitWith {};
 
-// Strict guard: Wait for settings to sync
+// --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false]) then {
         private _overcast = overcast;
+        private _rain = rain;
+        private _loss = 1.0 - ((_overcast * 0.2) + (_rain * 0.3));
+        
+        // Scale by user intensity
         private _intensity = missionNamespace getVariable ["uksfta_environment_interferenceIntensity", 1.0];
-        
-        // TFAR Sending Distance Multiplier
-        // 1.0 = normal, 0.5 = half range
-        private _loss = (1.0 - (_overcast * 0.3 * _intensity)) max 0.1;
-        
+        _loss = (1.0 - ((1.0 - _loss) * _intensity)) max 0.1;
+
+        // TFAR Integration
         player setVariable ["tf_sendingDistanceMultiplicator", _loss, true];
-        
-        if (uksfta_environment_debug) then {
-            // Telemetry handled in master debug
+        player setVariable ["tf_receivingDistanceMultiplicator", _loss, true];
+
+        if (missionNamespace getVariable ["uksfta_environment_debugHUD", false]) then {
+            // [Debug logging handled by initDebug OSD]
         };
-    } else {
-        player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true];
     };
 
-    sleep 60;
+    sleep 10;
 };
 true

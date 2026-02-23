@@ -19,6 +19,8 @@ if (hasInterface || is3DEN) then {
         // --- SOVEREIGN LIGHTNING LOOP ---
         // Bypassing addMissionEventHandler ["Lightning"] due to engine enum conflicts
         [] spawn {
+            // Include removed here to prevent PW1 redefinition warnings;
+            // The outer scope include covers the anonymous function during compilation.
             waitUntil { !isNil "uksfta_environment_enabled" };
             
             while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {

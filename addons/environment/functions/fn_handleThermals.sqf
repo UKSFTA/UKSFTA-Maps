@@ -1,49 +1,35 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Thermal Interference Engine
+ * UKSFTA Environment - Thermal Management
+ * Simulates atmospheric degradation of TI optics.
  */
 
 if (!hasInterface) exitWith {};
 
-// Strict guard: Wait for settings to sync
+// --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
-waitUntil { !isNil "uksfta_environment_enableThermals" };
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     if (missionNamespace getVariable ["uksfta_environment_enableThermals", false]) then {
         private _overcast = overcast;
-        private _rain = rain;
         private _fog = fog;
-        private _intensity = uksfta_environment_thermalIntensity;
-        private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
-        
-        private _multiplier = [1.0, 0.2] select (uksfta_environment_preset == "ARCADE");
-        private _noise = ((_overcast * 0.2) + (_rain * 0.3) + (_fog * 0.5)) * _multiplier;
+        private _noise = 0;
+
+        if (_overcast > 0.7) then { _noise = (_overcast - 0.7) * 0.5; };
+        if (_fog > 0.3) then { _noise = _noise + (_fog * 0.5); };
+
+        // Scale by user setting
+        private _intensity = missionNamespace getVariable ["uksfta_environment_thermalIntensity", 1.0];
         _noise = (_noise * _intensity) min 1.0;
 
-        private _sunAlt = call uksfta_environment_fnc_getSunElevation;
-        if (uksfta_environment_preset == "REALISM" && _biome == "ARID" && (_sunAlt > 20)) then {
-            private _heatFactor = (_sunAlt / 90.0) * 0.4;
-            _noise = (_noise + _heatFactor) min 1.0;
+        // --- Standard Macro Call ---
+        if (_noise > 0.01) then {
+            UKSFTA_SET_TI(TI_NOISE,_noise);
+        } else {
+            UKSFTA_SET_TI(TI_NOISE,0);
         };
-
-        // Triple-Lock Compliance: Using string aliases
-        UKSFTA_SET_TI(TI_NOISE,_noise);
-        UKSFTA_SET_TI(TI_GRAIN,_noise * 0.5);
-
-        if (uksfta_environment_preset == "REALISM" && (lightnings > 0.8) && (_overcast > 0.9)) then {
-            if (random 100 > 90) then {
-                UKSFTA_SET_TI(TI_NOISE,1.0);
-                UKSFTA_SET_TI(TI_GRAIN,1.0);
-                sleep (0.1 + random 0.5);
-            };
-        };
-
-    } else {
-        UKSFTA_SET_TI(TI_NOISE,0);
-        UKSFTA_SET_TI(TI_GRAIN,0);
     };
 
-    sleep 10;
+    sleep 2;
 };
 true
