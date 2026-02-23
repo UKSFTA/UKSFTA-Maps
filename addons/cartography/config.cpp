@@ -6,16 +6,12 @@ class CfgPatches {
         units[] = {};
         weapons[] = {};
         requiredVersion = 1.62;
-        requiredAddons[] = {"UKSFTA_Maps_Main", "cba_main"};
+        requiredAddons[] = {
+            "uksfta_main", 
+            "cba_main"
+        };
         author = "UKSF Taskforce Alpha";
         VERSION_CONFIG;
-    };
-};
-
-// --- Standardized CBA UI HOOK ---
-class Extended_DisplayLoad_EventHandlers {
-    class RscDisplayMainMap {
-        uksfta_cartography = "_this call uksfta_cartography_fnc_initCartography";
     };
 };
 
@@ -25,11 +21,17 @@ class Extended_PreInit_EventHandlers {
     };
 };
 
+class Extended_DisplayLoad_EventHandlers {
+    class RscDisplayMainMap {
+        uksfta_cartography_init = "params ['_display']; _display call uksfta_cartography_fnc_initCartography";
+    };
+};
+
 class CfgFunctions {
     class uksfta_cartography {
         tag = "uksfta_cartography";
         class functions {
-            file = "\z\uksfta\addons\cartography\functions";
+            file = "z\uksfta\addons\cartography\functions";
             class preInit {};
             class initCartography {};
             class handleMapDraw {};

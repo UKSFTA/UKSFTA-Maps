@@ -1,19 +1,20 @@
+#include "..\script_component.hpp"
 /**
  * UKSFTA Cartography - PreInit Settings
  */
 
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [CARTOGRAPHY]: Initializing Pre-Init Settings...";
+
 [
-    "uksfta_cartography_mode", "LIST",
-    ["Active Map Layer", "Choose the high-performance tactical overlay style."],
+    "UKSFTA_Cartography_Mode", "LIST",
+    ["Map Layer Mode", "Toggles the high-fidelity tactical overlay on the mission map."],
     "UKSFTA Cartography", 
     [
         ["STANDARD", "SATELLITE", "TOPOGRAPHIC", "OS_HYBRID"],
-        ["Standard (A3)", "High-Fidelity Satellite", "Topographic (Survey)", "OS-Hybrid (Tactical)"],
+        ["Standard (Vanilla)", "Full Satellite", "Tactical Topographic", "UKSFTA OS Hybrid"],
         0
-    ], 1, {
-        params ["_value"];
-        missionNamespace setVariable ["UKSFTA_Cartography_Mode", _value];
-    }, true
+    ], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [CARTOGRAPHY]: Pre-Init Settings Registered.";
 true

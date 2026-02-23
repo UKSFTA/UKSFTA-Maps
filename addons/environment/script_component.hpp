@@ -1,11 +1,18 @@
+#ifndef UKSFTA_ENVIRONMENT_COMPONENT
+#define UKSFTA_ENVIRONMENT_COMPONENT
+
 #define COMPONENT environment
 #define COMPONENT_BEAUTIFIED Environment
 #define PREFIX uksfta
 
 #include "..\environment\script_version.hpp"
 
-#define QUOTE(var) #var
-#define QQUOTE(var) QUOTE(var)
+#ifndef QUOTE
+    #define QUOTE(var) #var
+#endif
+#ifndef QQUOTE
+    #define QQUOTE(var) QUOTE(var)
+#endif
 
 #define ADDON uksfta_environment
 #define ADDON_NAME UKSFTA Environment
@@ -19,3 +26,5 @@
 
 // --- TECHNICAL MACROS ---
 #define UKSFTA_SET_TI(idx,val) [idx,val] call { setTIParameter _this }
+
+#endif

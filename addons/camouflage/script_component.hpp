@@ -1,11 +1,18 @@
+#ifndef UKSFTA_CAMOUFLAGE_COMPONENT
+#define UKSFTA_CAMOUFLAGE_COMPONENT
+
 #define COMPONENT camouflage
 #define COMPONENT_BEAUTIFIED Camouflage
 #define PREFIX uksfta
 
 #include "script_version.hpp"
 
-#define QUOTE(var) #var
-#define QQUOTE(var) QUOTE(var)
+#ifndef QUOTE
+    #define QUOTE(var) #var
+#endif
+#ifndef QQUOTE
+    #define QQUOTE(var) QUOTE(var)
+#endif
 
 #define ADDON uksfta_camouflage
 #define ADDON_NAME UKSFTA Camouflage
@@ -16,3 +23,5 @@
 #define VERSION_AR MAJOR,MINOR,PATCHLVL,BUILD
 
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
+
+#endif
