@@ -14,7 +14,7 @@ if (isServer) then {
 // 2. Intelligence Orchestration (Wait for Biome)
 [] spawn {
     #include "..\script_component.hpp"
-    waitUntil { (missionNamespace getVariable ["UKSFTA_Environment_Biome", "PENDING"]) != "PENDING" };
+    waitUntil { !isNil "UKSFTA_Environment_Biome" && {UKSFTA_Environment_Biome != "PENDING"} };
     
     if (isServer && !is3DEN) then {
         diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Biome Resolved. Spawning Weather Engine...";
