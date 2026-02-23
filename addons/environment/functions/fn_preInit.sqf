@@ -1,6 +1,21 @@
+#include "..\script_component.hpp"
 /**
  * UKSFTA Environment - PreInit Settings
  */
+
+["INFO", "Initializing Pre-Init Settings...", "Environment"] call uksfta_environment_fnc_telemetry;
+
+// --- LOGGING LEVEL ---
+[
+    "uksfta_environment_logLevel", "LIST",
+    ["Logging Level", "Adjust the verbosity of technical diagnostics in the RPT log."],
+    "UKSFTA Environment", 
+    [
+        [0, 1, 2],
+        ["Errors Only", "Information", "Trace (Full Telemetry)"],
+        1
+    ], 1, {}, true
+] call CBA_fnc_addSetting;
 
 // --- OPERATIONAL MODE ---
 [
@@ -68,4 +83,5 @@
     [0.1, 10, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+["INFO", "Pre-Init Settings Registered.", "Environment"] call uksfta_environment_fnc_telemetry;
 true

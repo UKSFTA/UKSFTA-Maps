@@ -57,6 +57,7 @@ class CfgFunctions {
             class initDebug {};
             class handleThermals {};
             class getSunElevation {};
+            class telemetry {};
         };
     };
 };

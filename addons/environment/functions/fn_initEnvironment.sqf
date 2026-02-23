@@ -3,24 +3,30 @@
  * UKSFTA Environment - Master Init
  */
 
+["INFO", "Master Initialization Sequence Starting...", "Environment"] call uksfta_environment_fnc_telemetry;
+
 // 1. Client-Side Orchestration
 if (hasInterface || is3DEN) then {
-    [] spawn uksfta_environment_fnc_applyVisuals;
+    ["INFO", "Client Environment Detected. Spawning Modules...", "Environment"] call uksfta_environment_fnc_telemetry;
+    
+    [] spawn { 
+        call uksfta_environment_fnc_applyVisuals; 
+    };
     
     if (!is3DEN) then {
-        [] spawn uksfta_environment_fnc_coldBreath;
-        [] spawn uksfta_environment_fnc_katMedicalHook;
-        [] spawn uksfta_environment_fnc_signalInterference;
-        [] spawn uksfta_environment_fnc_aviationTurbulence;
-        [] spawn uksfta_environment_fnc_uavInterference;
-        [] spawn uksfta_environment_fnc_initDebug;
-        [] spawn uksfta_environment_fnc_handleThermals;
+        [] spawn { call uksfta_environment_fnc_coldBreath; };
+        [] spawn { call uksfta_environment_fnc_katMedicalHook; };
+        [] spawn { call uksfta_environment_fnc_signalInterference; };
+        [] spawn { call uksfta_environment_fnc_aviationTurbulence; };
+        [] spawn { call uksfta_environment_fnc_uavInterference; };
+        [] spawn { call uksfta_environment_fnc_initDebug; };
+        [] spawn { call uksfta_environment_fnc_handleThermals; };
 
         // --- SOVEREIGN LIGHTNING LOOP ---
         [] spawn {
+            ["INFO", "Lightning sovereign loop active.", "Environment"] call uksfta_environment_fnc_telemetry;
             waitUntil { !isNil "uksfta_environment_enabled" };
             
-            // Dedicated handle for lightning bursts
             private _ppLightning = ppEffectCreate ["FilmGrain", 1504];
             
             while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
@@ -52,7 +58,9 @@ if (hasInterface || is3DEN) then {
 
 // 2. Server-Side Intelligence
 if (isServer && !is3DEN) then {
+    ["INFO", "Server Environment Detected. Spawning Weather Cycle...", "Environment"] call uksfta_environment_fnc_telemetry;
     [] spawn uksfta_environment_fnc_weatherCycle;
 };
 
+["INFO", "Master Initialization Sequence Complete.", "Environment"] call uksfta_environment_fnc_telemetry;
 true
