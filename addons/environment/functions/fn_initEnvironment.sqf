@@ -3,11 +3,11 @@
  * UKSFTA Environment - Master Init
  */
 
-LOG_INFO("Master Initialization Sequence Starting...");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Master Initialization Sequence Starting...";
 
 // 1. Client-Side Orchestration
 if (hasInterface || is3DEN) then {
-    LOG_INFO("Client Environment Detected. Spawning Modules...");
+    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Client Environment Detected. Spawning Modules...";
     
     [] spawn { 
         call uksfta_environment_fnc_applyVisuals; 
@@ -24,15 +24,13 @@ if (hasInterface || is3DEN) then {
 
         // --- SOVEREIGN LIGHTNING LOOP ---
         [] spawn {
-            LOG_INFO("Lightning sovereign loop active.");
+            diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Lightning sovereign loop active.";
             waitUntil { !isNil "uksfta_environment_enabled" };
             
             private _ppLightning = ppEffectCreate ["FilmGrain", 1504];
             
             while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
                 if (lightnings > 0.7 && {overcast > 0.8}) then {
-                    LOG_TRACE("Lightning pulse detected.");
-                    
                     if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false]) then {
                         player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
                         [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
@@ -60,9 +58,9 @@ if (hasInterface || is3DEN) then {
 
 // 2. Server-Side Intelligence
 if (isServer && !is3DEN) then {
-    LOG_INFO("Server Environment Detected. Spawning Weather Cycle...");
+    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Server Environment Detected. Spawning Weather Cycle...";
     [] spawn uksfta_environment_fnc_weatherCycle;
 };
 
-LOG_INFO("Master Initialization Sequence Complete.");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Master Initialization Sequence Complete.";
 true

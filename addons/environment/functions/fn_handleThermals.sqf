@@ -9,7 +9,7 @@ if (!hasInterface) exitWith {};
 // --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
 
-["INFO", "Thermal Management Hook Active.", "Environment"] call uksfta_main_fnc_telemetry;
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Thermal Management Hook Active.";
 
 // Dedicated handles for UKSFTA Environmental TI
 private _ppColorC = ppEffectCreate ["ColorCorrections", 1501];
@@ -29,7 +29,9 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         _noise = (_noise * _intensity) min 1.0;
 
         if (_noise > 0.05) then {
-            ["TRACE", format ["Thermal Noise Applied: %1", _noise], "Environment"] call uksfta_main_fnc_telemetry;
+            if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+                diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Thermal Noise Applied: %1", _noise]);
+            };
             _ppColorC ppEffectEnable true;
             _ppColorC ppEffectAdjust [1, 1 - (_noise * 0.5), 0, [0,0,0,0], [1,1,1,1], [0.3,0.3,0.3,0]];
             _ppColorC ppEffectCommit 0.5;
@@ -42,7 +44,6 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
             _ppFilmG ppEffectEnable false;
         };
     } else {
-        // Explicitly disable when not in TI to prevent "Flickering"
         _ppColorC ppEffectEnable false;
         _ppFilmG ppEffectEnable false;
     };
