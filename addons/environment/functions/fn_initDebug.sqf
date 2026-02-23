@@ -13,7 +13,6 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Diagnostic OSD Loop 
 
 // --- DEBUG HUD LOOP ---
 [] spawn {
-    #include "..\script_component.hpp"
     private _header = "<t color='#4caf50' size='1.2' font='RobotoCondensedBold'>UKSFTA TELEMETRY</t><br/>";
     private _div = "<t color='#aaaaaa' size='0.8'>----------------------------</t><br/>";
     

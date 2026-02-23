@@ -9,7 +9,6 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [CAMOUFLAGE]: Master Initialization
 
 // --- MAIN STEALTH LOOP ---
 [] spawn {
-    #include "..\script_component.hpp"
     diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [CAMOUFLAGE]: Stealth Processing Loop Active.";
     
     // Wait for environment to resolve biome
