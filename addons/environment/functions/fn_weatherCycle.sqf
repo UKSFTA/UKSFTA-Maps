@@ -50,7 +50,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     _state params ["_overcast", "_rain", "_fog", "_wind", "_duration"];
 
     // 1. Map-Accurate Solar Math
-    private _lat = getNumber (configfile >> "CfgWorlds" >> worldName >> "latitude") min 90;
+    private _lat = getNumber (configFile >> "CfgWorlds" >> worldName >> "latitude") min 90;
     private _sunAlt = call uksfta_environment_fnc_getSunElevation;
     // Normalize sun factor based on latitude (90 - lat = max possible elevation at equinox)
     private _maxPossibleAlt = (90 - abs(_lat)) max 10;
