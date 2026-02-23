@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - UAV Interference
+ * UKSFTA Environment - UAV Interference (PP Stack)
  * Simulates signal degradation for remote sensors.
  */
 
@@ -8,6 +8,9 @@ if (!hasInterface) exitWith {};
 
 // --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
+
+// Dedicated handle for UAV degradation
+private _ppFilmG = ppEffectCreate ["FilmGrain", 1503];
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _uav = getConnectedUAV player;
@@ -18,15 +21,20 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
 
         if (_dist > 2000) then { _noise = (_dist - 2000) / 3000; };
         
-        // --- DYNAMIC BRIDGE STANDARD ---
-        // 0 = Noise
         if (_noise > 0.05) then {
-            UKSFTA_SET_TI(0,(_noise min 1.0));
+            _ppFilmG ppEffectEnable true;
+            _ppFilmG ppEffectAdjust [(_noise min 1.0), 1.5, 2.5, 0.5, 1.0, true];
+            _ppFilmG ppEffectCommit 0.2;
         } else {
-            UKSFTA_SET_TI(0,0);
+            _ppFilmG ppEffectEnable false;
         };
+    } else {
+        _ppFilmG ppEffectEnable false;
     };
 
     sleep 1;
 };
+
+// Cleanup
+ppEffectDestroy _ppFilmG;
 true

@@ -18,6 +18,5 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// Sovereign Bridge: Standard call for thermal parameters using Dynamic Execution to bypass linter strictness
-// Usage: UKSFTA_SET_TI(0, _val) where 0 is Noise index
-#define UKSFTA_SET_TI(idx,val) [idx,val] call { setTIParameter _this }
+// Internal TI Logic migrated to high-performance PP Stack handles (1501-1504)
+// This definitively resolves the "Unknown Enum" crashes caused by setTIParameter.
