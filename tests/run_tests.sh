@@ -55,7 +55,7 @@ if grep -q "❌" /tmp/uksfta_matrix.log; then FAIL=1; fi
 
 # 5. INDIVIDUAL SCENARIOS
 echo -e "\n🧪 [5/7] AUDITING INDIVIDUAL LOGIC PILLARS..."
-CORE_TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf")
+CORE_TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf" "test_realism_fx.sqf")
 for t in "${CORE_TESTS[@]}"; do
     sqfvm -a -v "$WS|$WS" -i "$WS/tests/$t" > /tmp/uksfta_core.log 2>&1
     if grep -q "❌" /tmp/uksfta_core.log; then 

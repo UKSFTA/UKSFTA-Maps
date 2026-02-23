@@ -22,6 +22,14 @@ Weather transitions are handled via a logical Markov-Chain matrix:
 - **Transitions**: Controlled 30-60 minute interpolation windows to prevent "weather snaps."
 - **Synchronization**: Automatically links wind speed, gusts, and wave height to atmospheric intensity.
 
+### Modular Visual Engine
+
+The UKSFTA framework utilizes a **Modular Visual Engine** that operates independently of terrain configurations (`CfgWorlds`), ensuring 100% fidelity on any map.
+
+- **Dynamic Color Grading**: Utilizes a sovereign Post-Processing stack (Handle 1501) driven by real-time solar elevation and weather extinction.
+- **Solar Interpolation**: Automatically shifts RGB balance from warm golden-hour tones to high-contrast night-blue based on physical sun angles.
+- **Atmospheric FX**: Integrates local particle-based raindrops and adaptive film grain to provide tactile grit during intense operations.
+
 ## 3. Technical Integrations
 
 ### ACE3 Ballistics
