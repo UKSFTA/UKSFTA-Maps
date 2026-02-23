@@ -30,6 +30,7 @@ if (_treeCount < 10) then {
     _biome = "ARID";
 };
 
+// 3. BROADCAST FINALIZATION
 missionNamespace setVariable ["UKSFTA_Environment_Biome", _biome, true];
 diag_log text (format ["[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Global Biome Classification Finalized: %1", _biome]);
 

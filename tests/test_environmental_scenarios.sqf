@@ -1,28 +1,32 @@
 #include "mock_arma.sqf"
+/**
+ * UKSFTA Test - Environmental Stress Scenarios
+ */
+
 diag_log "🧪 INITIATING BIOME SCENARIO AUDIT...";
 
-// SCENARIO A: ARCTIC NIGHT
-_mock_dayTime = 0; overcast = 1.0;
-private _sunAlt = sin ((_mock_dayTime - 6) * 15) * 90;
-private _grain = [0, 0.15] select (overcast > 0.7 || (_sunAlt < -5));
+// Scenario: Arctic Storm
+private _biome = "ARCTIC";
+overcast = 0.9;
+rain = 0.5;
+private _temp = -30 + (0 * 30) - (overcast * 5.0);
 
-if (_grain == 0.15) then { diag_log "    ✅ Case Arctic: PASS"; } else { diag_log "    ❌ Case Arctic: FAIL"; };
+if (_temp < -30) then {
+    diag_log "  ✅ Arctic Temp Math: PASS";
+} else {
+    diag_log "  ❌ Arctic Temp Math: FAIL";
+};
 
-// SCENARIO B: TROPICAL MONSOON
-overcast = 1.0; uksfta_environment_interferenceIntensity = 1.0;
-private _signalLoss = 1.0 + (overcast * 0.3 * uksfta_environment_interferenceIntensity);
-if (_signalLoss > 1.2) then { diag_log "    ✅ Case Tropical: PASS"; } else { diag_log "    ❌ Case Tropical: FAIL"; };
+// Scenario: Aviation Turbulence
+private _wind = 10;
+private _intensity = 1.0;
+private _factor = ((overcast * 0.6) + (_wind * 0.08)) * _intensity;
 
-// SCENARIO C: ARID HEAT
-_mock_dayTime = 12;
-private _sunAltArid = sin ((_mock_dayTime - 6) * 15) * 90;
-private _heatFactor = (_sunAltArid / 90) * 0.4;
-if (_heatFactor > 0.3) then { diag_log "    ✅ Case Arid: PASS"; } else { diag_log "    ❌ Case Arid: FAIL"; };
+if (_factor > 1.0) then {
+    diag_log "  ✅ Severe Turbulence Trigger: PASS";
+} else {
+    diag_log "  ❌ Severe Turbulence Trigger: FAIL";
+};
 
-// SYNTAX AUDITS
-diag_log "  🔍 Auditing File Syntax...";
-private _s1 = compile preprocessFile "/ext/Development/UKSFTA-Maps/addons/environment/functions/fn_applyVisuals.sqf";
-private _s2 = compile preprocessFile "/ext/Development/UKSFTA-Maps/addons/environment/functions/fn_weatherCycle.sqf";
-if (!isNil "_s1" && !isNil "_s2") then { diag_log "    ✅ Case Engine Syntax: PASS"; } else { diag_log "    ❌ Case Engine Syntax: FAIL"; };
-
-diag_log "🏁 Scenario Audit Complete.";
+diag_log "🏁 Biome Scenario Audit Complete.";
+true

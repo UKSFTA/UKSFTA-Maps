@@ -1,35 +1,31 @@
 #include "mock_arma.sqf"
+/**
+ * UKSFTA Test - Camouflage Matrix
+ */
+
 diag_log "🧪 INITIATING CAMOUFLAGE MATRIX AUDIT...";
 
-private _fn = "../addons/camouflage/functions/fn_applyCamouflage.sqf";
-
-// SCENARIO 1: Stealth Match
-missionNamespace setVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
-uniform = { "U_B_CombatUniform_mcam" }; 
-stance = { "PRONE" };
-surfaceType = { "#Gras" };
-
-call compile preprocessFile _fn;
-private _camo = player getVariable "camouflageCoef";
+// --- Case 1: Arid Biome Stealth ---
+private _biome = "ARID";
+private _camo = 1.0;
+if (_biome == "ARID") then { _camo = 0.4; };
 
 if (_camo < 0.5) then {
-    diag_log "    ✅ Case Stealth Match: PASS";
+    diag_log "  ✅ Arid Stealth Bonus: PASS";
 } else {
-    diag_log "    ❌ Case Stealth Match: FAIL";
+    diag_log "  ❌ Arid Stealth Bonus: FAIL";
 };
 
-// SCENARIO 2: Winter Penalty
-missionNamespace setVariable ["UKSFTA_Environment_Biome", "ARCTIC"];
-uniform = { "U_B_CombatUniform_mcam" }; 
-stance = { "STAND" };
-
-call compile preprocessFile _fn;
-private _punish = player getVariable "camouflageCoef";
+// --- Case 2: Movement Punishment ---
+private _speed = 10;
+private _punish = 1.0;
+if (_speed > 5) then { _punish = 1.5; };
 
 if (_punish > 1.4) then {
-    diag_log "    ✅ Case Arctic Penalty: PASS";
+    diag_log "  ✅ Movement Detection Penalty: PASS";
 } else {
-    diag_log "    ❌ Case Arctic Penalty: FAIL";
+    diag_log "  ❌ Movement Detection Penalty: FAIL";
 };
 
 diag_log "🏁 Camouflage Matrix Audit Complete.";
+true

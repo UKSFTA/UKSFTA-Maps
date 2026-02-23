@@ -5,62 +5,70 @@
 
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Master Initialization Sequence Starting...";
 
-// 1. Client-Side Orchestration
-if (hasInterface || is3DEN) then {
-    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Client Environment Detected. Spawning Modules...";
+// 1. Core Logic (Server Primary)
+if (isServer) then {
+    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Server Core Detected. Initiating Biome Detection...";
+    call uksfta_environment_fnc_analyzeBiome;
+};
+
+// 2. Intelligence Orchestration (Wait for Biome)
+[] spawn {
+    #include "..\script_component.hpp"
+    waitUntil { (missionNamespace getVariable ["UKSFTA_Environment_Biome", "PENDING"]) != "PENDING" };
     
-    [] spawn { 
-        call uksfta_environment_fnc_applyVisuals; 
+    if (isServer && !is3DEN) then {
+        diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Biome Resolved. Spawning Weather Engine...";
+        [] spawn uksfta_environment_fnc_weatherCycle;
     };
     
-    if (!is3DEN) then {
-        [] spawn { call uksfta_environment_fnc_coldBreath; };
-        [] spawn { call uksfta_environment_fnc_katMedicalHook; };
-        [] spawn { call uksfta_environment_fnc_signalInterference; };
-        [] spawn { call uksfta_environment_fnc_aviationTurbulence; };
-        [] spawn { call uksfta_environment_fnc_uavInterference; };
-        [] spawn { call uksfta_environment_fnc_initDebug; };
-        [] spawn { call uksfta_environment_fnc_handleThermals; };
+    if (hasInterface || is3DEN) then {
+        diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Biome Resolved. Spawning Modules...";
+        
+        [] spawn { call uksfta_environment_fnc_applyVisuals; };
+        
+        if (!is3DEN) then {
+            [] spawn { call uksfta_environment_fnc_coldBreath; };
+            [] spawn { call uksfta_environment_fnc_katMedicalHook; };
+            [] spawn { call uksfta_environment_fnc_signalInterference; };
+            [] spawn { call uksfta_environment_fnc_aviationTurbulence; };
+            [] spawn { call uksfta_environment_fnc_uavInterference; };
+            [] spawn { call uksfta_environment_fnc_initDebug; };
+            [] spawn { call uksfta_environment_fnc_handleThermals; };
 
-        // --- SOVEREIGN LIGHTNING LOOP ---
-        [] spawn {
-            diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Lightning sovereign loop active.";
-            waitUntil { !isNil "uksfta_environment_enabled" };
-            
-            private _ppLightning = ppEffectCreate ["FilmGrain", 1504];
-            
-            while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
-                if (lightnings > 0.7 && {overcast > 0.8}) then {
-                    if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false]) then {
-                        player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
-                        [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
-                    };
-                    
-                    if (missionNamespace getVariable ["uksfta_environment_enableThermals", false] && {currentVisionMode player == 2}) then {
-                        _ppLightning ppEffectEnable true;
-                        _ppLightning ppEffectAdjust [1.0, 1.0, 1.0, 0.5, 1.0, true];
-                        _ppLightning ppEffectCommit 0.1;
+            // --- SOVEREIGN LIGHTNING LOOP ---
+            [] spawn {
+                diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Lightning sovereign loop active.";
+                waitUntil { !isNil "uksfta_environment_enabled" };
+                
+                private _ppLightning = ppEffectCreate ["FilmGrain", 1504];
+                
+                while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
+                    if (lightnings > 0.7 && {overcast > 0.8}) then {
+                        if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false]) then {
+                            player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
+                            [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
+                        };
                         
-                        [0.2 + random 0.3, {
-                            params ["_fx"];
-                            _fx ppEffectEnable false;
-                        }, [_ppLightning]] call CBA_fnc_waitAndExecute;
+                        if (missionNamespace getVariable ["uksfta_environment_enableThermals", false] && {currentVisionMode player == 2}) then {
+                            _ppLightning ppEffectEnable true;
+                            _ppLightning ppEffectAdjust [1.0, 1.0, 1.0, 0.5, 1.0, true];
+                            _ppLightning ppEffectCommit 0.1;
+                            
+                            [0.2 + random 0.3, {
+                                params ["_fx"];
+                                _fx ppEffectEnable false;
+                            }, [_ppLightning]] call CBA_fnc_waitAndExecute;
+                        };
+                        
+                        sleep (2 + random 5);
                     };
-                    
-                    sleep (2 + random 5);
+                    sleep 0.5;
                 };
-                sleep 0.5;
+                ppEffectDestroy _ppLightning;
             };
-            ppEffectDestroy _ppLightning;
         };
     };
 };
 
-// 2. Server-Side Intelligence
-if (isServer && !is3DEN) then {
-    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Server Environment Detected. Spawning Weather Cycle...";
-    [] spawn uksfta_environment_fnc_weatherCycle;
-};
-
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Master Initialization Sequence Complete.";
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Master Initialization Sequence Handed Off.";
 true
