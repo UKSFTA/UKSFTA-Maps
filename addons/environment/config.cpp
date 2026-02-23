@@ -27,6 +27,14 @@ class CfgPatches {
 };
 
 class CBA_Settings {
+    // --- CORE ---
+    class uksfta_environment_enabled {
+        category = "UKSFTA Environment";
+        displayName = "Enable Framework (Server)";
+        tooltip = "Global toggle for the dynamic weather and realism suite.";
+        settingType = "CHECKBOX";
+        default = 1;
+    };
     class uksfta_environment_preset {
         category = "UKSFTA Environment";
         displayName = "Operational Mode";
@@ -36,19 +44,24 @@ class CBA_Settings {
         labels[] = {"Arcade (Relaxed)", "Realism (Diamond Standard)"};
         default = "REALISM";
     };
-    class uksfta_environment_enabled {
+
+    // --- DEBUG ---
+    class uksfta_environment_debug {
         category = "UKSFTA Environment";
-        displayName = "Enable Framework (Server)";
-        settingType = "CHECKBOX";
-        default = 1;
-    };
-    class uksfta_environment_debugHUD {
-        category = "UKSFTA Environment";
-        displayName = "Show Technical Telemetry (OSD)";
-        tooltip = "Displays real-time data for biomes, ballistics, and sensors.";
+        displayName = "Enable Debug Logging";
+        tooltip = "Outputs detailed environmental telemetry to the RPT log.";
         settingType = "CHECKBOX";
         default = 0;
     };
+    class uksfta_environment_debugHUD {
+        category = "UKSFTA Environment";
+        displayName = "Show Technical OSD";
+        tooltip = "Displays real-time technical data on screen for testing.";
+        settingType = "CHECKBOX";
+        default = 0;
+    };
+
+    // --- REALISM MODULES ---
     class uksfta_environment_enableThermals {
         category = "UKSFTA Environment";
         displayName = "Enable Thermal Realism";
@@ -61,16 +74,33 @@ class CBA_Settings {
         settingType = "CHECKBOX";
         default = 1;
     };
+
+    // --- INTENSITIES ---
+    class uksfta_environment_transitionSpeed {
+        category = "UKSFTA Environment";
+        displayName = "Weather Transition Speed";
+        tooltip = "Multiplier for atmospheric state changes.";
+        settingType = "SLIDER";
+        values[] = {0.1, 10, 1, 1};
+        default = 1;
+    };
+    class uksfta_environment_visualIntensity {
+        category = "UKSFTA Environment";
+        displayName = "Visual Tint Intensity";
+        settingType = "SLIDER";
+        values[] = {0, 2, 1, 1};
+        default = 1;
+    };
     class uksfta_environment_thermalIntensity {
         category = "UKSFTA Environment";
-        displayName = "Thermal Degradation Strength";
+        displayName = "Thermal Noise Strength";
         settingType = "SLIDER";
         values[] = {0, 5, 1, 1};
         default = 1;
     };
     class uksfta_environment_interferenceIntensity {
         category = "UKSFTA Environment";
-        displayName = "Signal Interference Intensity";
+        displayName = "Signal Interference Strength";
         settingType = "SLIDER";
         values[] = {0, 5, 1, 1};
         default = 1;
