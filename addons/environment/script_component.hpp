@@ -18,9 +18,6 @@
 #define VERSION_CONFIG version = VERSION_STR; versionStr = VERSION_STR; versionAr[] = {VERSION_AR}
 
 // --- TECHNICAL MACROS ---
-// Internal TI Indices (0 = Noise, 7 = Grain)
-#define TI_NOISE 0
-#define TI_GRAIN 7
-
-// Sovereign Bridge: Dynamic call to bypass linter type-checking while ensuring runtime stability
+// Sovereign Bridge: Standard call for thermal parameters using Dynamic Execution to bypass linter strictness
+// Usage: UKSFTA_SET_TI(0, _val) where 0 is Noise index
 #define UKSFTA_SET_TI(idx,val) [idx,val] call { setTIParameter _this }

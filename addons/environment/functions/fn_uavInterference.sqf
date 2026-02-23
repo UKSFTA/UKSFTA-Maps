@@ -18,9 +18,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
 
         if (_dist > 2000) then { _noise = (_dist - 2000) / 3000; };
         
-        // --- Standard Macro Call (Dynamic Bridge) ---
+        // --- DYNAMIC BRIDGE STANDARD ---
+        // 0 = Noise
         if (_noise > 0.05) then {
-            UKSFTA_SET_TI(TI_NOISE,(_noise min 1.0));
+            UKSFTA_SET_TI(0,(_noise min 1.0));
+        } else {
+            UKSFTA_SET_TI(0,0);
         };
     };
 

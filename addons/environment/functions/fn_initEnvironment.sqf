@@ -19,8 +19,6 @@ if (hasInterface || is3DEN) then {
         // --- SOVEREIGN LIGHTNING LOOP ---
         // Bypassing addMissionEventHandler ["Lightning"] due to engine enum conflicts
         [] spawn {
-            // Include removed here to prevent PW1 redefinition warnings;
-            // The outer scope include covers the anonymous function during compilation.
             waitUntil { !isNil "uksfta_environment_enabled" };
             
             while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
@@ -32,8 +30,9 @@ if (hasInterface || is3DEN) then {
                     };
                     
                     if (missionNamespace getVariable ["uksfta_environment_enableThermals", false]) then {
-                        UKSFTA_SET_TI(TI_NOISE,1.0);
-                        [0.2 + random 0.3, { UKSFTA_SET_TI(TI_NOISE,0); }] call CBA_fnc_waitAndExecute;
+                        // Integer index 0 = Noise via Dynamic Bridge
+                        UKSFTA_SET_TI(0,1.0);
+                        [0.2 + random 0.3, { UKSFTA_SET_TI(0,0); }] call CBA_fnc_waitAndExecute;
                     };
                     
                     sleep (2 + random 5); // Prevent rapid re-triggering

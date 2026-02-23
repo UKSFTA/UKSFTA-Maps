@@ -22,11 +22,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         private _intensity = missionNamespace getVariable ["uksfta_environment_thermalIntensity", 1.0];
         _noise = (_noise * _intensity) min 1.0;
 
-        // --- Standard Macro Call (Dynamic Bridge) ---
+        // --- DYNAMIC BRIDGE STANDARD ---
+        // 0 = Noise, 1 = Grain
         if (_noise > 0.01) then {
-            UKSFTA_SET_TI(TI_NOISE,_noise);
+            UKSFTA_SET_TI(0,_noise);
         } else {
-            UKSFTA_SET_TI(TI_NOISE,0);
+            UKSFTA_SET_TI(0,0);
         };
     };
 
