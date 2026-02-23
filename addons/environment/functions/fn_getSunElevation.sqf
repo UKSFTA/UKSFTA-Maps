@@ -1,12 +1,14 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Solar Altitude Utility
- * Returns the approximate sun elevation in degrees (-90 to 90).
+ * UKSFTA Environment - Sun Elevation Calculator
+ * Returns the relative altitude of the sun for temperature curves.
  */
 
-// Safe hook for headless testing, defaults to engine dayTime
-private _time = missionNamespace getVariable ["uksfta_test_mock_dayTime", dayTime];
-private _elevation = 0;
+// Pure mathematical utility - allow execution on any machine
+// but ensure missionNamespace is accessible.
+if (isNil "missionNamespace") exitWith { 0 };
 
-_elevation = sin ((_time - 6) * 15) * 90;
+private _dayTime = dayTime;
+private _sunAlt = sin ((_dayTime - 6) * 15) * 90;
 
-_elevation
+_sunAlt
