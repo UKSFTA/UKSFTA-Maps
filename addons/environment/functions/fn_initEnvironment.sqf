@@ -34,6 +34,8 @@ if (isServer) then {
             [] spawn { call uksfta_environment_fnc_uavInterference; };
             [] spawn { call uksfta_environment_fnc_initDebug; };
             [] spawn { call uksfta_environment_fnc_handleThermals; };
+            [] spawn { call uksfta_environment_fnc_rainEffect; };
+            [] spawn { call uksfta_environment_fnc_visualNoise; };
 
             // --- SOVEREIGN LIGHTNING LOOP ---
             [] spawn {
