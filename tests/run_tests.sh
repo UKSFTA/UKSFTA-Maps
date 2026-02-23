@@ -50,7 +50,7 @@ fi
 # 4. TOTAL OPERATIONAL MATRIX
 echo -e "\n💎 [4/7] AUDITING SOVEREIGN TOTAL MATRIX (PRECISION)..."
 sqfvm -a -v "$WS|$WS" -i "$WS/tests/test_total_matrix.sqf" > /tmp/uksfta_matrix.log 2>&1
-grep "📊" /tmp/uksfta_matrix.log | sed 's/\[DIAG\]//g' | grep -E "ARCTIC|TROPICAL|ARID|TEMPERATE|MEDITERRANEAN" | head -n 25
+grep "📊" /tmp/uksfta_matrix.log | sed 's/\[DIAG\]//g' | grep -E "ARCTIC|TROPICAL|ARID|TEMPERATE|MEDITERRANEAN"
 if grep -q "❌" /tmp/uksfta_matrix.log; then FAIL=1; fi
 
 # 5. INDIVIDUAL SCENARIOS

@@ -4,7 +4,7 @@ diag_log "🧪 INITIATING SOVEREIGN TOTAL MATRIX (PRECISION EDITION)...";
 private _biomes = ["TEMPERATE", "ARID", "ARCTIC", "TROPICAL", "MEDITERRANEAN", "SUBTROPICAL"];
 private _presets = ["ARCADE", "REALISM"];
 private _times = [12, 0]; // Noon, Midnight
-private _weather = [0, 1]; // Clear, Storm
+private _weather = [0, 0.5, 1]; // Clear, Overcast, Monsoon
 
 private _physProfiles = [
     ["TEMPERATE",     [10.0, 25.0, 0.5, 1013.0]],
