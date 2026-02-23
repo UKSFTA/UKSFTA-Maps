@@ -15,9 +15,10 @@ class CfgPatches {
 class CfgFunctions {
     class uksfta_main {
         tag = "uksfta_main";
-        class main {
-            file = "\z\uksfta\addons\main\functions";
-            class preInit {};
+        class functions {
+            file = "z\uksfta\addons\main\functions";
+            class preInit { preInit = 1; };
+            class telemetry {};
         };
     };
 };

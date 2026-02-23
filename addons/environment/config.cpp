@@ -7,7 +7,7 @@ class CfgPatches {
         weapons[] = {};
         requiredVersion = 1.62;
         requiredAddons[] = {
-            "UKSFTA_Maps_Main", 
+            "uksfta_main", 
             "cba_main"
         };
         optionalAddons[] = {
@@ -40,8 +40,8 @@ class Extended_PostInit_EventHandlers {
 class CfgFunctions {
     class uksfta_environment {
         tag = "uksfta_environment";
-        class environment {
-            file = "\z\uksfta\addons\environment\functions";
+        class functions {
+            file = "z\uksfta\addons\environment\functions";
             class preInit {};
             class initEnvironment {};
             class weatherCycle {};
@@ -57,7 +57,6 @@ class CfgFunctions {
             class initDebug {};
             class handleThermals {};
             class getSunElevation {};
-            class telemetry {};
         };
     };
 };
