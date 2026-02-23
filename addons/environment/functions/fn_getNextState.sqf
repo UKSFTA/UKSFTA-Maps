@@ -4,15 +4,16 @@
  * Returns: [_overcast, _rain, _fog, _wind, _duration]
  */
 
+// Supports both direct string and array-wrapped string
 params [
-    ["_biome", "TEMPERATE"]
+    ["_biome", "TEMPERATE", [""]]
 ];
 
 private _overcast = 0;
 private _rain = 0;
 private _fog = 0;
 private _wind = 2 + random 5;
-private _duration = 600 + random 1200; // 10-30 minute states
+private _duration = 600 + random 1200; 
 
 switch (toUpper _biome) do {
     case "ARID": {
@@ -29,7 +30,7 @@ switch (toUpper _biome) do {
     };
     case "ARCTIC": {
         _overcast = 0.2 + random 0.8;
-        _rain = 0; // Snow is handled by visuals
+        _rain = 0; 
         _fog = if (_overcast > 0.6) then { 0.1 + random 0.4 } else { 0 };
         _wind = 8 + random 12;
     };
@@ -47,5 +48,4 @@ switch (toUpper _biome) do {
     };
 };
 
-// Returns the final state vector
 [_overcast, _rain, _fog, _wind, _duration]
