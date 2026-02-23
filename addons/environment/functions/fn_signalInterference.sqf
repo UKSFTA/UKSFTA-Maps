@@ -31,8 +31,8 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
 
         missionNamespace setVariable ["UKSFTA_Environment_Interference", (1.0 - _loss), true];
         
-        if (_loss < 0.7 && {missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1}) then {
-            diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Significant Radio Attenuation Active: %1%2 loss", ((1.0 - _loss) * 100), "%"]);
+        if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+            diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Signal Update. Loss: %1%2 | Coef: %3", ((1.0 - _loss) * 100), "%", _loss]);
         };
     };
 

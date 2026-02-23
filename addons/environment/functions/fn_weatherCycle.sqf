@@ -22,19 +22,13 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     
     if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
         diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Transitioning Overcast to %1 over %2s", _overcast, _time]);
-    };
-    _time setOvercast _overcast;
-    
-    if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
         diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Transitioning Rain to %1", _rain]);
-    };
-    0 setRain _rain;
-    
-    if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
         diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Transitioning Fog to %1", _fog]);
     };
-    _time setFog _fog;
     
+    _time setOvercast _overcast;
+    0 setRain _rain;
+    _time setFog _fog;
     setWind [_wind, _wind, true];
     
     // Atmospheric Sync
