@@ -39,9 +39,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
             _rgb = [1.05, 0.95, 0.9];
             _sat = 1.05;
         } else { // Night
-            _rgb = [0.85, 0.9, 1.05];
-            _sat = 0.75;
-            _brightness = 0.95;
+            private _moon = moonIntensity; // 0 to 1
+            // Adjust based on moon intensity for grading (Phase 3: Lunar Grading)
+            _rgb = [0.8 + (0.1 * _moon), 0.85 + (0.1 * _moon), 1.0 + (0.1 * _moon)];
+            _sat = 0.6 + (0.2 * _moon);
+            _brightness = 0.85 + (0.15 * _moon);
+            _contrast = _contrast - (0.05 * (1 - _moon)); // Lower contrast on pitch black nights
         };
     };
 
@@ -59,11 +62,24 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         case "ARCTIC": { _sat = _sat * 0.85; _contrast = _contrast + 0.1; };
     };
 
-    // 4. Final Grading (Refined for Clarity)
+    // 3a. Sub-Biome Overlay (Phase 4: Enoch Scattering)
+    private _subBiome = missionNamespace getVariable ["UKSFTA_Environment_SubBiome", ""];
+    if (_subBiome == "WOODLAND") then {
+        // Enoch-style: Cooler shadows, slight green tint, punchier contrast
+        _rgb = [(_rgb select 0) * 0.95, (_rgb select 1) * 1.02, (_rgb select 2) * 0.98]; 
+        _contrast = _contrast + 0.05;
+        _sat = _sat * 0.95; // Slightly desaturated "gritty" look
+    };
+
+    // 4. Local Micro-Climate Offset (Snow/Altitude)
+    private _localDesat = missionNamespace getVariable ["uksfta_environment_visualDesatLocal", 0];
+    _sat = (_sat - _localDesat) max 0.1;
+
+    // 5. Final Grading (Refined for Clarity)
     _ccHandle ppEffectAdjust [
         _brightness, 
         _contrast, 
-        -0.02, // Subtle black-level shift to clear up the "milk"
+        -0.02, 
         [0, 0, 0, 0], 
         [(_rgb select 0) * _intensity, (_rgb select 1) * _intensity, (_rgb select 2) * _intensity, _sat], 
         [0.299, 0.587, 0.114, 0],

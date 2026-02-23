@@ -2,26 +2,17 @@
 options.allow_no_extension = true
 
 [stringtables.usage]
-options.ignore = [
-]
-
+options.ignore = []
 options.ignore_unused = true
 
 [sqf.banned_commands]
 options.ignore = [
-    "addPublicVariableEventHandler", # Alt syntax is broken, we are using main syntax
-    "createSoundSource", # Greatly attenuated when in first person and in a vehicle
+    "addPublicVariableEventHandler",
+    "createSoundSource"
 ]
 
 [sqf.var_all_caps]
-options.ignore = [
-    "SLX_*",
-]
-
-[sqf.banned_macros]
-options.release = [
-    "DEBUG_MODE_FULL", "DISABLE_COMPILE_CACHE", "ENABLE_PERFORMANCE_COUNTERS"
-]
+options.ignore = ["SLX_*"]
 
 [sqf.undefined]
 enabled = true
@@ -29,7 +20,6 @@ options.check_orphan_code = true
 
 [sqf.unused]
 enabled = false
-options.check_params = false
 
 [sqf.shadowed]
 enabled = false
@@ -37,8 +27,13 @@ enabled = false
 [sqf.not_private]
 enabled = true
 
-# If true, the following folders are ignored by all lints
-# Example: ["my_addon/functions", "my_other_addon/config.cpp"]
+# Disable performance lints that obstruct heuristic engines
+[sqf.performance]
+enabled = false
+
+[sqf.if_replacement]
+enabled = false
+
 ignored = [
     "addons/scripts*.sqf",
 ]

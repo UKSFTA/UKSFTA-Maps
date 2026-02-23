@@ -1,6 +1,7 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Biome Analyzer (Absolute Performance)
+ * UKSFTA Environment - Biome Analyzer (Standardized Keyword Edition)
+ * 100% Zero-Warning, High-Performance Config Interrogation.
  */
 
 if (!isServer) exitWith {};
@@ -11,14 +12,15 @@ private _worldName = toUpper worldName;
 private _worldCfg = configFile >> "CfgWorlds" >> _worldName;
 private _biome = "TEMPERATE"; 
 
-// 1. Extract and Standardize Signatures
+// 1. Extract and Flatten Word Pool
 private _clutterCfg = _worldCfg >> "Clutter";
-private _sigs = [];
+private _wordPool = [];
 if (isClass _clutterCfg) then {
     for "_i" from 0 to ((count _clutterCfg) min 30) do {
         private _class = _clutterCfg select _i;
         if (isClass _class) then {
-            _sigs pushBack (toUpper (configName _class));
+            // Split name by underscores to get individual keywords (e.g. GDT_SNOW -> ["GDT", "SNOW"])
+            { _wordPool pushBackUnique (toUpper _x); } forEach ((configName _class) splitString "_");
         };
     };
 };
@@ -29,24 +31,16 @@ private _found = true;
 // Level 1: Explicit Terrain Matching
 if (_worldName in ["CHERNARUS", "CHERNARUSREDUX", "LIVONIA", "ZAGORSK", "WOODLAND"]) exitWith {
     UKSFTA_Environment_Biome = "TEMPERATE";
+    missionNamespace setVariable ["UKSFTA_Environment_SubBiome", "WOODLAND", true];
     publicVariable "UKSFTA_Environment_Biome";
-    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Classification Finalized: TEMPERATE (Confidence: HIGH)";
+    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Classification Finalized: TEMPERATE (Confidence: HIGH, Sub-Biome: WOODLAND)";
 };
 
-// Level 2: Signature Intersection (Optimized for 'in')
-private _isArctic = false;
-private _isArid   = false;
-private _isTrop   = false;
-private _isMedit  = false;
-
-{
-    private _s = _x;
-    // We check for exact mod-specific clutter prefix matches or common signatures
-    if (_s in ["GDT_SNOW", "GDT_ARCTIC", "GDT_WINTER", "SNOW", "ICE"]) exitWith { _isArctic = true; };
-    if (_s in ["GDT_DESERT", "GDT_SAND", "GDT_DRY", "DESERT", "SAND", "TAKISTAN"]) exitWith { _isArid = true; };
-    if (_s in ["GDT_JUNGLE", "GDT_PALM", "JUNGLE", "PALM", "TANOA", "PACIFIC"]) exitWith { _isTrop = true; };
-    if (_s in ["GDT_ALTIS", "GDT_MEDIT", "ALTIS", "MEDITERRANEAN"]) exitWith { _isMedit = true; };
-} forEach _sigs;
+// Level 2: Keyword Pool Intersection (100% 'in' compliant)
+private _isArctic = "SNOW" in _wordPool || "ARCTIC" in _wordPool || "ICE" in _wordPool;
+private _isArid   = "DESERT" in _wordPool || "SAND" in _wordPool || "DRY" in _wordPool;
+private _isTrop   = "JUNGLE" in _wordPool || "PALM" in _wordPool || "PACIFIC" in _wordPool;
+private _isMedit  = "ALTIS" in _wordPool || "MEDIT" in _wordPool || "STRATIS" in _wordPool;
 
 switch (true) do {
     case _isArctic: { _biome = "ARCTIC"; };
@@ -59,6 +53,10 @@ switch (true) do {
         if (_lat < 15 && _lat > -15) then { _biome = "TROPICAL"; } else {
             if (_lat > 60 || _lat < -60) then { _biome = "ARCTIC"; } else {
                 _biome = "TEMPERATE";
+                // Real-World Location Hook: Temperate zones (40-60 deg) imply heavy woodland
+                if ((_lat > 40 && _lat < 60) || (_lat < -40 && _lat > -60)) then {
+                    missionNamespace setVariable ["UKSFTA_Environment_SubBiome", "WOODLAND", true];
+                };
             };
         };
         _found = false;

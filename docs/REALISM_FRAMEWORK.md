@@ -10,9 +10,9 @@ The UKSFTA Realism Framework is a modular, high-fidelity environmental and physi
 
 The engine "interrogates" the loaded map at runtime using three layers of intelligence:
 
-1.  **Latitude Audit**: Automatically detects Arctic or Tropical conditions based on geographic metadata.
+1.  **Latitude Audit**: Automatically detects Arctic or Tropical conditions based on geographic metadata. Now assigns **Sub-Biomes** (e.g., `WOODLAND`) based on temperate latitude ranges (40-60° N/S).
 2.  **Vegetation Analysis**: Scans map clutter for keywords (e.g., "palm", "sand", "snow") to identify the physical environment.
-3.  **Regional Keywords**: Fallback detection for known unit theatres (e.g., `zagor`, `dagger`).
+3.  **Regional Keywords**: Fallback detection for known unit theatres (e.g., `zagor`, `livonia`).
 
 ### Dynamic Weather State Machine
 
@@ -27,14 +27,20 @@ Weather transitions are handled via a logical Markov-Chain matrix:
 The UKSFTA framework utilizes a **Modular Visual Engine** that operates independently of terrain configurations (`CfgWorlds`), ensuring 100% fidelity on any map.
 
 - **Dynamic Color Grading**: Utilizes a sovereign Post-Processing stack (Handle 1501) driven by real-time solar elevation and weather extinction.
+- **Enoch-Style Scattering**: Automatically applies high-contrast, green-shifted grading on maps identified as `WOODLAND` to replicate the atmosphere of the Contact DLC.
 - **Solar Interpolation**: Automatically shifts RGB balance from warm golden-hour tones to high-contrast night-blue based on physical sun angles.
+- **Lunar Grading**: Dynamically adjusts night-time RGB/Brightness based on the current `moonIntensity` (Full Moon vs. New Moon).
+- **Dynamic Caustics**: Real-time underwater light refraction and chromatic aberration that scales with sun elevation.
 - **Atmospheric FX**: Integrates local particle-based raindrops and adaptive film grain to provide tactile grit during intense operations.
 
 ## 3. Technical Integrations
 
-### ACE3 Ballistics
+### ACE3 Ballistics & Weather
 
-- Dynamically pushes temperature, humidity, and barometric pressure into the `ace_weather` core.
+- **Aerosol Density**: Dynamically adjusts player `camouflageCoef` based on fog and sandstorm intensity, simulating atmospheric obscuration for AI.
+- **Thermal Washout**: Simulates ground heat soak at high noon in `ARID` biomes, resulting in decreased thermal contrast and increased visual noise.
+- **Dynamic Wind Audio**: Procedural wind "howling" that scales with gust speed and player exposure.
+- **Dynamic Weather**: Pushes temperature, humidity, and barometric pressure into the `ace_weather` core.
 - Profiles are biome-specific (e.g., Arid: 45°C / 10% Humid; Arctic: -30°C / 80% Humid).
 
 ### KAT Medical

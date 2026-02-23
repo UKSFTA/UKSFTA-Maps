@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 PROJECT_ROOT=$(pwd)
 export SOURCE_DATE_EPOCH=$(date +%s)
+export HEMTT_TEMP="$PROJECT_ROOT/.hemtt_temp"
+mkdir -p "$HEMTT_TEMP"
 
 # Detect if this is a HEMTT project
 IS_MOD_PROJECT=false

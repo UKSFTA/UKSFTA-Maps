@@ -44,6 +44,26 @@ while {missionNamespace getVariable ["uksfta_camouflage_enabled", false]} do {
         };
     };
 
+    // --- ENVIRONMENTAL OBSCURATION (Phase 5: Aerosol Density) ---
+    private _overcast = overcast;
+    private _fog = fog;
+    private _obsCoef = 1.0;
+
+    // 1. Humidity/Fog Obscuration
+    // Fog provides up to 30% visibility reduction
+    if (_fog > 0.1) then {
+        _obsCoef = _obsCoef * (1 - (linearConversion [0.1, 1.0, _fog, 0, 0.3, true]));
+    };
+
+    // 2. Sandstorm/Dust Obscuration (Arid Specific)
+    // High winds in Arid biomes imply dust, providing further obscuration
+    if (_biome == "ARID" && _overcast > 0.5) then {
+        private _wind = (abs (wind select 0)) + (abs (wind select 1));
+        if (_wind > 10) then {
+            _obsCoef = _obsCoef * (1 - (linearConversion [10, 30, _wind, 0, 0.3, true]));
+        };
+    };
+
     // --- STANCE & GRASS OPTIMIZATION ---
     if (missionNamespace getVariable ["uksfta_camouflage_grassFix", true] && {stance _unit == "PRONE"}) then {
         if (_surface find "gras" != -1) then {
@@ -52,7 +72,7 @@ while {missionNamespace getVariable ["uksfta_camouflage_enabled", false]} do {
     };
 
     // --- APPLY COEFFICIENTS ---
-    private _finalCam = (_camCoef / _intensity) max 0.1;
+    private _finalCam = ((_camCoef * _obsCoef) / _intensity) max 0.1;
     private _finalAud = (_audCoef * _intensity) min 2.0;
 
     _unit setUnitTrait ["camouflageCoef", _finalCam];

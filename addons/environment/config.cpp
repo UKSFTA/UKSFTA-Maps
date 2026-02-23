@@ -56,9 +56,13 @@ class CfgFunctions {
             class uavInterference {};
             class initDebug {};
             class handleThermals {};
+            class handleLightning {};
+            class handleCaustics {};
+            class handleWindAudio {};
             class getSunElevation {};
             class rainEffect {};
             class visualNoise {};
+            class localClimate {};
         };
     };
 };

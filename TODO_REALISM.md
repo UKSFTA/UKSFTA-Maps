@@ -1,23 +1,25 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 2 In-Progress**
+Status: **Phase 5 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
 - **Dynamic Visual Noise**: Adaptive FilmGrain based on sun angle and precipitation.
 - **Immersive Rain**: High-fidelity particle effects locally attached to player visor/vicinity.
 - **Biome Desaturation**: Specific desaturation logic for Arctic/Arid environments.
-
-## 🚧 Phase 3: Advanced Atmospheric Lighting
-- [ ] **Cloud Tinting Engine**: Implement real-time `setCloudColor` shifts to match sunrise/sunset Kelvin values.
-- [ ] **Volumetric Fog Refinement**: Integrate `setFog` height/decay interpolation based on biome (e.g., ground fog in temperate woodland).
-- [ ] **Advanced Lightning Logic**: Shift from static loop to probabilistic density based on `overcast` intensity.
-- [ ] **Lunar Grading**: Adjust RGB/Brightness specifically for Full Moon vs. New Moon scenarios (requires moon phase probe).
+- **Cloud Tinting Engine**: Kelvin-accurate shifts for sunrise/sunset.
+- **Volumetric Fog**: Biome-specific height and decay interpolation.
+- **Advanced Lightning**: Probabilistic side-effects and density control.
+- **Lunar Grading**: Dynamic night grading based on moon intensity.
+- **Enoch-Specific Scattering**: Implemented `WOODLAND` sub-biome with Livonia-style color grading.
+- **Real-World Location Hook**: Latitude-based biome auto-detection (40-60° zones).
+- **Dynamic Caustics**: Procedural underwater refraction and color shifting.
+- **Thunderbolt Intensity**: Visceral white-out flashes synchronized with strikes.
+- **Dynamic Wind Audio**: Procedural wind "howling" via localized sound logic.
+- **Aerosol Density**: AI detection range scaling based on atmospheric obscuration.
+- **Thermal Washout**: High-noon thermal degradation for Arid environments.
 
 ## 🔭 Future Inspiration (Reference Mod Audit)
-- [ ] **Enoch-Specific Scattering**: Replicate the scattering coefficients from `bp_sw_enoch` for heavy woodland maps.
-- [ ] **Thunderbolt Intensity**: Map the reference mod's lightning diffuse/ambient values into our modular engine.
-- [ ] **Dynamic Caustics**: Evaluate feasibility of dynamic underwater lighting for tropical maps without terrain config overrides.
 
 ---
 *Maintained by UKSFTA Strategic Engineering*
