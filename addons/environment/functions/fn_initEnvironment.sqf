@@ -3,11 +3,11 @@
  * UKSFTA Environment - Master Init
  */
 
-["INFO", "Master Initialization Sequence Starting...", "Environment"] call uksfta_environment_fnc_telemetry;
+LOG_INFO("Master Initialization Sequence Starting...");
 
 // 1. Client-Side Orchestration
 if (hasInterface || is3DEN) then {
-    ["INFO", "Client Environment Detected. Spawning Modules...", "Environment"] call uksfta_environment_fnc_telemetry;
+    LOG_INFO("Client Environment Detected. Spawning Modules...");
     
     [] spawn { 
         call uksfta_environment_fnc_applyVisuals; 
@@ -24,13 +24,15 @@ if (hasInterface || is3DEN) then {
 
         // --- SOVEREIGN LIGHTNING LOOP ---
         [] spawn {
-            ["INFO", "Lightning sovereign loop active.", "Environment"] call uksfta_environment_fnc_telemetry;
+            LOG_INFO("Lightning sovereign loop active.");
             waitUntil { !isNil "uksfta_environment_enabled" };
             
             private _ppLightning = ppEffectCreate ["FilmGrain", 1504];
             
             while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
                 if (lightnings > 0.7 && {overcast > 0.8}) then {
+                    LOG_TRACE("Lightning pulse detected.");
+                    
                     if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false]) then {
                         player setVariable ["tf_sendingDistanceMultiplicator", 0.05, true];
                         [0.5 + random 1, { player setVariable ["tf_sendingDistanceMultiplicator", 1.0, true]; }] call CBA_fnc_waitAndExecute;
@@ -58,9 +60,9 @@ if (hasInterface || is3DEN) then {
 
 // 2. Server-Side Intelligence
 if (isServer && !is3DEN) then {
-    ["INFO", "Server Environment Detected. Spawning Weather Cycle...", "Environment"] call uksfta_environment_fnc_telemetry;
+    LOG_INFO("Server Environment Detected. Spawning Weather Cycle...");
     [] spawn uksfta_environment_fnc_weatherCycle;
 };
 
-["INFO", "Master Initialization Sequence Complete.", "Environment"] call uksfta_environment_fnc_telemetry;
+LOG_INFO("Master Initialization Sequence Complete.");
 true

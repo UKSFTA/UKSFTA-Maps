@@ -1,30 +1,23 @@
-#include "script_version.hpp"
-
-#define QUOTE(var) #var
+#include "script_component.hpp"
 
 class CfgPatches {
-    class UKSFTA_Maps_Main {
-        name = "UKSF Taskforce Alpha Maps - Main";
+    class ADDON {
+        name = QUOTE(ADDON_NAME);
         units[] = {};
         weapons[] = {};
         requiredVersion = 1.62;
         requiredAddons[] = {};
-        author = "UKSF Taskforce Alpha Team";
-        authors[] = {"UKSF Taskforce Alpha Team"};
-        version = QUOTE(MAJOR.MINOR.PATCHLVL);
-        versionStr = QUOTE(MAJOR.MINOR.PATCHLVL);
-        versionAr[] = {MAJOR,MINOR,PATCHLVL};
+        author = "UKSF Taskforce Alpha";
+        VERSION_CONFIG;
     };
 };
 
-class CfgMods {
-    author = "UKSF Taskforce Alpha Team";
-    logo = "z\uksfta\addons\main\data\icon_128_ca.paa";
-    logoOver = "z\uksfta\addons\main\data\icon_128_highlight_ca.paa";
-    logoSmall = "z\uksfta\addons\main\data\icon_64_ca.paa";
-    name = "UKSF Taskforce Alpha Maps";
-    overview = "UKSF Taskforce Alpha";
-    picture = "z\uksfta\addons\main\data\title_co.paa";
-    tooltip = "UKSFTA";
-    tooltipOwned = "UKSF Taskforce Alpha";
+class CfgFunctions {
+    class uksfta_main {
+        tag = "uksfta_main";
+        class main {
+            file = "\z\uksfta\addons\main\functions";
+            class preInit {};
+        };
+    };
 };

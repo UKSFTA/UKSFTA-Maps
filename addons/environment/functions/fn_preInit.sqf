@@ -3,7 +3,7 @@
  * UKSFTA Environment - PreInit Settings
  */
 
-["INFO", "Initializing Pre-Init Settings...", "Environment"] call uksfta_environment_fnc_telemetry;
+["INFO", "Initializing Pre-Init Settings...", "Environment"] call uksfta_main_fnc_telemetry;
 
 // --- LOGGING LEVEL ---
 [
@@ -83,5 +83,5 @@
     [0.1, 10, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
-["INFO", "Pre-Init Settings Registered.", "Environment"] call uksfta_environment_fnc_telemetry;
+["INFO", "Pre-Init Settings Registered.", "Environment"] call uksfta_main_fnc_telemetry;
 true

@@ -9,7 +9,7 @@ if (!hasInterface) exitWith {};
 // --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
 
-["INFO", "Thermal Management Hook Active.", "Environment"] call uksfta_environment_fnc_telemetry;
+["INFO", "Thermal Management Hook Active.", "Environment"] call uksfta_main_fnc_telemetry;
 
 // Dedicated handles for UKSFTA Environmental TI
 private _ppColorC = ppEffectCreate ["ColorCorrections", 1501];
@@ -29,7 +29,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         _noise = (_noise * _intensity) min 1.0;
 
         if (_noise > 0.05) then {
-            ["TRACE", format ["Thermal Noise Applied: %1", _noise], "Environment"] call uksfta_environment_fnc_telemetry;
+            ["TRACE", format ["Thermal Noise Applied: %1", _noise], "Environment"] call uksfta_main_fnc_telemetry;
             _ppColorC ppEffectEnable true;
             _ppColorC ppEffectAdjust [1, 1 - (_noise * 0.5), 0, [0,0,0,0], [1,1,1,1], [0.3,0.3,0.3,0]];
             _ppColorC ppEffectCommit 0.5;

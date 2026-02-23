@@ -1,57 +1,34 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Optimized Biome Analyzer
- * Scheduled execution to prevent join-time freezes.
+ * UKSFTA Environment - Biome Analyzer
+ * Technical detection of terrain characteristics.
  */
 
-// 1. Instant Cache Check
-private _cached = missionNamespace getVariable ["UKSFTA_Environment_Biome", ""];
-if (_cached != "") exitWith { _cached };
+if (!isServer) exitWith {};
 
-// 2. Check for Overrides (Instant)
-private _edenBiome = getMissionConfigValue ["UKSFTA_Environment_MissionBiome", ""];
-private _missionBiome = missionNamespace getVariable ["UKSFTA_Environment_MissionBiome", ""];
-private _forced = missionNamespace getVariable ["uksfta_environment_forcedBiome", "AUTO"];
+LOG_INFO("Initiating Global Biome Detection...");
 
+private _worldName = toUpper worldName;
 private _biome = "TEMPERATE";
 
-if (_edenBiome != "" && _edenBiome != "AUTO") exitWith { _biome = toUpper _edenBiome; _biome };
-if (_missionBiome != "") exitWith { _biome = toUpper _missionBiome; _biome };
-if (_forced != "AUTO") exitWith { _forced };
+// 1. Static World Mapping
+if (_worldName in ["ALTIS", "MALDEN", "STRATIS"]) then { _biome = "MEDITERRANEAN"; };
+if (_worldName in ["TANOA", "ENOCH"]) then { _biome = "TROPICAL"; };
+if (_worldName in ["ZAGORSK", "CHERNARUS", "LIVONIA"]) then { _biome = "TEMPERATE"; };
 
-// 3. Heuristic Engine (Distributed)
-private _world = configFile >> "CfgWorlds" >> worldName;
-private _lat = getNumber (_world >> "latitude");
-if (_lat < 0) then { _lat = abs _lat; };
+// 2. Dynamic Sampling (Heuristic)
+private _pos = [worldSize / 2, worldSize / 2, 0];
+private _objects = nearestObjects [_pos, [], 500];
+private _treeCount = { _x isKindOf "Tree" } count _objects;
 
-if (_lat > 60) then { _biome = "ARCTIC"; }
-else {
-    if (_lat < 15) then { _biome = "TROPICAL"; }
-    else {
-        // Optimization: Use a string search on the name first (Linter compliant find)
-        private _name = toLower worldName;
-        if ((_name find "altis" != -1) || (_name find "malden" != -1) || (_name find "stratis" != -1) || (_name find "dagger" != -1) || (_name find "zagor" != -1)) then { 
-            _biome = "MEDITERRANEAN"; 
-        } else {
-            if ((_name find "sahrani" != -1) || (_name find "porto" != -1)) then { 
-                _biome = "SUBTROPICAL"; 
-            } else {
-                // Last Resort: Scan Clutter (Slowest)
-                private _clutterNames = "";
-                { 
-                    _clutterNames = _clutterNames + (toLower (configName _x)) + " "; 
-                } forEach (configProperties [_world >> "Clutter", "isClass _x"] select [0, 5]);
-                
-                if ((_clutterNames find "sand" != -1) || (_clutterNames find "desert" != -1)) then { _biome = "ARID"; }
-                else {
-                    if ((_clutterNames find "palm" != -1) || (_clutterNames find "jungle" != -1)) then { _biome = "TROPICAL"; }
-                    else {
-                        if ((_clutterNames find "snow" != -1) || (_clutterNames find "ice" != -1)) then { _biome = "ARCTIC"; };
-                    };
-                };
-            };
-        };
-    };
+LOG_TRACE(format ["Terrain Sample Result: %1 objects, %2 trees", count _objects, _treeCount]);
+
+if (_treeCount < 10) then {
+    LOG_INFO("Low Vegetation Density Detected. Escalating to ARID classification.");
+    _biome = "ARID";
 };
 
 missionNamespace setVariable ["UKSFTA_Environment_Biome", _biome, true];
-_biome
+LOG_INFO(format ["Global Biome Classification Finalized: %1", _biome]);
+
+true

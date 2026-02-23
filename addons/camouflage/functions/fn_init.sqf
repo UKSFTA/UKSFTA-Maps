@@ -1,21 +1,28 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Camouflage - Master Init
+ * UKSFTA Camouflage - Initialization
  */
 
 if (!hasInterface) exitWith {};
 
-// Start the main camouflage and grass loop
+LOG_INFO("Master Initialization Sequence Starting...");
+
+// --- MAIN STEALTH LOOP ---
 [] spawn {
-    while {true} do {
-        if (uksfta_camouflage_enabled && alive player) then {
-            [] call uksfta_camouflage_fnc_applyCamouflage;
-        } else {
-            // Hard Reset to vanilla values if disabled
-            player setUnitTrait ["camouflageCoef", 1];
-            player setUnitTrait ["audibleCoef", 1];
-        };
-        sleep 5; // Low frequency for performance
+    #include "..\script_component.hpp"
+    LOG_INFO("Stealth Processing Loop Active.");
+    
+    // Wait for environment to resolve biome
+    waitUntil { !isNil "UKSFTA_Environment_Biome" };
+    LOG_TRACE(format ["Environment Synced. Current Biome: %1", missionNamespace getVariable ["UKSFTA_Environment_Biome", "UNKNOWN"]]);
+
+    while { missionNamespace getVariable ["uksfta_camouflage_enabled", true] } do {
+        LOG_TRACE("Executing Camouflage Matrix Update...");
+        call uksfta_camouflage_fnc_applyCamouflage;
+        sleep 5;
     };
+    
+    LOG_INFO("Stealth Processing Loop Terminated (Master Toggle).");
 };
 
 true

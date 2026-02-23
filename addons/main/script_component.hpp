@@ -1,5 +1,5 @@
-#define COMPONENT cartography
-#define COMPONENT_BEAUTIFIED Cartography
+#define COMPONENT main
+#define COMPONENT_BEAUTIFIED Core
 #define PREFIX uksfta
 
 #include "script_version.hpp"
@@ -7,8 +7,8 @@
 #define QUOTE(var) #var
 #define QQUOTE(var) QUOTE(var)
 
-#define ADDON uksfta_cartography
-#define ADDON_NAME UKSFTA Cartography
+#define ADDON uksfta_main
+#define ADDON_NAME UKSFTA Main
 
 // --- VERSIONING ---
 #define VERSION MAJOR.MINOR.PATCHLVL.BUILD
