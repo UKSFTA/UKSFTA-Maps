@@ -12,18 +12,6 @@ class CfgPatches {
     };
 };
 
-class CBA_Settings {
-    class uksfta_cartography_mode {
-        category = "UKSFTA Cartography";
-        displayName = "Active Map Style";
-        tooltip = "Choose the high-performance tactical overlay.";
-        settingType = "LIST";
-        values[] = {"STANDARD", "SATELLITE", "TOPOGRAPHIC", "OS_HYBRID"};
-        labels[] = {"Standard (A3)", "High-Fidelity Satellite", "Topographic (Survey)", "OS-Hybrid (Tactical)"};
-        default = "STANDARD";
-    };
-};
-
 // --- Standardized CBA UI HOOK ---
 class Extended_DisplayLoad_EventHandlers {
     class RscDisplayMainMap {
