@@ -4,7 +4,8 @@
  * Manages the high-performance tactical overlays.
  */
 
-params ["_mapCtrl"];
+// Parameter _mapCtrl is provided by the engine but unused in current logic.
+params [""];
 
 private _mode = missionNamespace getVariable ["UKSFTA_Cartography_Mode", "STANDARD"];
 

@@ -9,7 +9,7 @@ if (!hasInterface) exitWith {};
 // --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_debugHUD" };
 
-["INFO", "Diagnostic OSD Loop Active.", "Environment"] call uksfta_main_fnc_telemetry;
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Diagnostic OSD Loop Active.";
 
 // --- DEBUG HUD LOOP ---
 [] spawn {

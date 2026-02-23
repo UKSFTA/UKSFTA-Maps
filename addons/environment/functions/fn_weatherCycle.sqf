@@ -6,7 +6,7 @@
 
 if (!isServer) exitWith {};
 
-LOG_INFO("Sovereign Weather Engine Starting...");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Sovereign Weather Engine Starting...";
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
@@ -15,35 +15,43 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     private _state = [_biome] call uksfta_environment_fnc_getNextState;
     _state params ["_overcast", "_rain", "_fog", "_wind", "_duration"];
 
-    LOG_INFO(format ["New Weather State Generated: %1 | Duration: %2s", _state, _duration]);
+    diag_log text (format ["[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: New Weather State Generated: %1 | Duration: %2s", _state, _duration]);
 
     // Apply Transition
     private _time = _duration / (missionNamespace getVariable ["uksfta_environment_transitionSpeed", 1.0]);
     
-    LOG_TRACE(format ["Transitioning Overcast to %1 over %2s", _overcast, _time]);
+    if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+        diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Transitioning Overcast to %1 over %2s", _overcast, _time]);
+    };
     _time setOvercast _overcast;
     
-    LOG_TRACE(format ["Transitioning Rain to %1", _rain]);
+    if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+        diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Transitioning Rain to %1", _rain]);
+    };
     0 setRain _rain;
     
-    LOG_TRACE(format ["Transitioning Fog to %1", _fog]);
+    if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+        diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Transitioning Fog to %1", _fog]);
+    };
     _time setFog _fog;
     
     setWind [_wind, _wind, true];
     
     // Atmospheric Sync
     if (_overcast > 0.8) then { 
-        LOG_TRACE("Storm Conditions Detected. Enabling Sovereign Lightning.");
+        if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+            diag_log text "[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Storm Conditions Detected. Enabling Sovereign Lightning.";
+        };
         0 setLightnings 1; 
     } else { 
         0 setLightnings 0; 
     };
     
     simulWeatherSync;
-    LOG_INFO("Atmospheric Synchronization Complete.");
+    diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Atmospheric Synchronization Complete.";
 
     sleep _duration;
 };
 
-LOG_INFO("Sovereign Weather Engine Terminated.");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Sovereign Weather Engine Terminated.";
 true

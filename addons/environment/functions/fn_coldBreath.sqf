@@ -9,7 +9,7 @@ if (!hasInterface) exitWith {};
 // --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
 
-LOG_INFO("Cold Breath Physiological Hook Active.");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Cold Breath Physiological Hook Active.";
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
@@ -29,12 +29,15 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
                 [1000], 1, 0.04, "", "", _unit, 
                 (360 - (getDir _unit)), true, 0.1
             ];
-            LOG_TRACE("Breath Particle Spawned.");
+            
+            if (missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1) then {
+                diag_log text "[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Breath Particle Spawned.";
+            };
         };
     };
 
-    sleep (2.5 + random 2); // Dynamic respiratory rate
+    sleep (2.5 + random 2);
 };
 
-LOG_INFO("Cold Breath Loop Terminated.");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Cold Breath Loop Terminated.";
 true

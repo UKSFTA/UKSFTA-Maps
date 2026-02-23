@@ -9,7 +9,7 @@ if (!hasInterface) exitWith {};
 // --- ABSOLUTE STARTUP GUARD ---
 waitUntil { !isNil "uksfta_environment_enabled" };
 
-LOG_INFO("Signal Interference Hook Active.");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Signal Interference Hook Active.";
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     if (missionNamespace getVariable ["uksfta_environment_enableSignalInterference", false]) then {
@@ -17,7 +17,6 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         private _rain = rain;
         
         // Multi-Factor Attenuation Model
-        // Rain is the primary attenuator (up to 40% loss), Overcast secondary (up to 20% loss)
         private _loss = 1.0 - ((_overcast * 0.2) + (_rain * 0.4));
         
         // Scale by user intensity
@@ -30,20 +29,15 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
             player setVariable ["tf_receivingDistanceMultiplicator", _loss, true];
         };
 
-        // --- ACRE Integration ---
-        if (!isNil "acre_api_fnc_setLoss") then {
-            // [ACRE Loss implementation]
-        };
-
         missionNamespace setVariable ["UKSFTA_Environment_Interference", (1.0 - _loss), true];
         
-        if (_loss < 0.7) then {
-            LOG_TRACE(format ["Significant Radio Attenuation Active: %1%2 loss", ((1.0 - _loss) * 100), "%"]);
+        if (_loss < 0.7 && {missionNamespace getVariable ["uksfta_environment_logLevel", 0] > 1}) then {
+            diag_log text (format ["[UKSF TASKFORCE ALPHA] <TRACE> [ENVIRONMENT]: Significant Radio Attenuation Active: %1%2 loss", ((1.0 - _loss) * 100), "%"]);
         };
     };
 
-    sleep 15; // Atmospheric density changes slowly
+    sleep 15;
 };
 
-LOG_INFO("Signal Interference Loop Terminated.");
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Signal Interference Loop Terminated.";
 true
