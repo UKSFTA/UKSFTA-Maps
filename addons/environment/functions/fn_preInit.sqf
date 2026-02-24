@@ -109,5 +109,20 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Initializing Pre-Ini
     [0, 5, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+// --- HAZARD & PARTICLE SETTINGS ---
+[
+    "uksfta_environment_enableParticles", "CHECKBOX",
+    ["Enable Atmospheric Particles", "Toggles dynamic snow, sand, and dust effects."],
+    "UKSFTA Environment", 
+    true, 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_particleMultiplier", "SLIDER",
+    ["Atmospheric Particle Density", "Adjust the amount of blizzard/sandstorm particles."],
+    "UKSFTA Environment", 
+    [0, 5, 1, 1], 1, {}, true
+] call CBA_fnc_addSetting;
+
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Pre-Init Settings Registered.";
 true
