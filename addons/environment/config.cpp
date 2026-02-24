@@ -42,6 +42,20 @@ class RscTitles {
     #include "accumulation.hpp"
 };
 
+class CfgVehicles {
+    class House;
+    class UKSFTA_SurfacePlane: House {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\data\surface_plane.p3d";
+        hiddenSelections[] = {"BloodSplatter_Plane"};
+    };
+    class UKSFTA_SurfacePlaneSmall: House {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\data\surface_plane_small.p3d";
+        hiddenSelections[] = {"BloodSplatter_Plane"};
+    };
+};
+
 class CfgFunctions {
     class uksfta_environment {
         tag = "uksfta_environment";
@@ -67,6 +81,7 @@ class CfgFunctions {
             class aviationIcing {};
             class handleVehicleDirt {};
             class handleAccumulation {};
+            class handlePooling {};
             class initAccumulationUI {};
             class getSunElevation {};
             class rainEffect {};
