@@ -17,7 +17,7 @@ UKSFTA_Audio_LastDiveState = false; // False: Dry, True: Underwater
         // 1. SURFACING GASP
         if (UKSFTA_Audio_LastDiveState && !_isUnderwater) then {
             // Player just surfaced
-            private _sound = "z\uksfta\addons\audio\sounds\horror\breath.ogg";
+            private _sound = "z\uksfta\addons\audio\sounds\character\breath\Breath_Max_01.wss";
             playSoundUI [_sound, 1.5, 0.8 + random 0.4];
         };
         UKSFTA_Audio_LastDiveState = _isUnderwater;

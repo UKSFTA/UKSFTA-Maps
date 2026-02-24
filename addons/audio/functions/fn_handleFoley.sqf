@@ -18,11 +18,11 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Gear Foley Engine Active."
             private _vol = (_speed / 10) * (0.5 + _load);
             private _pitch = 0.9 + (random 0.2);
             
-            // Randomized gear sound classes
+            // Randomized gear sound classes (JSRS Internalized)
             private _sound = selectRandom [
-                "A3\Sounds_F\characters\human-sfx\P01\Gear_Rattle_01.wss",
-                "A3\Sounds_F\characters\human-sfx\P01\Gear_Rattle_02.wss",
-                "A3\Sounds_F\characters\human-sfx\P01\Gear_Rattle_03.wss"
+                "z\uksfta\addons\audio\sounds\character\foley\adjust_short1.wss",
+                "z\uksfta\addons\audio\sounds\character\foley\adjust_short2.wss",
+                "z\uksfta\addons\audio\sounds\character\foley\adjust_short3.wss"
             ];
 
             playSound3D [_sound, player, false, getPosASL player, _vol, _pitch, 20];
