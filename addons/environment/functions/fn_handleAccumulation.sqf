@@ -21,8 +21,23 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     private _perfMode = missionNamespace getVariable ["uksfta_environment_perfMode", 1];
     
     // Performance derived values
-    private _texRes = [1024, 512, 128] select _perfMode;
-    private _sleepTime = [2, 5, 10] select _perfMode;
+    private _texRes = 512;
+    private _sleepTime = 5;
+
+    switch (_perfMode) do {
+        case 0: { _texRes = 1024; _sleepTime = 2; };
+        case 1: { _texRes = 512; _sleepTime = 5; };
+        case 2: { _texRes = 128; _sleepTime = 10; };
+        case 3: { 
+            // Auto-detect based on FPS
+            private _fps = diag_fps;
+            if (_fps > 50) then { _texRes = 1024; _sleepTime = 3; } else {
+                if (_fps > 25) then { _texRes = 512; _sleepTime = 6; } else {
+                    _texRes = 256; _sleepTime = 12;
+                };
+            };
+        };
+    };
     
     {
         private _unit = _x;

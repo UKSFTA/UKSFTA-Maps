@@ -93,12 +93,12 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Initializing Pre-Ini
 
 [
     "uksfta_environment_perfMode", "LIST",
-    ["Performance Mode (Accumulation)", "Adjust the resolution and update frequency of dynamic textures."],
+    ["Performance Mode (Accumulation)", "Adjust the resolution and update frequency. 'Auto' scales based on current FPS."],
     "UKSFTA Environment", 
     [
-        [0, 1, 2],
-        ["Ultra (1024px, 2s)", "Standard (512px, 5s)", "Potato (128px, 10s)"],
-        1
+        [0, 1, 2, 3],
+        ["Ultra (1024px, 2s)", "Standard (512px, 5s)", "Potato (128px, 10s)", "Auto (Dynamic)"],
+        3
     ], 1, {}, true
 ] call CBA_fnc_addSetting;
 
