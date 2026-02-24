@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 5 Complete**
+Status: **Phase 7 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -18,21 +18,20 @@ Status: **Phase 5 Complete**
 - **Dynamic Wind Audio**: Procedural wind "howling" via localized sound logic.
 - **Aerosol Density**: AI detection range scaling based on atmospheric obscuration.
 - **Thermal Washout**: High-noon thermal degradation for Arid environments.
+- **Aviation Icing**: Implement airframe icing simulation in Arctic/Storm biomes, increasing weight and drag.
+- **Dynamic Mud/Dirt**: Accumulate visual dirt/mud on vehicles based on surface type and precipitation.
+- **Heart Rate Sync**: Link extreme cold/heat to ACE3 stamina consumption rates.
+- **Sovereign UI2Texture Engine**: High-performance procedural UI-to-Texture layering for units.
+- **Adaptive Wetness**: Units progressively darken/wet via procedural overlays in rain or water.
+- **Snow Accumulation**: Real-time white-out of uniforms/backpacks during Arctic blizzards.
+- **Injury Visualization**: Linked ACE3 medical bleeding to dynamic blood splatter textures.
+- **Global Mud Accumulation**: Personnel accumulate mud based on stance (prone) and surface moisture.
+- **Stealth Integration**: Camouflage coefficients dynamically balanced by pixel-perfect terrain sampling and accumulation levels.
 
-## 🚧 Phase 6: Physiological & Advanced Physics
-- [x] **Aviation Icing**: Implement airframe icing simulation in Arctic/Storm biomes, increasing weight and drag.
-- [x] **Dynamic Mud/Dirt**: Accumulate visual dirt/mud on vehicles based on surface type and precipitation.
+## 🚧 Phase 8: Advanced Physics & Coastal Simulation
 - [ ] **Tidal Shifts**: Procedural water level adjustment for coastal maps based on lunar phase.
-- [x] **Heart Rate Sync**: Link extreme cold/heat to ACE3 stamina consumption rates.
-
-## 🚧 Phase 7: Dynamic Surface Accumulation (Texture Layering)
-- [ ] **Sovereign UI2Texture Engine**: Implement a performance-optimized dynamic layering system for unit textures.
-- [ ] **Adaptive Wetness**: Units progressively darken when in rain or water, with gradual drying logic.
-- [ ] **Snow Accumulation**: Real-time white-out of uniforms/backpacks during Arctic blizzards.
-- [ ] **Injury Visualization**: Link ACE3 medical wounds to dynamic blood splatter on specific body parts.
-- [ ] **Global Mud Accumulation**: Expand vehicle dirt logic to all personnel based on stance and surface type.
-
-## 🔭 Future Inspiration (Reference Mod Audit)
+- [ ] **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients (beyond ACE3 baseline).
+- [ ] **Vehicle Thermo-Signature**: Dynamic thermal signature based on engine state and ambient biome temperature.
 
 ---
 *Maintained by UKSFTA Strategic Engineering*
