@@ -124,6 +124,26 @@ class CfgCloudlets {
         size[] = {2, 6};
         color[] = {{0.8, 0.8, 0.8, 0.8}, {0.9, 0.9, 0.9, 0.4}, {1, 1, 1, 0}};
     };
+    class UKSFTA_VehicleExplosion: Default {
+        interval = 0.01;
+        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal";
+        particleFSNtieth = 16;
+        particleFSIndex = 12;
+        particleFSFrameCount = 8;
+        lifeTime = 5;
+        size[] = {5, 10, 15};
+        color[] = {{0.1, 0.1, 0.1, 0.8}, {0.05, 0.05, 0.05, 0.4}, {0, 0, 0, 0}};
+    };
+    class UKSFTA_GroundImpact: Default {
+        interval = 0.005;
+        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal";
+        particleFSNtieth = 16;
+        particleFSIndex = 12;
+        particleFSFrameCount = 8;
+        lifeTime = 2;
+        size[] = {0.5, 2, 4};
+        color[] = {{0.4, 0.35, 0.2, 0.5}, {0.4, 0.35, 0.2, 0}};
+    };
 };
 
 class ImpactEffectsBlood {

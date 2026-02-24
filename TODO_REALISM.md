@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 11 Complete**
+Status: **Phase 13 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -38,12 +38,16 @@ Status: **Phase 11 Complete**
 - **Master Naturalism**: Physically accurate Linear Tonemapping and real-time Kelvin grading.
 - **Shade-Aware Micro-Climates**: Dynamic temperature drops in occluded/shaded areas.
 - **Thermal Object Signatures**: High-fidelity TI signatures for flares and tracers.
-- **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients (A3RO Integration).
+- **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients.
 - **Vehicle Thermo-Signature**: Dynamic thermal signature and heat haze based on engine state and ambient biome temperature.
+- **Tidal Shifts**: Procedural shoreline dynamics and lunar-driven water level simulation.
+- **Kinetic Impact Engine**: Procedural AI hit reactions and ragdolling based on caliber/damage.
+- **Headgear Destruction**: Realistic helmet loss based on armor penetration vs caliber (Goko Integration).
+- **High-Fid Explosions**: Lingering dust and thermal-intense vehicle destruction FX (Blastcore Integration).
 
-## 🚧 Phase 12: Advanced Environmental Dynamics
-- [ ] **Tidal Shifts**: Procedural water level adjustment for coastal maps based on lunar phase.
-- [ ] **Dynamic Reverb**: Adjust sound reverb environment based on local terrain/structure density (Audio Engine).
+## 🚧 Phase 14: Advanced Audio & Physicality
+- [ ] **Dynamic Reverb**: Adjust sound reverb environment based on local terrain/structure density.
+- [ ] **Physical Inertia**: Implement weight-based movement inertia for personnel.
 
 ---
 *Maintained by UKSFTA Strategic Engineering*
