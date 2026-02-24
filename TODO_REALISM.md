@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 15 Complete**
+Status: **Phase 18 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -46,10 +46,16 @@ Status: **Phase 15 Complete**
 - **High-Fid Explosions**: Lingering dust and thermal-intense vehicle destruction FX.
 - **Dynamic Reverb**: Adjust sound reverb environment based on local terrain/structure density.
 - **Stress & Panic Engine**: Dynamic visual anxiety (vignette/blur) driven by suppression, health, and combat intensity.
+- **Sovereign Audio Engine**: High-fidelity sonic cracks, flyby whizzes, and distance attenuation.
+- **Physiological Audio**: Realistic breathing, gasping (surfacing), and drowning audio cues.
+- **Inter-Mod Compatibility Bridge**: Active synchronization with ACE3, TFAR, ACRE, LAMBS, and VCOM.
+- **Asset Internalization**: 100% self-contained codebase with zero external mod dependencies.
+- **Ultimate Physicality**: Stress-driven weapon sway, weight-based movement inertia, and NVG auto-gating.
+- **Driving Realism Engine**: Procedural off-road terrain bumps, wheel fatigue, and bogging/stuck system.
 
-## 🚧 Phase 16: Final Polish & Forensic Lockdown
-- [ ] **Physical Inertia**: Implement weight-based movement inertia for personnel.
-- [ ] **Multiplayer Latency Simulation**: Stress-test variable broadcasting.
+## 🚧 Phase 19: Final Release Candidate
+- [ ] **Technical Documentation Update**: Reflecting all Phase 17/18 logic.
+- [ ] **Multiplayer Stress Audit**: Latency-proof public variable optimization.
 
 ---
 *Maintained by UKSFTA Strategic Engineering*

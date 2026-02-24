@@ -52,6 +52,8 @@ if (isServer) then {
                                                             [] spawn { call uksfta_environment_fnc_handleStress; };
                                                             [] spawn { call uksfta_environment_fnc_handleAudio; };
                                                             [] spawn { call uksfta_environment_fnc_handleModCompat; };
+                                                            [] spawn { call uksfta_environment_fnc_handlePhysicality; };
+                                                            [] spawn { call uksfta_environment_fnc_handleDriving; };
                                                 
                                                             [] spawn { call uksfta_environment_fnc_handleLightning; };        };
     };

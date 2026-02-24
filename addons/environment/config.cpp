@@ -186,6 +186,7 @@ class CfgFunctions {
             class handleAudio {};
             class handleBallistics {};
             class handleCookoff {};
+            class handleDriving {};
             class handleStorms {};
             class handleStress {};
             class handleTides {};
@@ -204,6 +205,7 @@ class CfgFunctions {
             class handleVehicleDirt {};
             class handlePooling {};
             class handleModCompat {};
+            class handlePhysicality {};
             class handleSpeedOfSound {};
             class handleHeat {};
             class handleConcussion {};
