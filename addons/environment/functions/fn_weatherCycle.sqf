@@ -24,13 +24,20 @@ UKSFTA_Env_TargetHumid = 0.5;
         private _diffT = UKSFTA_Env_TargetTemp - _currTemp;
         if (abs _diffT > 0.01) then {
             _currTemp = _currTemp + (_diffT * 0.05);
-            missionNamespace setVariable ["ace_weather_currentTemperature", _currTemp, true];
+            // Publicly broadcast the Global baseline for clients
+            missionNamespace setVariable ["UKSFTA_Environment_GlobalTemp", _currTemp, true];
+            
+            // Set ACE locally on server (for AI ballistics) - NO BROADCAST
+            missionNamespace setVariable ["ace_weather_currentTemperature", _currTemp];
         };
 
         private _diffH = UKSFTA_Env_TargetHumid - _currHumid;
         if (abs _diffH > 0.005) then {
             _currHumid = _currHumid + (_diffH * 0.05);
-            missionNamespace setVariable ["ace_weather_currentHumidity", _currHumid, true];
+            missionNamespace setVariable ["UKSFTA_Environment_GlobalHumid", _currHumid, true];
+
+            // Set ACE locally on server - NO BROADCAST
+            missionNamespace setVariable ["ace_weather_currentHumidity", _currHumid];
         };
 
         if (!isNil "ace_weather_fnc_updateTemperature") then { [true] call ace_weather_fnc_updateTemperature; };

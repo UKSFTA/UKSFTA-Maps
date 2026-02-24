@@ -14,7 +14,18 @@ diag_log text (format ["[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: %1", "KAT M
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
     private _overcast = overcast;
+    private _localTemp = missionNamespace getVariable ["UKSFTA_Environment_LocalTemp", 20];
     
+    // --- 1. Heart Rate & Stamina Sync (Phase 6) ---
+    // Link extreme temps to ACE Advanced Fatigue performance factor
+    // Standard is 1.0. Lower means more fatigue.
+    private _perfFactor = 1.0;
+    if (_localTemp < 0) then { _perfFactor = linearConversion [-30, 0, _localTemp, 0.7, 1.0, true]; };
+    if (_localTemp > 35) then { _perfFactor = linearConversion [35, 50, _localTemp, 1.0, 0.6, true]; };
+    
+    player setVariable ["ace_advanced_fatigue_performanceFactor", _perfFactor];
+
+    // --- 2. KAT Medical Integrations ---
     // Check for KAT presence and Realism Mode
     if (!isNil "kat_breathing_fnc_handleAsthma" && {(missionNamespace getVariable ["uksfta_environment_preset", "REALISM"]) == "REALISM"}) then {
         // High humidity induced asthma simulation

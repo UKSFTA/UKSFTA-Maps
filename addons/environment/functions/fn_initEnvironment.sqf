@@ -39,6 +39,9 @@ if (isServer) then {
             [] spawn { call uksfta_environment_fnc_localClimate; };
             [] spawn { call uksfta_environment_fnc_handleCaustics; };
             [] spawn { call uksfta_environment_fnc_handleWindAudio; };
+            [] spawn { call uksfta_environment_fnc_aviationIcing; };
+            [] spawn { call uksfta_environment_fnc_handleVehicleDirt; };
+            [] spawn { call uksfta_environment_fnc_handleAccumulation; };
 
             [] spawn { call uksfta_environment_fnc_handleLightning; };
         };

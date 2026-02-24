@@ -19,6 +19,19 @@ Status: **Phase 5 Complete**
 - **Aerosol Density**: AI detection range scaling based on atmospheric obscuration.
 - **Thermal Washout**: High-noon thermal degradation for Arid environments.
 
+## 🚧 Phase 6: Physiological & Advanced Physics
+- [x] **Aviation Icing**: Implement airframe icing simulation in Arctic/Storm biomes, increasing weight and drag.
+- [x] **Dynamic Mud/Dirt**: Accumulate visual dirt/mud on vehicles based on surface type and precipitation.
+- [ ] **Tidal Shifts**: Procedural water level adjustment for coastal maps based on lunar phase.
+- [x] **Heart Rate Sync**: Link extreme cold/heat to ACE3 stamina consumption rates.
+
+## 🚧 Phase 7: Dynamic Surface Accumulation (Texture Layering)
+- [ ] **Sovereign UI2Texture Engine**: Implement a performance-optimized dynamic layering system for unit textures.
+- [ ] **Adaptive Wetness**: Units progressively darken when in rain or water, with gradual drying logic.
+- [ ] **Snow Accumulation**: Real-time white-out of uniforms/backpacks during Arctic blizzards.
+- [ ] **Injury Visualization**: Link ACE3 medical wounds to dynamic blood splatter on specific body parts.
+- [ ] **Global Mud Accumulation**: Expand vehicle dirt logic to all personnel based on stance and surface type.
+
 ## 🔭 Future Inspiration (Reference Mod Audit)
 
 ---

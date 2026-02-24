@@ -18,7 +18,7 @@ if (!hasInterface) exitWith {};
     };
 
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
-        private _globalTemp = missionNamespace getVariable ["ace_weather_currentTemperature", 20];
+        private _globalTemp = missionNamespace getVariable ["UKSFTA_Environment_GlobalTemp", 20];
         private _pos = getPosASL player;
         private _alt = _pos select 2;
         private _surface = surfaceType (getPosVisual player);
@@ -36,6 +36,23 @@ if (!hasInterface) exitWith {};
         missionNamespace setVariable ["UKSFTA_Environment_LocalTemp", _localTemp];
         missionNamespace setVariable ["UKSFTA_Environment_LocalBiome", _localBiome];
         missionNamespace setVariable ["uksfta_environment_visualDesatLocal", _desat];
+
+        // --- ACE3 LOCAL SYNC ---
+        // ACE3 weather simulation typically treats 'ace_weather_currentTemperature' as 
+        // a baseline (sea-level) temp and then applies its own altitude adjustment.
+        // To force ACE to reflect our _localTemp at the current altitude, we set the 
+        // baseline such that [Baseline - AltAdjust = LocalTemp].
+        private _aceBaselineT = _localTemp - _altOffset; 
+        missionNamespace setVariable ["ace_weather_currentTemperature", _aceBaselineT];
+        
+        // Local Humidity shift (e.g. higher humidity near water or lower in sandstorms)
+        private _globalHumid = missionNamespace getVariable ["UKSFTA_Environment_GlobalHumid", 0.5];
+        private _localHumid = _globalHumid;
+        if (_localBiome == "ARID" && overcast > 0.7) then { _localHumid = (_localHumid - 0.2) max 0.05; };
+        missionNamespace setVariable ["ace_weather_currentHumidity", _localHumid];
+
+        // Force ACE update (true = force all caches to clear)
+        if (!isNil "ace_weather_fnc_updateTemperature") then { [true] call ace_weather_fnc_updateTemperature; };
 
         sleep 2;
     };

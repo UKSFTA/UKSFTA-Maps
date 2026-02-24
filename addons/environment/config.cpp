@@ -1,4 +1,5 @@
 #include "script_component.hpp"
+#include "accumulation.hpp"
 
 class CfgPatches {
     class ADDON {
@@ -37,6 +38,10 @@ class Extended_PostInit_EventHandlers {
     };
 };
 
+class RscTitles {
+    #include "accumulation.hpp"
+};
+
 class CfgFunctions {
     class uksfta_environment {
         tag = "uksfta_environment";
@@ -59,6 +64,10 @@ class CfgFunctions {
             class handleLightning {};
             class handleCaustics {};
             class handleWindAudio {};
+            class aviationIcing {};
+            class handleVehicleDirt {};
+            class handleAccumulation {};
+            class initAccumulationUI {};
             class getSunElevation {};
             class rainEffect {};
             class visualNoise {};
