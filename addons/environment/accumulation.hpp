@@ -47,7 +47,7 @@ class UKSFTA_Accumulation_Display {
         class Burn: RscPicture {
             idc = 105;
             x = 0; y = 0; w = 1; h = 1;
-            text = "z\uksfta\addons\environment\data\burn_ca.paa";
+            text = "z\uksfta\addons\environment\data\burn_char_1.paa";
             colorText[] = {1, 1, 1, 0};
         };
         class Snowfall: RscPicture {

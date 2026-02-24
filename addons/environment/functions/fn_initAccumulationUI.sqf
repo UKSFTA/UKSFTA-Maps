@@ -30,6 +30,12 @@ private _splatTex = selectRandom [
 ];
 ( _display displayCtrl 107 ) ctrlSetText _splatTex;
 
+private _burnTex = selectRandom [
+    "z\uksfta\addons\environment\data\burn_char_1.paa",
+    "z\uksfta\addons\environment\data\burn_char_2.paa"
+];
+( _display displayCtrl 105 ) ctrlSetText _burnTex;
+
 // Ensure all overlays are initialized and randomize rotation
 {
     private _ctrl = _display displayCtrl _x;
