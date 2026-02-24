@@ -11,6 +11,19 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Tidal Engine Active.
 UKSFTA_Env_TidalLevel = 0; // Relative offset in meters
 
 [] spawn {
+    // 0. SEA DETECTION GUARD (Asset-Agnostic)
+    // Check if the world has a sea component or water at sea level.
+    private _hasSea = getNumber (configFile >> "CfgWorlds" >> worldName >> "useOcean") == 1;
+    if (!_hasSea) then {
+        // Fallback check: is there water at the world origin or corners?
+        private _wSize = worldSize;
+        if (surfaceIsWater [0,0,0] || surfaceIsWater [_wSize, _wSize, 0]) then { _hasSea = true; };
+    };
+
+    if (!_hasSea) exitWith {
+        diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Tidal Engine Suspended (Landlocked Terrain).";
+    };
+
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         // 1. CALCULATE LUNAR INFLUENCE
         // moonPhase: 0 (New Moon), 0.5 (Full Moon), 1 (New Moon)
@@ -35,15 +48,21 @@ UKSFTA_Env_TidalLevel = 0; // Relative offset in meters
         // 4. SHORELINE DYNAMICS
         // If player is near water (<50m), adjust local environmental variables
         if (getPosASL player select 2 < 5) then {
-            private _isNearWater = !(([(getPosASL player), 50] call (missionNamespace getVariable ["BIS_fnc_isUnderwater", {false}])) isEqualTo false);
-            // BIS_fnc_isUnderwater check is slow, using surfaceType check instead for performance
+            private _isNearActualWater = false;
+            // Scan 4 cardinal directions at 50m for water
+            {
+                if (surfaceIsWater (player getPos [50, _x])) exitWith { _isNearActualWater = true; };
+            } forEach [0, 90, 180, 270];
+
             private _surface = surfaceType (getPosVisual player);
-            if ("WATER" in (toUpper _surface) || (getPosASL player select 2 < _currentOffset)) then {
+            if (_isNearActualWater && { "WATER" in (toUpper _surface) || (getPosASL player select 2 < _currentOffset) }) then {
                 // Force wetness accumulation if player is in the tidal zone
                 missionNamespace setVariable ["UKSFTA_Environment_TidalWetness", 1.0];
             } else {
                 missionNamespace setVariable ["UKSFTA_Environment_TidalWetness", 0];
             };
+        } else {
+            missionNamespace setVariable ["UKSFTA_Environment_TidalWetness", 0];
         };
 
         sleep 60; // Tidal shifts are slow
