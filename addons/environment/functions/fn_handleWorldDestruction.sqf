@@ -103,6 +103,9 @@ UKSFTA_Env_fnc_handleSecondary = {
             ];
             _refr setDropInterval 0.1;
             [_refr] spawn { sleep 0.5; deleteVehicle (_this select 0); };
+
+            // Trigger Cook-off for Armored Vehicles
+            [_veh] call uksfta_environment_fnc_handleCookoff;
         };
     };
 };

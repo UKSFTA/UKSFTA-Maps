@@ -76,11 +76,6 @@ player addEventHandler ["Explosion", {
         enableCamShake true;
         addCamShake [UKSFTA_Concussion_Current * 4, _duration * 0.5, 25];
 
-        // --- 1.1 TINNITUS (Ear Ringing) ---
-        if (UKSFTA_Concussion_Current > 1.5) then {
-            playSoundUI ["A3\Sounds_F\sfx\beep_target.wss", (UKSFTA_Concussion_Current / 5), 2.0];
-        };
-
         // 2. RECOVERY (Gradual)
         UKSFTA_Concussion_Blur ppEffectAdjust [0];
         UKSFTA_Concussion_Blur ppEffectCommit _duration;

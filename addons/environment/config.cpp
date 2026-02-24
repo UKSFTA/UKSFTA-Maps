@@ -185,6 +185,7 @@ class CfgFunctions {
             class handleAccumulation {};
             class handleAudio {};
             class handleBallistics {};
+            class handleCookoff {};
             class handleStorms {};
             class handleStress {};
             class handleTides {};
