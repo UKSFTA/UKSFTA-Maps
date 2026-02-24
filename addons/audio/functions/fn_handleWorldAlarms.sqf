@@ -41,8 +41,7 @@ player addEventHandler ["Explosion", {
 }];
 
 // 2. Realistic Car Alarms (Hit Driven) - Alarm + Horn Integration
-private _cbaHandler = missionNamespace getVariable ["CBA_fnc_addClassEventHandler", {}];
-if (!isNil "_cbaHandler") then {
+if (isClass (configFile >> "CfgPatches" >> "cba_main")) then {
     ["LandVehicle", "Hit", {
         params ["_unit", "_selection", "_damage", "_source", "_projectile"];
         
@@ -80,11 +79,11 @@ if (!isNil "_cbaHandler") then {
                         
                         sleep 0.6; // High-intensity alarm tempo
                     };
-                    _veh setVariable ["UKSFTA_Alarm_Active", nil];
+                    _unit setVariable ["UKSFTA_Alarm_Active", nil];
                 };
             };
         };
-    }] call _cbaHandler;
+    }] call CBA_fnc_addClassEventHandler;
 };
 
 true
