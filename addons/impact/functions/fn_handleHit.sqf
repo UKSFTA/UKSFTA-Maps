@@ -19,6 +19,21 @@ if (_damage > 0.4 || _caliber > 2) then {
     if (random 1.0 < (_damage * (_caliber min 2))) then {
         [_unit] spawn {
             params ["_target"];
+            
+            // --- BODY THUMP (Surface-Aware) ---
+            private _surface = toLower (surfaceType (getPos _target));
+            private _sound = "A3\Sounds_F\characters\footsteps\grass\grass_run_01.wss"; // Default
+            
+            switch (true) do {
+                case (_surface find "concrete" != -1 || _surface find "stone" != -1): {
+                    _sound = "A3\Sounds_F\characters\footsteps\concrete\concrete_run_01.wss";
+                };
+                case (_surface find "wood" != -1): {
+                    _sound = "A3\Sounds_F\characters\footsteps\wood\wood_run_01.wss";
+                };
+            };
+            playSound3D [_sound, _target, false, getPosASL _target, 2, 0.7, 30];
+
             _target setUnconscious true;
             sleep (1 + random 3);
             if (alive _target) then { _target setUnconscious false; };

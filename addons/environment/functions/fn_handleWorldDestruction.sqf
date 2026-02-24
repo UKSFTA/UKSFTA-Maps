@@ -76,6 +76,22 @@ UKSFTA_Env_fnc_handleSecondary = {
             private _pos = getPosATL _veh;
             "SmallSecondary" createVehicleLocal _pos;
             
+            // Physical Shockwave
+            if (player distance _veh < 30) then {
+                addCamShake [5, 2, 10];
+                player setVelocity ((velocity player) vectorAdd ((vectorNormalized ((getPosASL player) vectorDiff (getPosASL _veh))) vectorMultiply 2));
+            };
+
+            // Ground Dust Puff (Blastcore Integration)
+            private _dust = "#particlesource" createVehicleLocal _pos;
+            _dust setParticleParams [
+                ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 1], "", "Billboard",
+                1, 3, [0, 0, 0], [0, 0, 0], 0, 10, 7.9, 0.075, [5, 10, 15],
+                [[0.6, 0.5, 0.4, 0.3], [0.6, 0.5, 0.4, 0]], [0.08], 1, 0, "", "", _veh
+            ];
+            _dust setDropInterval 0.01;
+            [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
+
             // Audio Delay (Speed of Sound)
             [_veh, "A3\Sounds_F\weapons\Explosion\expl_big_1.wss", 500] call uksfta_environment_fnc_handleSpeedOfSound;
             
