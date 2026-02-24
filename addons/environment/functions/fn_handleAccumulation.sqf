@@ -82,10 +82,17 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             private _isSwimming = (getPosASL _unit select 2) < 0;
             private _isRaining = rain > 0.1;
             private _tidalWet = missionNamespace getVariable ["UKSFTA_Environment_TidalWetness", 0];
+            
+            // --- PUDDLE DETECTION ---
+            private _nearPuddles = nearestObjects [_unit, ["UKSFTA_SurfacePlane"], 1.5];
+            private _inPuddle = _nearPuddles isNotEqualTo [];
+
             private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
             private _oldWet = _wet;
-            if (_isSwimming || _isRaining || (_unit == player && _tidalWet > 0)) then {
-                _wet = (_wet + (0.01 * _globalRate)) min 1;
+            if (_isSwimming || _isRaining || _inPuddle || (_unit == player && _tidalWet > 0)) then {
+                private _wetRate = 0.01;
+                if (_inPuddle && !_isRaining) then { _wetRate = 0.005; }; // Stepping in a puddle is slower than total immersion
+                _wet = (_wet + (_wetRate * _globalRate)) min 1;
             } else {
                 _wet = (_wet - 0.001) max 0;
             };
