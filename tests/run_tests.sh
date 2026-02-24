@@ -15,7 +15,7 @@ MAPS="$MAPS -v $WS/addons/main|/z/uksfta/addons/main"
 MAPS="$MAPS -v $WS/addons/environment|/z/uksfta/addons/environment"
 MAPS="$MAPS -v $WS/addons/cartography|/z/uksfta/addons/cartography"
 MAPS="$MAPS -v $WS/addons/camouflage|/z/uksfta/addons/camouflage"
-MAPS="$MAPS -v $WS/addons/bloodsplatter|/z/uksfta/addons/bloodsplatter"
+MAPS="$MAPS -v $WS/addons/bloodsplatter|/bloodsplatter"
 
 # 1. HEMTT (Build Integrity - STRICT)
 echo "🏗️  [1/7] AUDITING BUILD INTEGRITY (HEMTT)..."
