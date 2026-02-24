@@ -25,6 +25,10 @@ UKSFTA_Audio_LastDiveState = false; // False: Dry, True: Underwater
         // 2. DROWNING / OXYGEN STRESS
         if (_isUnderwater) then {
             private _oxy = getOxygenRemaining player;
+            if (_oxy < 0.1 && {alive player}) then {
+                // Play underwater death sound
+                playSoundUI ["z\uksfta\addons\audio\sounds\physiology\Underwater_Death.ogg", 1.0, 1.0];
+            };
             if (_oxy < 0.5) then {
                 // Heartbeat/Panic thump
                 playSoundUI ["A3\Sounds_F\weapons\Closure\soft_revolve_01.wss", 0.5, 0.5];

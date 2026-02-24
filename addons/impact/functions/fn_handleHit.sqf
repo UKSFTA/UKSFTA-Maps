@@ -47,11 +47,15 @@ if (_selection == "head" && _damage > 0.8) then {
     };
 };
 
-// --- 3. PAIN SCREAMS (Horror Mod Integration) ---
+// --- 3. PAIN SCREAMS (Realistic Integration) ---
 if (_damage > 0.3) then {
-    // Select random scream from Pain_Scream_1 to Pain_Scream_6
-    // We use the internalized paths
     private _scream = format ["z\uksfta\addons\audio\sounds\physiology\Pain_Scream_%1.ogg", floor(random 6) + 1];
+    
+    // Neckshot Specialization
+    if (_selection == "neck") then {
+        _scream = "z\uksfta\addons\audio\sounds\physiology\Neckshot.ogg";
+    };
+
     private _pitch = 0.8 + random 0.4;
     private _vol = 1 + (_damage * 2);
     
