@@ -168,6 +168,7 @@ class CfgFunctions {
             class handleAudio {};
             class handleBallistics {};
             class handleStorms {};
+            class handleStress {};
             class handleTides {};
             class handleWorldDestruction {};
             class coldBreath {};

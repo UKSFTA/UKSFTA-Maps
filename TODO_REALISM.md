@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 13 Complete**
+Status: **Phase 15 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -42,12 +42,14 @@ Status: **Phase 13 Complete**
 - **Vehicle Thermo-Signature**: Dynamic thermal signature and heat haze based on engine state and ambient biome temperature.
 - **Tidal Shifts**: Procedural shoreline dynamics and lunar-driven water level simulation.
 - **Kinetic Impact Engine**: Procedural AI hit reactions and ragdolling based on caliber/damage.
-- **Headgear Destruction**: Realistic helmet loss based on armor penetration vs caliber (Goko Integration).
-- **High-Fid Explosions**: Lingering dust and thermal-intense vehicle destruction FX (Blastcore Integration).
+- **Headgear Destruction**: Realistic helmet loss based on armor penetration vs caliber.
+- **High-Fid Explosions**: Lingering dust and thermal-intense vehicle destruction FX.
+- **Dynamic Reverb**: Adjust sound reverb environment based on local terrain/structure density.
+- **Stress & Panic Engine**: Dynamic visual anxiety (vignette/blur) driven by suppression, health, and combat intensity.
 
-## 🚧 Phase 14: Advanced Audio & Physicality
-- [ ] **Dynamic Reverb**: Adjust sound reverb environment based on local terrain/structure density.
+## 🚧 Phase 16: Final Polish & Forensic Lockdown
 - [ ] **Physical Inertia**: Implement weight-based movement inertia for personnel.
+- [ ] **Multiplayer Latency Simulation**: Stress-test variable broadcasting.
 
 ---
 *Maintained by UKSFTA Strategic Engineering*
