@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 9 Complete**
+Status: **Phase 10 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -35,8 +35,11 @@ Status: **Phase 9 Complete**
 - **Concussion Engine**: Shellshock visuals (blur/chromatic aberration) and physical reactions (weapon drops/knockouts).
 - **Aero FX**: Sonic booms and wingtip vortices for transonic aircraft.
 - **Vehicle Combat FX**: Multi-stage fire and smoke for heavily damaged vehicle hulls.
+- **Master Naturalism**: Physically accurate Linear Tonemapping and real-time Kelvin grading.
+- **Shade-Aware Micro-Climates**: Dynamic temperature drops in occluded/shaded areas.
+- **Thermal Object Signatures**: High-fidelity TI signatures for flares and tracers.
 
-## 🚧 Phase 10: Advanced Atmospheric Physics
+## 🚧 Phase 11: Advanced Terrestrial Simulation
 - [ ] **Tidal Shifts**: Procedural water level adjustment for coastal maps based on lunar phase.
 - [ ] **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients.
 - [ ] **Vehicle Thermo-Signature**: Dynamic thermal signature based on engine state and ambient biome temperature.
