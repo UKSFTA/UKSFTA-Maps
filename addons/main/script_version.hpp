@@ -1,4 +1,12 @@
-#define MAJOR 1
-#define MINOR 0
-#define PATCHLVL 1
-#define BUILD 0
+#ifndef MAJOR
+    #define MAJOR 1
+#endif
+#ifndef MINOR
+    #define MINOR 0
+#endif
+#ifndef PATCHLVL
+    #define PATCHLVL 1
+#endif
+#ifndef BUILD
+    #define BUILD 0
+#endif

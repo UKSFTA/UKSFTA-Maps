@@ -1,16 +1,30 @@
 #ifndef COMPONENT
     #define COMPONENT main
 #endif
-#define COMPONENT_BEAUTIFIED Core
-#define PREFIX uksfta
+#ifndef COMPONENT_BEAUTIFIED
+    #define COMPONENT_BEAUTIFIED Core
+#endif
+
+#ifndef PREFIX
+    #define PREFIX uksfta
+#endif
 
 #include "script_version.hpp"
 
-#define QUOTE(var) #var
-#define QQUOTE(var) QUOTE(var)
+#ifndef QUOTE
+    #define QUOTE(var) #var
+#endif
+#ifndef QQUOTE
+    #define QQUOTE(var) QUOTE(var)
+#endif
 
-#define ADDON uksfta_main
-#define ADDON_NAME UKSFTA Main
+#ifndef ADDON
+    #define ADDON uksfta_main
+#endif
+
+#ifndef ADDON_NAME
+    #define ADDON_NAME UKSFTA Main
+#endif
 
 // --- VERSIONING ---
 #define VERSION MAJOR.MINOR.PATCHLVL.BUILD
