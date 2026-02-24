@@ -22,9 +22,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Biome Soundscape Engine Ac
                 _vol = 0.8;
             };
             case "TROPICAL": {
-                _sound = if (_isNight) then { "A3\Sounds_F\environment\ambient
-ight
-ight_cicadas_1.wss" } else { "A3\Sounds_F\environment\ambient\forest\forest_birds_1.wss" };
+                _sound = ["A3\Sounds_F\environment\ambient\forest\forest_birds_1.wss", "A3\Sounds_F\environment\ambient\night\night_cicadas_1.wss"] select (_isNight);
                 _vol = 0.6;
             };
             case "ARID": {
@@ -32,9 +30,7 @@ ight_cicadas_1.wss" } else { "A3\Sounds_F\environment\ambient\forest\forest_bird
                 _vol = 0.4;
             };
             default { // TEMPERATE
-                _sound = if (_isNight) then { "A3\Sounds_F\environment\ambient
-ight
-ight_crickets_1.wss" } else { "A3\Sounds_F\environment\ambient\forest\forest_wind_1.wss" };
+                _sound = ["A3\Sounds_F\environment\ambient\forest\forest_wind_1.wss", "A3\Sounds_F\environment\ambient\night\night_crickets_1.wss"] select (_isNight);
                 _vol = 0.5;
             };
         };

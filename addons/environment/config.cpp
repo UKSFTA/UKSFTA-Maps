@@ -103,7 +103,7 @@ class CfgCloudlets {
     class Default;
     class Blood;
     class UKSFTA_BloodImpact: Blood {
-        particleShape = "ser_imp\models\brain_fleck3.p3d"; // Using analysis from SER_IMP
+        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal"; // Revert to high-fidelity vanilla base
         size[] = {0.1, 0.2};
         color[] = {{0.4, 0, 0, 1}, {0.2, 0, 0, 0}};
     };

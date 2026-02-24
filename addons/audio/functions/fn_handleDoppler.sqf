@@ -10,7 +10,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Doppler Engine Active.";
 
 [] spawn {
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
-        private _nearVehs = (allMissionObjects "AllVehicles") select { _x distance player < 150 && {alive _x} && {count crew _x > 0} };
+        private _nearVehs = (allMissionObjects "AllVehicles") select { _x distance player < 150 && {alive _x} && {crew _x isNotEqualTo []} };
         
         {
             private _veh = _x;
