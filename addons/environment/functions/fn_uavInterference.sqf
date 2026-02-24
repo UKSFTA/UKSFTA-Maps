@@ -30,8 +30,6 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         } else {
             _ppFilmG ppEffectEnable false;
         };
-    } else {
-        _ppFilmG ppEffectEnable false;
     };
 
     sleep 1;

@@ -56,7 +56,7 @@ UKSFTA_Env_TargetHumid = 0.5;
                 _cloudRGB = [0.2, 0.2, 0.25];
             };
         };
-        call compile format ["setCloudColor %1", _cloudRGB];
+        setCloudColor _cloudRGB;
 
         sleep 5;
     };
