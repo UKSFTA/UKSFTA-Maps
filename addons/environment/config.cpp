@@ -184,6 +184,7 @@ class CfgFunctions {
             class aviationIcing {};
             class handleVehicleDirt {};
             class handlePooling {};
+            class handleSpeedOfSound {};
             class handleHeat {};
             class handleConcussion {};
             class handleThermalObjects {};

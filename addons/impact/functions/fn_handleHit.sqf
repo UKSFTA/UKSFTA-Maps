@@ -41,7 +41,18 @@ if (_selection == "head" && _damage > 0.8) then {
     };
 };
 
-// --- 3. GORE ACCUMULATION (Sovereign Sync) ---
+// --- 3. PAIN SCREAMS (Horror Mod Integration) ---
+if (_damage > 0.3) then {
+    // Select random scream from Flood_death_1 to Flood_death_6
+    // We use the full path from the extracted config analysis
+    private _scream = format ["ThisPBOisVerySpooky\Sounds\Flood_death_%1.ogg", floor(random 6) + 1];
+    private _pitch = 0.8 + random 0.4;
+    private _vol = 1 + (_damage * 2);
+    
+    playSound3D [_scream, _unit, false, getPosASL _unit, _vol, _pitch, 100];
+};
+
+// --- 4. GORE ACCUMULATION (Sovereign Sync) ---
 if (_damage > 0.1) then {
     private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
     _unit setVariable ["UKSFTA_Accum_Blood", (_blood + (_damage * 0.2)) min 1.0, true];

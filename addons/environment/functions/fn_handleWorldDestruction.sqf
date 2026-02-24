@@ -76,6 +76,9 @@ UKSFTA_Env_fnc_handleSecondary = {
             private _pos = getPosATL _veh;
             "SmallSecondary" createVehicleLocal _pos;
             
+            // Audio Delay (Speed of Sound)
+            [_veh, "A3\Sounds_F\weapons\Explosion\expl_big_1.wss", 500] call uksfta_environment_fnc_handleSpeedOfSound;
+            
             // Blastcore Refraction
             private _refr = "#particlesource" createVehicleLocal _pos;
             _refr setParticleParams [
