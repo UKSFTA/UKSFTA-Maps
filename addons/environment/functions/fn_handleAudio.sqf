@@ -60,6 +60,17 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Audio Engine Active.
         if (_envType == 2) then { _reverbType = 6; };
         if (_envType == 3) then { _reverbType = 2; };
         
+        // --- 3. AMBIENT DUCKING (Improved Game Sounds Integration) ---
+        // Duck outside volume when indoors or in armored vehicles
+        private _ducking = 1.0;
+        if (_envType == 3) then { _ducking = 0.4; }; // 60% reduction
+        if (!isNull objectParent player && { (objectParent player isKindOf "Tank" || objectParent player isKindOf "Wheeled_APC_F") }) then {
+            _ducking = 0.2; // 80% reduction in armored hulls
+        };
+        
+        // fadeEnvironment handles the engine's ambient/wind volume
+        2 fadeEnvironment _ducking;
+
         // Bypass HEMTT static check for setSoundEffect arguments
         [0, [_reverbType, 1.0, 1.0, 1.0]] call (missionNamespace getVariable ["setSoundEffect", {params ["_slot", "_params"];}]);
 

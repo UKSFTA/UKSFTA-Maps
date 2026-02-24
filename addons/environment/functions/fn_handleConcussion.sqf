@@ -76,6 +76,13 @@ player addEventHandler ["Explosion", {
         enableCamShake true;
         addCamShake [UKSFTA_Concussion_Current * 4, _duration * 0.5, 25];
 
+        // --- 1.1 EXPLOSION DEAFNESS ---
+        if (UKSFTA_Concussion_Current > 3) then {
+            // Instant mute, then slow recovery
+            0 fadeSound 0.05;
+            _duration fadeSound 1.0;
+        };
+
         // 2. RECOVERY (Gradual)
         UKSFTA_Concussion_Blur ppEffectAdjust [0];
         UKSFTA_Concussion_Blur ppEffectCommit _duration;
