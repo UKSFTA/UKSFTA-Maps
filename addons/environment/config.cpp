@@ -164,6 +164,8 @@ class CfgFunctions {
             class applyVisuals {};
             class getNextState {};
             class analyzeBiome {};
+            class handleAccumulation {};
+            class handleAudio {};
             class handleBallistics {};
             class handleStorms {};
             class handleTides {};
@@ -180,7 +182,6 @@ class CfgFunctions {
             class handleWindAudio {};
             class aviationIcing {};
             class handleVehicleDirt {};
-            class handleAccumulation {};
             class handlePooling {};
             class handleHeat {};
             class handleConcussion {};
