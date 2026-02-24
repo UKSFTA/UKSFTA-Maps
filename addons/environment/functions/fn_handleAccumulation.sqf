@@ -81,9 +81,10 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
 
             private _isSwimming = (getPosASL _unit select 2) < 0;
             private _isRaining = rain > 0.1;
+            private _tidalWet = missionNamespace getVariable ["UKSFTA_Environment_TidalWetness", 0];
             private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
             private _oldWet = _wet;
-            if (_isSwimming || _isRaining) then {
+            if (_isSwimming || _isRaining || (_unit == player && _tidalWet > 0)) then {
                 _wet = (_wet + (0.01 * _globalRate)) min 1;
             } else {
                 _wet = (_wet - 0.001) max 0;

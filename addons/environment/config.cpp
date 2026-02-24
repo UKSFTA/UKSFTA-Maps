@@ -146,6 +146,7 @@ class CfgFunctions {
             class analyzeBiome {};
             class handleBallistics {};
             class handleStorms {};
+            class handleTides {};
             class coldBreath {};
             class katMedicalHook {};
             class signalInterference {};
