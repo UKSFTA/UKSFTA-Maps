@@ -1,8 +1,7 @@
 class CfgPatches {
-    class bloodsplatter {
-        name = "UKSFTA - BloodSplatter Compatibility";
+    class bloodsplatter_core {
+        name = "UKSFTA - BloodSplatter Core Provider";
         author = "UKSF Task Force Alpha";
-        url = "https://github.com/UKSFTA";
         units[] = {};
         weapons[] = {};
         requiredVersion = 2.14;

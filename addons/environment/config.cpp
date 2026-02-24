@@ -46,13 +46,13 @@ class CfgVehicles {
     class House;
     class UKSFTA_SurfacePlane: House {
         scope = 1;
-        model = "\bloodsplatter\models\plane\bloodsplatter_plane.p3d";
+        model = "\z\uksfta\addons\bloodsplatter\bloodsplatter\models\plane\bloodsplatter_plane.p3d";
         hiddenSelections[] = {"BloodSplatter_Plane"};
         hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\wet_ca.paa"};
     };
     class UKSFTA_SurfacePlaneSmall: House {
         scope = 1;
-        model = "\bloodsplatter\models\plane\bloodsplatter_smallplane.p3d";
+        model = "\z\uksfta\addons\bloodsplatter\bloodsplatter\models\plane\bloodsplatter_smallplane.p3d";
         hiddenSelections[] = {"BloodSplatter_Plane"};
         hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\blood_ca.paa"};
     };

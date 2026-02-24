@@ -29,7 +29,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             private _cutter = "Land_ClutterCutter_medium_F" createVehicleLocal _pos;
             
             // Ground Scorch Decal
-            private _scorch = createSimpleObject ["bloodsplatter\models\plane\bloodsplatter_plane.p3d", AGLToASL _pos];
+            private _scorch = createSimpleObject ["z\uksfta\addons\bloodsplatter\bloodsplatter\models\plane\bloodsplatter_plane.p3d", AGLToASL _pos];
             _scorch setDir (random 360);
             _scorch setVectorUp (surfaceNormal _pos);
             _scorch setObjectTexture [0, "#(argb,8,8,3)color(0.05,0.05,0.05,0.8)"]; 
