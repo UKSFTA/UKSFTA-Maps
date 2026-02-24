@@ -38,6 +38,12 @@ class UKSFTA_Accumulation_Display {
             text = "z\uksfta\addons\environment\data\blood_ca.paa";
             colorText[] = {1, 1, 1, 0};
         };
+        class BloodSplatter: RscPicture {
+            idc = 107;
+            x = 0; y = 0; w = 1; h = 1;
+            text = "z\uksfta\addons\environment\data\blood_splat_1.paa";
+            colorText[] = {1, 1, 1, 0};
+        };
         class Burn: RscPicture {
             idc = 105;
             x = 0; y = 0; w = 1; h = 1;

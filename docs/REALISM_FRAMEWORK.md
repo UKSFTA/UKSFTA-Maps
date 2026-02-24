@@ -9,6 +9,7 @@ Instead of static class-based compatibility, the engine uses the `ui(...)` proce
 - **Snow**: Gradually whitens equipment during Arctic blizzards.
 - **Mud**: Cackes equipment based on stance (Prone/Crouch) and surface moisture.
 - **Blood**: Dynamic splatter linked directly to ACE3 medical bleeding rates.
+- **High-Fidelity Gore**: Integrated pixel-perfect splatter textures (from BloodLust source) with randomized rotation and selection per-unit to ensure no two injury patterns look identical.
 - **Burns**: Visual charring from nearby explosions or fires.
 
 ### 1.2 Contextual Mud Logic

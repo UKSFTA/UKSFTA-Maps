@@ -59,6 +59,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             _unit setVariable ["UKSFTA_Accum_Snow", 0];
             _unit setVariable ["UKSFTA_Accum_Mud", 0];
             _unit setVariable ["UKSFTA_Accum_Blood", 0];
+            _unit setVariable ["UKSFTA_Accum_BloodSplatter", 0];
             _unit setVariable ["UKSFTA_Accum_Burn", 0];
             _unit setVariable ["UKSFTA_Accum_Snowfall", 0];
         };
@@ -112,15 +113,23 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         };
         _unit setVariable ["UKSFTA_Accum_Mud", _mud];
 
-        // Blood
+        // Blood & Splatter
         private _bleeding = _unit getVariable ["ace_medical_woundBleeding", 0];
         private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
+        private _bloodSplat = _unit getVariable ["UKSFTA_Accum_BloodSplatter", 0];
+        
         if (_bleeding > 0) then {
             _blood = (_blood + (_bleeding * 0.05 * _globalRate)) min 1;
+            // Splatter accumulates faster during active bleeding
+            _bloodSplat = (_bloodSplat + (_bleeding * 0.1 * _globalRate)) min 1;
         } else {
-            if (_wet > 0.8) then { _blood = (_blood - 0.01) max 0; };
+            if (_wet > 0.8) then { 
+                _blood = (_blood - 0.01) max 0;
+                _bloodSplat = (_bloodSplat - 0.005) max 0;
+            };
         };
         _unit setVariable ["UKSFTA_Accum_Blood", _blood];
+        _unit setVariable ["UKSFTA_Accum_BloodSplatter", _bloodSplat];
 
         // Burn (Dynamic Realism)
         private _burn = _unit getVariable ["UKSFTA_Accum_Burn", 0];
@@ -169,6 +178,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                         [102, "UKSFTA_Accum_Snow"],
                         [103, "UKSFTA_Accum_Mud"],
                         [104, "UKSFTA_Accum_Blood"],
+                        [107, "UKSFTA_Accum_BloodSplatter"],
                         [105, "UKSFTA_Accum_Burn"],
                         [106, "UKSFTA_Accum_Snowfall"]
                     ];
