@@ -17,6 +17,7 @@ MAPS="$MAPS -v $WS/addons/cartography|/z/uksfta/addons/cartography"
 MAPS="$MAPS -v $WS/addons/camouflage|/z/uksfta/addons/camouflage"
 MAPS="$MAPS -v $WS/addons/bloodsplatter|/z/uksfta/addons/bloodsplatter"
 MAPS="$MAPS -v $WS/addons/impact|/z/uksfta/addons/impact"
+MAPS="$MAPS -v $WS/addons/audio|/z/uksfta/addons/audio"
 
 # 1. HEMTT (Build Integrity - STRICT)
 echo "🏗️  [1/7] AUDITING BUILD INTEGRITY (HEMTT)..."
@@ -67,7 +68,7 @@ fi
 
 # 5. INDIVIDUAL SCENARIOS
 echo -e "\n🧪 [5/7] AUDITING INDIVIDUAL LOGIC PILLARS..."
-CORE_TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf" "test_realism_fx.sqf" "test_sovereign_realism.sqf" "test_ballistics_logic.sqf" "test_puddle_interactions.sqf" "test_impact_logic.sqf" "test_world_destruction.sqf" "test_audio_logic.sqf" "test_stress_logic.sqf")
+CORE_TESTS=("test_solar_logic.sqf" "test_thermal_logic.sqf" "test_environmental_scenarios.sqf" "test_camouflage_matrix.sqf" "test_realism_fx.sqf" "test_sovereign_realism.sqf" "test_ballistics_logic.sqf" "test_puddle_interactions.sqf" "test_impact_logic.sqf" "test_world_destruction.sqf" "test_audio_logic.sqf" "test_stress_logic.sqf" "test_audio_reactive.sqf")
 for t in "${CORE_TESTS[@]}"; do
     sqfvm -a $MAPS -i "$WS/tests/$t" > /tmp/uksfta_core.log 2>&1
     if grep -q "❌" /tmp/uksfta_core.log; then 
