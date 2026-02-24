@@ -203,6 +203,7 @@ class CfgFunctions {
             class aviationIcing {};
             class handleVehicleDirt {};
             class handlePooling {};
+            class handleModCompat {};
             class handleSpeedOfSound {};
             class handleHeat {};
             class handleConcussion {};

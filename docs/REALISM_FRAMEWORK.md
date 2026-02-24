@@ -49,5 +49,19 @@ Projectiles experience variable air resistance based on the calculated **Density
 - **Pixel-Perfect Sampling**: Average RGB values of the player (including all accumulation layers) are compared against the underlying terrain texture.
 - **Sinusoidal Scaling**: Camouflage coefficients are mathematically balanced to ensure realistic AI spotting distances across all biomes.
 
+## 5. Inter-Mod Compatibility Bridge (Phase 16)
+The Sovereign Engine actively synchronizes its environmental data with external mod frameworks to ensure a unified realism experience.
+
+### 5.1 ACE3 & KAT Medical
+- **Weather Sync**: Pushes Sovereign Temperature and Humidity directly into `ace_weather` variables.
+- **Stamina/Stress**: High stress levels (calculated via combat intensity) accelerate ACE3 fatigue and increase KAT respiratory rates.
+
+### 5.2 TFAR & ACRE Support
+- **Dynamic Signal Loss**: Atmospheric storms, sandstorms (Arid), and heavy rain trigger real-time signal multiplicators for radio transmissions.
+
+### 5.3 AI Frameworks (LAMBS / VCOM)
+- **Environment-Aware AI**: Dynamically scales AI `aimingAccuracy` and `spotDistance` based on visibility (rain/fog) and atmospheric obscuration.
+- **Suppression Synergy**: Hit reactions and concussion effects are designed to complement LAMBS behavior trees without overriding their tactical AI.
+
 ---
 *UKSFTA Strategic Engineering - 2026*
