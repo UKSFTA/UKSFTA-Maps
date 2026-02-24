@@ -23,7 +23,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         // Ensure we are on a valid surface (not inside buildings)
         private _surface = toLower (surfaceType _spawnPos);
         if (_surface find "dirt" != -1 || _surface find "grass" != -1 || _surface find "road" != -1) then {
-            private _puddle = createSimpleObject ["z\uksfta\addons\environment\data\surface_plane.p3d", AGLToASL _spawnPos];
+            private _puddle = createSimpleObject ["bloodsplatter\models\plane\bloodsplatter_plane.p3d", AGLToASL _spawnPos];
             _puddle setDir (random 360);
             _puddle setVectorUp (surfaceNormal _spawnPos);
             _puddle setObjectTexture [0, "z\uksfta\addons\environment\data\wet_ca.paa"];
@@ -37,7 +37,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _bleeding = _x getVariable ["ace_medical_woundBleeding", 0];
         if (_bleeding > 0.5 && {count UKSFTA_Env_ActivePools < (_maxPools + 10)}) then {
             private _pos = getPosASL _x;
-            private _pool = createSimpleObject ["z\uksfta\addons\environment\data\surface_plane_small.p3d", _pos];
+            private _pool = createSimpleObject ["bloodsplatter\models\plane\bloodsplatter_smallplane.p3d", _pos];
             _pool setDir (random 360);
             _pool setVectorUp (surfaceNormal _pos);
             _pool setObjectTexture [0, "z\uksfta\addons\environment\data\blood_ca.paa"];

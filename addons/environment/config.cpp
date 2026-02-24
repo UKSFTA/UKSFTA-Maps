@@ -6,7 +6,7 @@ class CfgPatches {
         name = QUOTE(ADDON_NAME);
         units[] = {};
         weapons[] = {};
-        requiredVersion = 1.62;
+        requiredVersion = 2.14;
         requiredAddons[] = {
             "uksfta_main", 
             "cba_main"
@@ -46,13 +46,15 @@ class CfgVehicles {
     class House;
     class UKSFTA_SurfacePlane: House {
         scope = 1;
-        model = "\z\uksfta\addons\environment\data\surface_plane.p3d";
+        model = "\bloodsplatter\models\plane\bloodsplatter_plane.p3d";
         hiddenSelections[] = {"BloodSplatter_Plane"};
+        hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\wet_ca.paa"};
     };
     class UKSFTA_SurfacePlaneSmall: House {
         scope = 1;
-        model = "\z\uksfta\addons\environment\data\surface_plane_small.p3d";
+        model = "\bloodsplatter\models\plane\bloodsplatter_smallplane.p3d";
         hiddenSelections[] = {"BloodSplatter_Plane"};
+        hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\blood_ca.paa"};
     };
 };
 
