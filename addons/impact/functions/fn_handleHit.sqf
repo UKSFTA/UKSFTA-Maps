@@ -47,19 +47,15 @@ if (_selection == "head" && _damage > 0.8) then {
     };
 };
 
-// --- 3. PAIN SCREAMS (Realistic Integration) ---
+// --- 3. IMPACT FEEDBACK ---
 if (_damage > 0.3) then {
-    private _scream = format ["z\uksfta\addons\audio\sounds\physiology\Pain_Scream_%1.ogg", floor(random 6) + 1];
-    
-    // Neckshot Specialization
-    if (_selection == "neck") then {
-        _scream = "z\uksfta\addons\audio\sounds\physiology\Neckshot.ogg";
+    // Spawn Skull Chunks on headshots
+    if (_selection == "head") then {
+        private _skull = "#particlesource" createVehicleLocal (getPosATL _unit);
+        _skull setParticleClass "UKSFTA_SkullChunks";
+        _skull attachTo [_unit, [0,0,0], "head"];
+        [_skull] spawn { sleep 0.1; deleteVehicle (_this select 0); };
     };
-
-    private _pitch = 0.8 + random 0.4;
-    private _vol = 1 + (_damage * 2);
-    
-    playSound3D [_scream, _unit, false, getPosASL _unit, _vol, _pitch, 100];
 
     // Spawn Meat Gibs on torso for heavy impact
     if (_damage > 0.6) then {
