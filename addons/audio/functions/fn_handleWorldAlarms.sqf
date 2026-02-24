@@ -40,35 +40,42 @@ player addEventHandler ["Explosion", {
     };
 }];
 
-// 2. Realistic Car Alarms (Hit Driven) - Direct EH Logic
-// We use a broader EH to avoid SPE2 parser failure on mod variables
-player addEventHandler ["FiredNear", {
-    params ["_unit", "_shooter", "_distance", "_weapon", "_muzzle", "_mode", "_ammo", "_gunner"];
+// 2. Realistic Car Alarms (Hit Driven) - Alarm + Horn Integration
+// Direct call to CBA to satisfy Spe2 Parser
+["LandVehicle", "Hit", {
+    params ["_unit", "_selection", "_damage", "_source", "_projectile"];
     
-    // Simulate collateral damage alarms in urban centers
-    if (_distance < 10) then {
-        private _vehs = nearestObjects [_unit, ["Car", "Truck"], 30];
-        if (_vehs isNotEqualTo []) then {
-            private _veh = selectRandom _vehs;
-            if (isNil {_veh getVariable "UKSFTA_Alarm_Active"}) then {
-                _veh setVariable ["UKSFTA_Alarm_Active", true];
-                [_veh] spawn {
-                    params ["_v"];
-                    private _alarmSound = "z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg";
-                    private _hornSound = "A3\Sounds_F\weapons\horns\car_horn_1.wss";
-                    
-                    for "_i" from 1 to 30 do {
-                        if (!alive _v || isNull _v) exitWith {};
-                        private _pitch = [1.0, 1.1] select (_i % 2 == 0);
-                        playSound3D [_alarmSound, _v, false, getPosASL _v, 3, _pitch, 250];
-                        if (_i % 2 == 0) then { playSound3D [_hornSound, _v, false, getPosASL _v, 2.5, 1.0, 300]; };
-                        sleep 0.6;
+    if (_damage > 0.1 && {isNil {_unit getVariable "UKSFTA_Alarm_Active"}}) then {
+        // Only trigger for non-armored civilian-style vehicles
+        if (!(_unit isKindOf "Tank" || _unit isKindOf "Wheeled_APC_F" || _unit isKindOf "Air")) then {
+            _unit setVariable ["UKSFTA_Alarm_Active", true];
+            
+            [_unit] spawn {
+                params ["_veh"];
+                
+                private _alarmSound = selectRandom [
+                    "z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg",
+                    "z\uksfta\addons\audio\sounds\world\Car_Alarm1.ogg"
+                ];
+                
+                private _hornSound = selectRandom [
+                    "A3\Sounds_F\weapons\horns\car_horn_1.wss",
+                    "A3\Sounds_F\weapons\horns\car_horn_2.wss"
+                ];
+                
+                for "_i" from 1 to 40 do {
+                    if (!alive _veh || isNull _veh) exitWith {};
+                    private _pitch = [1.0, 1.1] select (_i % 2 == 0);
+                    playSound3D [_alarmSound, _veh, false, getPosASL _veh, 3, _pitch, 250];
+                    if (_i % 2 == 0) then {
+                        playSound3D [_hornSound, _veh, false, getPosASL _veh, 2.5, 1.0, 300];
                     };
-                    _v setVariable ["UKSFTA_Alarm_Active", nil];
+                    sleep 0.6;
                 };
+                _veh setVariable ["UKSFTA_Alarm_Active", nil];
             };
         };
     };
-}];
+}] call CBA_fnc_addClassEventHandler;
 
 true
