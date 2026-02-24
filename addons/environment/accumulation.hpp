@@ -74,5 +74,11 @@ class UKSFTA_Accumulation_Display {
             text = "z\uksfta\addons\environment\data\snow_ca.paa";
             colorText[] = {0.2, 0.2, 0.2, 0};
         };
+        class Chemical: RscPicture {
+            idc = 111;
+            x = 0; y = 0; w = 1; h = 1;
+            text = "z\uksfta\addons\environment\data\blood_splat_1.paa";
+            colorText[] = {0.2, 0.8, 0.2, 0}; // Green chemical tint
+        };
     };
 };

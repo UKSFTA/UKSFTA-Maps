@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 7 Complete**
+Status: **Phase 9 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -27,10 +27,18 @@ Status: **Phase 7 Complete**
 - **Injury Visualization**: Linked ACE3 medical bleeding to dynamic blood splatter textures.
 - **Global Mud Accumulation**: Personnel accumulate mud based on stance (prone) and surface moisture.
 - **Stealth Integration**: Camouflage coefficients dynamically balanced by pixel-perfect terrain sampling and accumulation levels.
+- **Ashfall & Nuclear Winter**: Global atmospheric ash particles and unit-side ash accumulation.
+- **Thermal Melting**: Proximity to fire sources physically melts snow/ash accumulation on units.
+- **Surface Pooling**: Dynamic rain puddles and ACE3-driven blood pools using SimpleObject planes.
+- **5-Stage Granular Burns**: Seamless visual progression from light singeing to total charring.
+- **Chemical Exposure**: Greenish chemical/acid splatter accumulation from hazardous objects.
+- **Concussion Engine**: Shellshock visuals (blur/chromatic aberration) and physical reactions (weapon drops/knockouts).
+- **Aero FX**: Sonic booms and wingtip vortices for transonic aircraft.
+- **Vehicle Combat FX**: Multi-stage fire and smoke for heavily damaged vehicle hulls.
 
-## 🚧 Phase 8: Advanced Physics & Coastal Simulation
+## 🚧 Phase 10: Advanced Atmospheric Physics
 - [ ] **Tidal Shifts**: Procedural water level adjustment for coastal maps based on lunar phase.
-- [ ] **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients (beyond ACE3 baseline).
+- [ ] **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients.
 - [ ] **Vehicle Thermo-Signature**: Dynamic thermal signature based on engine state and ambient biome temperature.
 
 ---

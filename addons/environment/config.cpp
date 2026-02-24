@@ -56,6 +56,23 @@ class CfgVehicles {
     };
 };
 
+class CfgCloudlets {
+    class Default;
+    class Blood;
+    class UKSFTA_BloodImpact: Blood {
+        particleShape = "ser_imp\models\brain_fleck3.p3d"; // Using analysis from SER_IMP
+        size[] = {0.1, 0.2};
+        color[] = {{0.4, 0, 0, 1}, {0.2, 0, 0, 0}};
+    };
+};
+
+class ImpactEffectsBlood {
+    class Blood {
+        simulation = "particles";
+        type = "UKSFTA_BloodImpact";
+    };
+};
+
 class CfgFunctions {
     class uksfta_environment {
         tag = "uksfta_environment";
@@ -83,6 +100,7 @@ class CfgFunctions {
             class handleAccumulation {};
             class handlePooling {};
             class handleHeat {};
+            class handleConcussion {};
             class initAccumulationUI {};
             class getSunElevation {};
             class rainEffect {};

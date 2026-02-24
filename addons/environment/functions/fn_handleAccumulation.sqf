@@ -58,6 +58,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             _unit setVariable ["UKSFTA_Accum_BloodSplatter", 0, true];
             _unit setVariable ["UKSFTA_Accum_Burn", 0, true];
             _unit setVariable ["UKSFTA_Accum_Ash", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Chem", 0, true];
             _unit setVariable ["UKSFTA_Accum_Snowfall", 0, true];
         };
 
@@ -65,6 +66,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         if (local _unit) then {
             private _globalAsh = missionNamespace getVariable ["UKSFTA_Environment_Ashfall", 0];
             private _nearFire = (nearestObjects [_unit, ["House", "Thing", "Car", "Tank"], 5]) select { getFireIntensity _x > 0 };
+            private _nearChem = (nearestObjects [_unit, ["House", "Thing", "Car"], 3]) select { (_x getVariable ["UKSFTA_IsChemical", false]) || {typeOf _x find "acid" != -1} };
 
             // Wetness
             private _isSwimming = (getPosASL _unit select 2) < 0;
@@ -86,7 +88,6 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             } else {
                 if (_wet > 0.5) then { _snow = (_snow - 0.01) max 0; };
             };
-            // Thermal Melting
             if (count _nearFire > 0) then { _snow = (_snow - 0.05) max 0; };
             if (abs(_snow - _oldSnow) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Snow", _snow, true]; };
 
@@ -152,6 +153,16 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             if (count _nearFire > 0 && {getFireIntensity (_nearFire select 0) > 0.7}) then { _ash = (_ash - 0.02) max 0; };
             if (abs(_ash - _oldAsh) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Ash", _ash, true]; };
 
+            // Chemicals
+            private _chem = _unit getVariable ["UKSFTA_Accum_Chem", 0];
+            private _oldChem = _chem;
+            if (count _nearChem > 0) then {
+                _chem = (_chem + (0.05 * _globalRate)) min 1;
+            } else {
+                if (_wet > 0.8) then { _chem = (_chem - 0.01) max 0; };
+            };
+            if (abs(_chem - _oldChem) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Chem", _chem, true]; };
+
             // Snowfall
             private _snowfall = 0;
             if (_biome == "ARCTIC" && rain > 0.1) then { _snowfall = rain; };
@@ -170,16 +181,11 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                 if (!isNil "_baseTex" && {(_baseTex find "UKSFTA_Accumulation_Display") == -1}) then {
                     _uiName = format ["UKSFTA_ACCUM:%1:%2", _baseTex, floor(random 1000000)];
                     _unit setVariable ["UKSFTA_Accum_UIName", _uiName];
-                    
-                    // Apply procedural texture to ALL valid selections
                     private _procTex = format ["#(argb,%1,%1,5)ui(""UKSFTA_Accumulation_Display"",""%2"")", _texRes, _uiName];
-                    {
-                        if (_x != "") then { _unit setObjectTexture [_forEachIndex, _procTex]; };
-                    } forEach _textures;
+                    { if (_x != "") then { _unit setObjectTexture [_forEachIndex, _procTex]; }; } forEach _textures;
                 };
             };
 
-            // Update UI if it exists
             if (_uiName != "") then {
                 private _display = UKSFTA_Accum_DisplayMap get _uiName;
                 if (!isNil "_display" && {!isNull _display}) then {
@@ -189,9 +195,9 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                     private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
                     private _bloodSplat = _unit getVariable ["UKSFTA_Accum_BloodSplatter", 0];
                     private _ash = _unit getVariable ["UKSFTA_Accum_Ash", 0];
+                    private _chem = _unit getVariable ["UKSFTA_Accum_Chem", 0];
                     private _snowfall = _unit getVariable ["UKSFTA_Accum_Snowfall", 0];
 
-                    // Granular Burn Progression (Stages 1-3)
                     private _burnStage1 = linearConversion [0, 0.3, _burnLevel, 0, 1, true];
                     private _burnStage2 = linearConversion [0.25, 0.6, _burnLevel, 0, 1, true];
                     private _burnStage3 = linearConversion [0.55, 1.0, _burnLevel, 0, 1, true];
@@ -202,20 +208,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                         _ctrl ctrlSetFade (1 - _val);
                         _ctrl ctrlCommit _sleepTime;
                     } forEach [
-                        [101, _wet],
-                        [102, _snow],
-                        [103, _mud],
-                        [104, _blood],
-                        [107, _bloodSplat],
-                        [109, _burnStage1],
-                        [110, _burnStage2],
-                        [105, _burnStage3],
-                        [108, _ash],
-                        [106, _snowfall]
+                        [101, _wet], [102, _snow], [103, _mud], [104, _blood], [107, _bloodSplat],
+                        [109, _burnStage1], [110, _burnStage2], [105, _burnStage3],
+                        [108, _ash], [111, _chem], [106, _snowfall]
                     ];
                     displayUpdate _display;
 
-                    // Physical Face Change (High Intensity Burn)
                     if (_burnLevel > 0.7 && {face _unit != "BurnFace"}) then {
                         [_unit, "BurnFace"] remoteExec ["setFace", 0, _unit];
                     };

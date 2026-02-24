@@ -69,6 +69,21 @@ player addEventHandler ["Explosion", {
         UKSFTA_Concussion_Chrom ppEffectAdjust [0, 0, true];
         UKSFTA_Concussion_Chrom ppEffectCommit _duration;
 
+        // 3. PHYSICAL REACTIONS (Knockout/Drop)
+        if (UKSFTA_Concussion_Current >= 4) then {
+            // Drop Primary Weapon
+            if (primaryWeapon player != "" && {random 1 > 0.5}) then {
+                player action ["DropWeapon", player, primaryWeapon player];
+            };
+            
+            // Severe Concussion (Knockout)
+            if (UKSFTA_Concussion_Current >= 4.5) then {
+                [player, true] remoteExec ["setUnconscious", player];
+                sleep 15;
+                [player, false] remoteExec ["setUnconscious", player];
+            };
+        };
+
         sleep _duration;
         UKSFTA_Concussion_Current = 0;
     };
