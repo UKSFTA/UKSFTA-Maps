@@ -13,9 +13,9 @@ UKSFTA_Env_TargetTemp = 20;
 UKSFTA_Env_TargetHumid = 0.5;
 
 // --- SMOOTHING THREAD ---
-// This thread runs every 5 seconds to incrementally nudge ACE variables
-// and handle high-frequency visual updates like cloud tinting.
 [] spawn {
+    private _fnc_setCloud = missionNamespace getVariable ["setCloudColor", {params ["_rgb"];}];
+    
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _currTemp = missionNamespace getVariable ["ace_weather_currentTemperature", 20];
         private _currHumid = missionNamespace getVariable ["ace_weather_currentHumidity", 0.5];
@@ -24,10 +24,7 @@ UKSFTA_Env_TargetHumid = 0.5;
         private _diffT = UKSFTA_Env_TargetTemp - _currTemp;
         if (abs _diffT > 0.01) then {
             _currTemp = _currTemp + (_diffT * 0.05);
-            // Publicly broadcast the Global baseline for clients
             missionNamespace setVariable ["UKSFTA_Environment_GlobalTemp", _currTemp, true];
-            
-            // Set ACE locally on server (for AI ballistics) - NO BROADCAST
             missionNamespace setVariable ["ace_weather_currentTemperature", _currTemp];
         };
 
@@ -35,28 +32,26 @@ UKSFTA_Env_TargetHumid = 0.5;
         if (abs _diffH > 0.005) then {
             _currHumid = _currHumid + (_diffH * 0.05);
             missionNamespace setVariable ["UKSFTA_Environment_GlobalHumid", _currHumid, true];
-
-            // Set ACE locally on server - NO BROADCAST
             missionNamespace setVariable ["ace_weather_currentHumidity", _currHumid];
         };
 
         if (!isNil "ace_weather_fnc_updateTemperature") then { [true] call ace_weather_fnc_updateTemperature; };
         
-        // 2. Cloud Tinting Engine (Phase 3)
+        // 2. Cloud Tinting Engine
         private _sunAlt = call uksfta_environment_fnc_getSunElevation;
-        private _cloudRGB = [1, 1, 1];
+        private _rgb = [1, 1, 1];
         
         if (_sunAlt > 10) then { // Day
-            _cloudRGB = [1, 1, 1];
+            _rgb = [1, 1, 1];
         } else {
-            if (_sunAlt > -5) then { // Sunrise/Sunset (Kelvin Shift)
+            if (_sunAlt > -5) then { // Sunrise/Sunset
                 private _factor = linearConversion [-5, 10, _sunAlt, 0, 1, true];
-                _cloudRGB = [1, 0.6 + (0.4 * _factor), 0.3 + (0.7 * _factor)];
+                _rgb = [1, (0.6 + (0.4 * _factor)), (0.3 + (0.7 * _factor))];
             } else { // Night
-                _cloudRGB = [0.2, 0.2, 0.25];
+                _rgb = [0.2, 0.2, 0.25];
             };
         };
-        setCloudColor _cloudRGB;
+        [_rgb] call _fnc_setCloud;
 
         sleep 5;
     };
@@ -74,12 +69,10 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     // 1. Map-Accurate Solar Math
     private _lat = getNumber (configFile >> "CfgWorlds" >> worldName >> "latitude") min 90;
     private _sunAlt = call uksfta_environment_fnc_getSunElevation;
-    // Normalize sun factor based on latitude (90 - lat = max possible elevation at equinox)
     private _maxPossibleAlt = (90 - abs(_lat)) max 10;
     private _sunFactor = (linearConversion [0, _maxPossibleAlt, _sunAlt, 0, 1, true]) max 0;
     
     // 2. Biome Profile Lookup
-    // Format: [TempMin, TempMax, BaseHumid, BasePress, FogDecay, FogBase]
     private _physProfiles = [
         ["TEMPERATE",     [8.0, 22.0, 0.5, 1013.0, 0.03, 0]],
         ["ARID",          [22.0, 42.0, 0.1, 1020.0, 0.2, 5]],
@@ -92,30 +85,23 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     { if (_x select 0 == _biome) exitWith { _pData = _x select 1; }; } forEach _physProfiles;
     _pData params ["_tMin", "_tMax", "_baseHumid", "_basePress", "_fogDecay", "_fogBase"];
 
-    // 3. Dynamic Calculation
     private _targetT = (_tMin + ((_tMax - _tMin) * _sunFactor) - (_overcast * 4.0));
     private _targetH = (_baseHumid + (_rain * 0.15)) min 1.0;
 
-    // 4. Soft-Scaling for Arcade Mode (Range Compression)
     if (_preset == "ARCADE") then {
-        // Linear scale toward 20C/0.5H (Safe comfort zone)
         _targetT = 20 + ((_targetT - 20) * 0.4); 
         _targetH = 0.5 + ((_targetH - 0.5) * 0.4);
     };
 
-    // 5. Commit Targets to Smoothing Thread
     UKSFTA_Env_TargetTemp = _targetT;
     UKSFTA_Env_TargetHumid = _targetH;
     missionNamespace setVariable ["ace_weather_currentBarometricPressure", _basePress, true];
 
-    // 6. Apply Engine Weather Transitions
     private _time = _duration / (missionNamespace getVariable ["uksfta_environment_transitionSpeed", 1.0]);
     _time setOvercast _overcast;
     0 setRain _rain;
     _time setFog [_fogValue, _fogDecay, _fogBase];
     
-    // 6a. Advanced Lightning Density (Phase 3)
-    // Scale lightning probability based on overcast intensity above 0.7
     private _lightningDensity = if (_overcast > 0.7) then { linearConversion [0.7, 1.0, _overcast, 0, 1, true] } else { 0 };
     _time setLightnings _lightningDensity;
 

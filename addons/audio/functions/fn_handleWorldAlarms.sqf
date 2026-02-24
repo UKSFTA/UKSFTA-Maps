@@ -41,7 +41,8 @@ player addEventHandler ["Explosion", {
 }];
 
 // 2. Realistic Car Alarms (Hit Driven) - Alarm + Horn Integration
-// Direct call to CBA to satisfy Spe2 Parser
+private _fnc_addEH = missionNamespace getVariable ["CBA_fnc_addClassEventHandler", {params ["_c", "_e", "_code"];}];
+
 ["LandVehicle", "Hit", {
     params ["_unit", "_selection", "_damage", "_source", "_projectile"];
     
@@ -53,11 +54,13 @@ player addEventHandler ["Explosion", {
             [_unit] spawn {
                 params ["_veh"];
                 
+                // Select one of the two new realistic alarm sounds
                 private _alarmSound = selectRandom [
                     "z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg",
                     "z\uksfta\addons\audio\sounds\world\Car_Alarm1.ogg"
                 ];
                 
+                // Realistic horns for layering
                 private _hornSound = selectRandom [
                     "A3\Sounds_F\weapons\horns\car_horn_1.wss",
                     "A3\Sounds_F\weapons\horns\car_horn_2.wss"
@@ -65,17 +68,22 @@ player addEventHandler ["Explosion", {
                 
                 for "_i" from 1 to 40 do {
                     if (!alive _veh || isNull _veh) exitWith {};
+                    
+                    // Layer 1: The Alarm Beep
                     private _pitch = [1.0, 1.1] select (_i % 2 == 0);
                     playSound3D [_alarmSound, _veh, false, getPosASL _veh, 3, _pitch, 250];
+                    
+                    // Layer 2: The Horn (Synchronized rhythmic honking)
                     if (_i % 2 == 0) then {
                         playSound3D [_hornSound, _veh, false, getPosASL _veh, 2.5, 1.0, 300];
                     };
-                    sleep 0.6;
+                    
+                    sleep 0.6; // High-intensity alarm tempo
                 };
                 _veh setVariable ["UKSFTA_Alarm_Active", nil];
             };
         };
     };
-}] call CBA_fnc_addClassEventHandler;
+}] call _fnc_addEH;
 
 true
