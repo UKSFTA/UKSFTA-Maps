@@ -16,10 +16,9 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.
     
     private _speed = vectorMagnitude _velocity;
     
-    // Only crack if supersonic (> 343 m/s)
+    // 1. SUPERSONIC CRACKS (> 343 m/s)
     if (_speed > 343) then {
         // High-fidelity snap sound
-        // Using vanilla high-quality snaps or JSRS overrides if present
         private _snap = selectRandom [
             "A3\Sounds_F\weapons\Closure\soft_revolve_01.wss",
             "A3\Sounds_F\weapons\Closure\soft_revolve_02.wss"
@@ -43,6 +42,14 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.
             };
 
             playSound3D [_whiz, _unit, false, getPosASL _unit, _whizVol, _pitch * 0.8, 40];
+        };
+    } else {
+        // 3. SUBSONIC WHIZ (Suppressed / Low Velocity)
+        if (_dist < 10) then {
+            private _subWhiz = "A3\Sounds_F\weapons\Closure\soft_revolve_02.wss";
+            private _pitch = 0.7 + random 0.2;
+            private _vol = 0.3;
+            playSound3D [_subWhiz, _unit, false, getPosASL _unit, _vol, _pitch, 20];
         };
     };
 }]] call (missionNamespace getVariable ["addEventHandler", {params ["_o", "_params"];}]);

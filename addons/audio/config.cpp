@@ -24,12 +24,14 @@ class CfgFunctions {
             class handlePhysiology {};
             class handleDoppler {};
             class handleFootsteps {};
+            class handleObstruction {};
+            class handleWorldAlarms {};
         };
     };
 };
 
 class Extended_PostInit_EventHandlers {
     class uksfta_audio_init {
-        init = "call uksfta_audio_fnc_handleSonicCracks; call uksfta_audio_fnc_handleWeaponTails; [] spawn uksfta_audio_fnc_handleFoley; [] spawn uksfta_audio_fnc_handleArtilleryWhistle; [] spawn uksfta_audio_fnc_handleAmbientSoundscapes; [] spawn uksfta_audio_fnc_handlePhysiology; [] spawn uksfta_audio_fnc_handleDoppler; [] spawn uksfta_audio_fnc_handleFootsteps;";
+        init = "call uksfta_audio_fnc_handleSonicCracks; call uksfta_audio_fnc_handleWeaponTails; [] spawn uksfta_audio_fnc_handleFoley; [] spawn uksfta_audio_fnc_handleArtilleryWhistle; [] spawn uksfta_audio_fnc_handleAmbientSoundscapes; [] spawn uksfta_audio_fnc_handlePhysiology; [] spawn uksfta_audio_fnc_handleDoppler; [] spawn uksfta_audio_fnc_handleFootsteps; [] spawn uksfta_audio_fnc_handleWorldAlarms;";
     };
 };

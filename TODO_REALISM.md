@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 18 Complete**
+Status: **Phase 19 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -52,10 +52,13 @@ Status: **Phase 18 Complete**
 - **Asset Internalization**: 100% self-contained codebase with zero external mod dependencies.
 - **Ultimate Physicality**: Stress-driven weapon sway, weight-based movement inertia, and NVG auto-gating.
 - **Driving Realism Engine**: Procedural off-road terrain bumps, wheel fatigue, and bogging/stuck system.
+- **Acoustic Obstruction**: Realistic sound muffling through walls and objects using visibility sampling.
+- **Subsonic Flybys**: Specialized whiz audio for suppressed or low-velocity rounds.
+- **Reactive World Alarms**: Urban facility and car alarms triggered by heavy explosions.
 
-## 🚧 Phase 19: Final Release Candidate
-- [ ] **Technical Documentation Update**: Reflecting all Phase 17/18 logic.
-- [ ] **Multiplayer Stress Audit**: Latency-proof public variable optimization.
+## 🚧 Phase 20: Gold Master & Final Polish
+- [ ] **Technical Documentation Update**: Final comprehensive feature list.
+- [ ] **Release Build**: Generating signed PBOs and server-side keys.
 
 ---
 *Maintained by UKSFTA Strategic Engineering*
