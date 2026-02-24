@@ -12,6 +12,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.
 [player, ["BulletSnap", {
     params ["_unit", "_projectile", "_dist", "_velocity"];
     
+    if !(missionNamespace getVariable ["uksfta_audio_enableSonicCracks", true]) exitWith {};
+    
     private _speed = vectorMagnitude _velocity;
     
     // Only crack if supersonic (> 343 m/s)

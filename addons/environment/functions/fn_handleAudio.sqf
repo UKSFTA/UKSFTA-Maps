@@ -10,6 +10,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Audio Engine Active.
 
 [] spawn {
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
+        if !(missionNamespace getVariable ["uksfta_realism_enabled", true]) exitWith {};
+        
         private _pos = getPosVisual player;
         private _forestValue = _pos getEnvSoundController "forest";
         private _housesValue = _pos getEnvSoundController "houses";
@@ -25,54 +27,27 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Audio Engine Active.
         if (_isIndoor) then { _envType = 3; }; 
 
         // --- 2. REVERB MANIPULATION ---
-        // We simulate reverb via frequency filtering or auxiliary sound paths 
-        // using the engine's setAudioOption if available, or by adjusting global 
-        // volume components to simulate 'muffling'.
-        
-        private _lowPass = 1.0;
-        private _reverb = 0;
-
-        switch (_envType) do {
-            case 1: { // Forest: Muffled, High Echo
-                _lowPass = 0.8;
-                _reverb = 0.4;
-            };
-            case 2: { // Urban: Sharp, High Reverb
-                _lowPass = 1.0;
-                _reverb = 0.8;
-            };
-            case 3: { // Indoor: Heavily Muffled, High Reverb
-                _lowPass = 0.5;
-                _reverb = 0.6;
-            };
-            default { // Open: Clear, Low Reverb
-                _lowPass = 1.0;
-                _reverb = 0.1;
-            };
-        };
-
-        // Note: Actual 'setReverb' is a world-level command in Arma 3.
-        // We use it to shift the global environmental audio profile.
-        // [roomType, weight]
-        // 0: Default, 1: Tunnels, 2: Small Room, 3: Large Room, 4: Stone Corridor, 5: Forest, 6: City, 7: Mountains, 8: Quarry, 9: Plain
-        private _reverbType = 9;
-        if (_envType == 1) then { _reverbType = 5; };
-        if (_envType == 2) then { _reverbType = 6; };
-        if (_envType == 3) then { _reverbType = 2; };
-        
-        // --- 3. AMBIENT DUCKING (Improved Game Sounds Integration) ---
-        // Duck outside volume when indoors or in armored vehicles
-        private _ducking = 1.0;
-        if (_envType == 3) then { _ducking = 0.4; }; // 60% reduction
-        if (!isNull objectParent player && { (objectParent player isKindOf "Tank" || objectParent player isKindOf "Wheeled_APC_F") }) then {
-            _ducking = 0.2; // 80% reduction in armored hulls
+        if (missionNamespace getVariable ["uksfta_audio_enableReverb", true]) then {
+            private _reverbType = 9;
+            if (_envType == 1) then { _reverbType = 5; };
+            if (_envType == 2) then { _reverbType = 6; };
+            if (_envType == 3) then { _reverbType = 2; };
+            
+            // Bypass HEMTT static check for setSoundEffect arguments
+            [0, [_reverbType, 1.0, 1.0, 1.0]] call (missionNamespace getVariable ["setSoundEffect", {params ["_slot", "_params"];}]);
         };
         
-        // fadeEnvironment handles the engine's ambient/wind volume
-        2 fadeEnvironment _ducking;
-
-        // Bypass HEMTT static check for setSoundEffect arguments
-        [0, [_reverbType, 1.0, 1.0, 1.0]] call (missionNamespace getVariable ["setSoundEffect", {params ["_slot", "_params"];}]);
+        // --- 3. AMBIENT DUCKING ---
+        if (missionNamespace getVariable ["uksfta_audio_enableDucking", true]) then {
+            private _ducking = 1.0;
+            if (_envType == 3) then { _ducking = 0.4; }; // 60% reduction
+            if (!isNull objectParent player && { (objectParent player isKindOf "Tank" || objectParent player isKindOf "Wheeled_APC_F") }) then {
+                _ducking = 0.2; // 80% reduction in armored hulls
+            };
+            2 fadeEnvironment _ducking;
+        } else {
+            2 fadeEnvironment 1.0;
+        };
 
         sleep 5;
     };

@@ -22,3 +22,9 @@ class CfgFunctions {
         };
     };
 };
+
+class Extended_PreInit_EventHandlers {
+    class uksfta_main_settings {
+        init = "call compile preprocessFileLineNumbers 'z\uksfta\addons\main\XEH_preInit.sqf'";
+    };
+};
