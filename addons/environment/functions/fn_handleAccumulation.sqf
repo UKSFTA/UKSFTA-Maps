@@ -64,90 +64,91 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             _unit setVariable ["UKSFTA_Accum_Snowfall", 0];
         };
 
-        // --- 1. MATHEMATICAL ACCUMULATION ---
-        
-        // Wetness
-        private _isSwimming = (getPosASL _unit select 2) < 0;
-        private _isRaining = rain > 0.1;
-        private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
-        if (_isSwimming || _isRaining) then {
-            _wet = (_wet + (0.01 * _globalRate)) min 1;
-        } else {
-            _wet = (_wet - 0.001) max 0;
-        };
-        _unit setVariable ["UKSFTA_Accum_Wetness", _wet];
-
-        // Snow (Ground)
-        private _snow = _unit getVariable ["UKSFTA_Accum_Snow", 0];
-        if (_biome == "ARCTIC" && overcast > 0.8) then {
-            _snow = (_snow + (0.005 * _globalRate)) min 1;
-        } else {
-            if (_wet > 0.5) then { _snow = (_snow - 0.01) max 0; };
-        };
-        _unit setVariable ["UKSFTA_Accum_Snow", _snow];
-
-        // Mud
-        private _mud = _unit getVariable ["UKSFTA_Accum_Mud", 0];
-        private _surface = toLower (surfaceType (getPos _unit));
-        private _isMuddySurface = (_surface find "mud" != -1 || _surface find "marsh" != -1 || _surface find "swamp" != -1);
-        
-        // Mud only accumulates if:
-        // 1. We are prone on a surface that is naturally muddy
-        // 2. We are prone on dirt/grass AND it is currently raining or we are wet
-        if (stance _unit == "PRONE") then {
-            if (_isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
-                _mud = (_mud + (0.02 * _globalRate)) min 1;
+        // --- 1. MATHEMATICAL ACCUMULATION (Owner Only) ---
+        if (local _unit) then {
+            // Wetness
+            private _isSwimming = (getPosASL _unit select 2) < 0;
+            private _isRaining = rain > 0.1;
+            private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
+            private _oldWet = _wet;
+            if (_isSwimming || _isRaining) then {
+                _wet = (_wet + (0.01 * _globalRate)) min 1;
+            } else {
+                _wet = (_wet - 0.001) max 0;
             };
-        } else {
-            // Slight accumulation for crouching in mud
-            if (stance _unit == "CROUCH" && _isMuddySurface) then {
-                _mud = (_mud + (0.005 * _globalRate)) min 1;
+            if (abs(_wet - _oldWet) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Wetness", _wet, true]; };
+
+            // Snow (Ground)
+            private _snow = _unit getVariable ["UKSFTA_Accum_Snow", 0];
+            private _oldSnow = _snow;
+            if (_biome == "ARCTIC" && overcast > 0.8) then {
+                _snow = (_snow + (0.005 * _globalRate)) min 1;
+            } else {
+                if (_wet > 0.5) then { _snow = (_snow - 0.01) max 0; };
             };
-        };
-        
-        // Drying logic: Mud stays longer than water but eventually flakes off in dry heat
-        if (!_isRaining && _wet < 0.1 && !_isMuddySurface) then {
-            private _dryRate = 0.0005;
-            if (_biome == "ARID") then { _dryRate = 0.002; }; // Faster drying in deserts
-            _mud = (_mud - _dryRate) max 0;
-        };
-        _unit setVariable ["UKSFTA_Accum_Mud", _mud];
+            if (abs(_snow - _oldSnow) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Snow", _snow, true]; };
 
-        // Blood & Splatter
-        private _bleeding = _unit getVariable ["ace_medical_woundBleeding", 0];
-        private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
-        private _bloodSplat = _unit getVariable ["UKSFTA_Accum_BloodSplatter", 0];
-        
-        if (_bleeding > 0) then {
-            _blood = (_blood + (_bleeding * 0.05 * _globalRate)) min 1;
-            // Splatter accumulates faster during active bleeding
-            _bloodSplat = (_bloodSplat + (_bleeding * 0.1 * _globalRate)) min 1;
-        } else {
-            if (_wet > 0.8) then { 
-                _blood = (_blood - 0.01) max 0;
-                _bloodSplat = (_bloodSplat - 0.005) max 0;
+            // Mud
+            private _mud = _unit getVariable ["UKSFTA_Accum_Mud", 0];
+            private _oldMud = _mud;
+            private _surface = toLower (surfaceType (getPos _unit));
+            private _isMuddySurface = (_surface find "mud" != -1 || _surface find "marsh" != -1 || _surface find "swamp" != -1);
+            
+            if (stance _unit == "PRONE") then {
+                if (_isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
+                    _mud = (_mud + (0.02 * _globalRate)) min 1;
+                };
+            } else {
+                if (stance _unit == "CROUCH" && _isMuddySurface) then {
+                    _mud = (_mud + (0.005 * _globalRate)) min 1;
+                };
             };
-        };
-        _unit setVariable ["UKSFTA_Accum_Blood", _blood];
-        _unit setVariable ["UKSFTA_Accum_BloodSplatter", _bloodSplat];
+            
+            if (!_isRaining && _wet < 0.1 && !_isMuddySurface) then {
+                private _dryRate = 0.0005;
+                if (_biome == "ARID") then { _dryRate = 0.002; }; // Faster drying in deserts
+                _mud = (_mud - _dryRate) max 0;
+            };
+            if (abs(_mud - _oldMud) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Mud", _mud, true]; };
 
-        // Burn (Dynamic Realism)
-        private _burn = _unit getVariable ["UKSFTA_Accum_Burn", 0];
-        // Accumulate burn if near fire or explosion
-        private _nearFire = (nearestObjects [_unit, ["House", "Thing"], 3]) select { getFireIntensity _x > 0 };
-        if (count _nearFire > 0) then {
-            _burn = (_burn + (0.05 * _globalRate)) min 1;
-        };
-        _unit setVariable ["UKSFTA_Accum_Burn", _burn];
+            // Blood & Splatter
+            private _bleeding = _unit getVariable ["ace_medical_woundBleeding", 0];
+            private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
+            private _bloodSplat = _unit getVariable ["UKSFTA_Accum_BloodSplatter", 0];
+            private _oldBlood = _blood;
+            
+            if (_bleeding > 0) then {
+                _blood = (_blood + (_bleeding * 0.05 * _globalRate)) min 1;
+                _bloodSplat = (_bloodSplat + (_bleeding * 0.1 * _globalRate)) min 1;
+            } else {
+                if (_wet > 0.8) then { 
+                    _blood = (_blood - 0.01) max 0;
+                    _bloodSplat = (_bloodSplat - 0.005) max 0;
+                };
+            };
+            if (abs(_blood - _oldBlood) > 0.01) then { 
+                _unit setVariable ["UKSFTA_Accum_Blood", _blood, true];
+                _unit setVariable ["UKSFTA_Accum_BloodSplatter", _bloodSplat, true];
+            };
 
-        // Snowfall (Visual overlay during active snow)
-        private _snowfall = 0;
-        if (_biome == "ARCTIC" && rain > 0.1) then { // Arma treats snow as rain in Arctic biomes
-            _snowfall = rain;
-        };
-        _unit setVariable ["UKSFTA_Accum_Snowfall", _snowfall];
+            // Burn (Dynamic Realism)
+            private _burn = _unit getVariable ["UKSFTA_Accum_Burn", 0];
+            private _oldBurn = _burn;
+            private _nearFire = (nearestObjects [_unit, ["House", "Thing"], 3]) select { getFireIntensity _x > 0 };
+            if (count _nearFire > 0) then {
+                _burn = (_burn + (0.05 * _globalRate)) min 1;
+            };
+            if (abs(_burn - _oldBurn) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Burn", _burn, true]; };
 
-        // --- 2. VISUAL APPLICATION ---
+            // Snowfall (Visual overlay during active snow)
+            private _snowfall = 0;
+            if (_biome == "ARCTIC" && rain > 0.1) then {
+                _snowfall = rain;
+            };
+            _unit setVariable ["UKSFTA_Accum_Snowfall", _snowfall, true];
+        };
+
+        // --- 2. VISUAL APPLICATION (Everyone Renders) ---
         
         private _uniform = uniform _unit;
         if (_uniform != "") then {
