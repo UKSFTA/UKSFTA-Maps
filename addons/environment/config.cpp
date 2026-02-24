@@ -59,23 +59,40 @@ class CfgVehicles {
 class CfgWorlds {
     class CAWorld {
         class HDRNewPars {
-            minAperture = 1e-005;
-            maxAperture = 256;
-            apertureRatioMax = 4;
-            apertureRatioMin = 10;
+            minAperture = 0.00001; // MW2019 style deep blacks
+            maxAperture = 200; 
+            apertureRatioMax = 3.5; // Fast responsive light adaptation
+            apertureRatioMin = 8;
             bloomImageScale = 1;
-            bloomScale = 0.09;
-            bloomExponent = 0.75;
-            tonemapMethod = 2;
-            eyeAdaptFactorLight = 3.3;
-            eyeAdaptFactorDark = 0.75;
-            nvgApertureMin = 10;
-            nvgApertureStandard = 12.5;
-            nvgApertureMax = 16.5;
-            nvgStandardAvgLum = 10;
-            nvgLightGain = 320;
-            nightShiftMaxEffect = 0.6;
-            nightShiftLuminanceScale = 600;
+            bloomScale = 0.1; // Restrained realistic bloom
+            bloomExponent = 0.8;
+            bloomLuminanceOffset = 0.5;
+            bloomLuminanceScale = 0.2;
+            bloomLuminanceExponent = 0.3;
+            tonemapMethod = 1; // Reinhard cinematic tonemapping
+            tonemapShoulderStrength = 0.25;
+            tonemapLinearStrength = 0.15;
+            tonemapLinearAngle = 0.05;
+            tonemapToeStrength = 0.25;
+            tonemapToeNumerator = 0.02;
+            tonemapToeDenominator = 0.18;
+            tonemapLinearWhite = 10;
+            tonemapExposureBias = 1.1;
+            tonemapLinearWhiteReinhard = "2.2f";
+            eyeAdaptFactorLight = 3.5;
+            eyeAdaptFactorDark = 1.0;
+            nvgApertureMin = 8;
+            nvgApertureStandard = 12;
+            nvgApertureMax = 15;
+            nvgStandardAvgLum = 8;
+            nvgLightGain = 300;
+            nvgTransition = 1;
+            nvgTransitionCoefOn = "35.0f";
+            nvgTransitionCoefOff = "0.015f";
+            nightShiftMinAperture = 0.0001;
+            nightShiftMaxAperture = 0.0015;
+            nightShiftMaxEffect = 0.7;
+            nightShiftLuminanceScale = 500;
         };
     };
 };

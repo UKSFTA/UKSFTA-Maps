@@ -28,7 +28,24 @@ UKSFTA_Concussion_Chrom ppEffectCommit 0;
 UKSFTA_Concussion_Current = 0;
 UKSFTA_Concussion_Thread = scriptNull;
 
-// Event Handler for local explosions
+// 1. SUPPRESSION EH (Near-Miss Camera Shake)
+player addEventHandler ["Suppression", {
+    params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
+    
+    if !(missionNamespace getVariable ["uksfta_environment_enableConcussion", true]) exitWith {};
+    
+    // Calculate lightweight shake based on caliber and proximity
+    private _caliber = getNumber (_ammoConfig >> "caliber");
+    private _velocity = (speed _ammoObject) / 3.6;
+    private _bulletPower = (_caliber * _velocity) / 500; // Normalized
+    
+    private _shakePower = (linearConversion [10, 0, _distance, 0, 1, true]) * _bulletPower;
+    if (_shakePower > 0.05) then {
+        addCamShake [_shakePower min 2, 0.5, 10];
+    };
+}];
+
+// 2. EXPLOSION EH (Full Concussion)
 player addEventHandler ["Explosion", {
     params ["_unit", "_damage"];
     
