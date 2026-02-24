@@ -26,4 +26,21 @@
     "UKSFTA Camouflage", [0, 2, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+[
+    "uksfta_camouflage_perfMode", "LIST",
+    ["Sampling Fidelity", "Adjust how often the terrain is sampled for camouflage matching."],
+    "UKSFTA Camouflage", 
+    [
+        [0, 1, 2],
+        ["Tactical (5m check)", "Balanced (10m check)", "Low-Impact (25m check)"],
+        1
+    ], 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_camouflage_highFidelity", "CHECKBOX",
+    ["Enable High-Fidelity Sampling", "If disabled, uses biome-average colors instead of pixel-perfect sampling to save CPU."],
+    "UKSFTA Camouflage", true, 1, {}, true
+] call CBA_fnc_addSetting;
+
 true

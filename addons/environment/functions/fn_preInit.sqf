@@ -83,5 +83,31 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Initializing Pre-Ini
     [0.1, 10, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+// --- ACCUMULATION SETTINGS ---
+[
+    "uksfta_environment_enableAccumulation", "CHECKBOX",
+    ["Enable Uniform Accumulation", "Toggles dynamic mud, snow, and blood on uniforms."],
+    "UKSFTA Environment", 
+    true, 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_perfMode", "LIST",
+    ["Performance Mode (Accumulation)", "Adjust the resolution and update frequency of dynamic textures."],
+    "UKSFTA Environment", 
+    [
+        [0, 1, 2],
+        ["Ultra (1024px, 2s)", "Standard (512px, 5s)", "Potato (128px, 10s)"],
+        1
+    ], 1, {}, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_environment_accumulationRate", "SLIDER",
+    ["Accumulation Rate", "Multiplier for how fast environmental effects build up on gear."],
+    "UKSFTA Environment", 
+    [0, 5, 1, 1], 1, {}, true
+] call CBA_fnc_addSetting;
+
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Pre-Init Settings Registered.";
 true

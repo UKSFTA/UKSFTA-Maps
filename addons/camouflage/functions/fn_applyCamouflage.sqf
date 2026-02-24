@@ -26,44 +26,57 @@ while {missionNamespace getVariable ["uksfta_camouflage_enabled", false]} do {
         private _currPos = getPosASL _unit;
         private _uniform = uniform _unit;
         private _groundTex = surfaceTexture _currPos;
+        private _perfMode = missionNamespace getVariable ["uksfta_camouflage_perfMode", 1];
+        private _highFid = missionNamespace getVariable ["uksfta_camouflage_highFidelity", true];
+        private _checkDist = [5, 10, 25] select _perfMode;
 
-        // 1. DYNAMIC SAMPLING (Only on movement or uniform change)
-        if (_currPos distance _lastPos > 5 || _uniform != _lastUniform || _groundTex != _lastTexture) then {
+        // 1. DYNAMIC SAMPLING (Optimized by distance and fidelity)
+        if (_currPos distance _lastPos > _checkDist || _uniform != _lastUniform || _groundTex != _lastTexture) then {
             _lastPos = _currPos;
             _lastUniform = _uniform;
             _lastTexture = _groundTex;
 
-            private _playerTex = (getObjectTextures _unit) param [0, ""];
-            
-            if (_playerTex != "" && _groundTex != "") then {
-                // Get player texture average
-                private _playerAvg = UKSFTA_Camo_TexCache get _playerTex;
-                if (isNil "_playerAvg") then {
-                    _playerAvg = (getTextureInfo _playerTex) # 2;
-                    _playerAvg deleteAt 3; // Remove alpha
-                    UKSFTA_Camo_TexCache set [_playerTex, _playerAvg];
-                };
-
-                // Get ground texture average
-                private _groundAvg = UKSFTA_Camo_TexCache get _groundTex;
-                if (isNil "_groundAvg") then {
-                    _groundAvg = (getTextureInfo _groundTex) # 2;
-                    _groundAvg deleteAt 3;
-                    UKSFTA_Camo_TexCache set [_groundTex, _groundAvg];
-                };
-
-                // Calculate Color Similarity (Sinusoidal Model)
-                private _diffs = [];
-                for "_i" from 0 to 2 do {
-                    private _p = _playerAvg # _i;
-                    private _g = _groundAvg # _i;
-                    _diffs pushBack (abs (_g - _p) / ([_p, _g] select (_p <= _g)));
-                };
+            if (_highFid) then {
+                private _playerTex = (getObjectTextures _unit) param [0, ""];
                 
-                // Base result: 0.6 (perfect match) to 1.6 (poor match)
-                _baseCamo = 1.1 + sin (deg (pi * selectMax _diffs) - 89.95) / 2;
+                if (_playerTex != "" && _groundTex != "") then {
+                    // Get player texture average
+                    private _playerAvg = UKSFTA_Camo_TexCache get _playerTex;
+                    if (isNil "_playerAvg") then {
+                        _playerAvg = (getTextureInfo _playerTex) # 2;
+                        _playerAvg deleteAt 3; // Remove alpha
+                        UKSFTA_Camo_TexCache set [_playerTex, _playerAvg];
+                    };
+
+                    // Get ground texture average
+                    private _groundAvg = UKSFTA_Camo_TexCache get _groundTex;
+                    if (isNil "_groundAvg") then {
+                        _groundAvg = (getTextureInfo _groundTex) # 2;
+                        _groundAvg deleteAt 3;
+                        UKSFTA_Camo_TexCache set [_groundTex, _groundAvg];
+                    };
+
+                    // Calculate Color Similarity (Sinusoidal Model)
+                    private _diffs = [];
+                    for "_i" from 0 to 2 do {
+                        private _p = _playerAvg # _i;
+                        private _g = _groundAvg # _i;
+                        _diffs pushBack (abs (_g - _p) / ([_p, _g] select (_p <= _g)));
+                    };
+                    
+                    // Base result: 0.6 (perfect match) to 1.6 (poor match)
+                    _baseCamo = 1.1 + sin (deg (pi * selectMax _diffs) - 89.95) / 2;
+                } else {
+                    _baseCamo = 1.0;
+                };
             } else {
-                _baseCamo = 1.0;
+                // Low Fidelity Fallback: Use Biome Averages (Very fast)
+                private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+                _baseCamo = switch (_biome) do {
+                    case "ARCTIC": { if (_uniform find "winter" != -1 || _uniform find "snow" != -1) then { 0.7 } else { 1.3 }; };
+                    case "ARID": { if (_uniform find "arid" != -1 || _uniform find "desert" != -1) then { 0.8 } else { 1.2 }; };
+                    default { 1.0 };
+                };
             };
         };
 

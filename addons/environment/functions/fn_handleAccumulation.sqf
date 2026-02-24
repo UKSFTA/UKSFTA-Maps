@@ -13,8 +13,16 @@ if (isNil "UKSFTA_Accum_DisplayMap") then {
 };
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
+    if !(missionNamespace getVariable ["uksfta_environment_enableAccumulation", true]) exitWith {};
+
     private _units = allUnits select { _x distance player < 50 && {alive _x} };
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+    private _globalRate = missionNamespace getVariable ["uksfta_environment_accumulationRate", 1.0];
+    private _perfMode = missionNamespace getVariable ["uksfta_environment_perfMode", 1];
+    
+    // Performance derived values
+    private _texRes = [1024, 512, 128] select _perfMode;
+    private _sleepTime = [2, 5, 10] select _perfMode;
     
     {
         private _unit = _x;
@@ -35,7 +43,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _isRaining = rain > 0.1;
         private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
         if (_isSwimming || _isRaining) then {
-            _wet = (_wet + 0.01) min 1;
+            _wet = (_wet + (0.01 * _globalRate)) min 1;
         } else {
             _wet = (_wet - 0.001) max 0;
         };
@@ -44,7 +52,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         // Snow (Ground)
         private _snow = _unit getVariable ["UKSFTA_Accum_Snow", 0];
         if (_biome == "ARCTIC" && overcast > 0.8) then {
-            _snow = (_snow + 0.005) min 1;
+            _snow = (_snow + (0.005 * _globalRate)) min 1;
         } else {
             if (_wet > 0.5) then { _snow = (_snow - 0.01) max 0; };
         };
@@ -60,12 +68,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         // 2. We are prone on dirt/grass AND it is currently raining or we are wet
         if (stance _unit == "PRONE") then {
             if (_isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
-                _mud = (_mud + 0.02) min 1;
+                _mud = (_mud + (0.02 * _globalRate)) min 1;
             };
         } else {
             // Slight accumulation for crouching in mud
             if (stance _unit == "CROUCH" && _isMuddySurface) then {
-                _mud = (_mud + 0.005) min 1;
+                _mud = (_mud + (0.005 * _globalRate)) min 1;
             };
         };
         
@@ -81,7 +89,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _bleeding = _unit getVariable ["ace_medical_woundBleeding", 0];
         private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
         if (_bleeding > 0) then {
-            _blood = (_blood + (_bleeding * 0.05)) min 1;
+            _blood = (_blood + (_bleeding * 0.05 * _globalRate)) min 1;
         } else {
             if (_wet > 0.8) then { _blood = (_blood - 0.01) max 0; };
         };
@@ -92,7 +100,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         // Accumulate burn if near fire or explosion
         private _nearFire = (nearestObjects [_unit, ["House", "Thing"], 3]) select { getFireIntensity _x > 0 };
         if (count _nearFire > 0) then {
-            _burn = (_burn + 0.05) min 1;
+            _burn = (_burn + (0.05 * _globalRate)) min 1;
         };
         _unit setVariable ["UKSFTA_Accum_Burn", _burn];
 
@@ -115,8 +123,8 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                     _unit setVariable ["UKSFTA_Accum_UIName", _uiName];
                     
                     // Apply procedural texture
-                    // Using 512x512 for balance between quality and performance
-                    _unit setObjectTexture [0, format ["#(argb,512,512,5)ui(""UKSFTA_Accumulation_Display"",""%1"")", _uiName]];
+                    // Resolution is performance-derived
+                    _unit setObjectTexture [0, format ["#(argb,%1,%1,5)ui(""UKSFTA_Accumulation_Display"",""%2"")", _texRes, _uiName]];
                 };
             };
 
@@ -144,7 +152,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
 
     } forEach _units;
 
-    sleep 2; // Increased frequency for smoother visual updates
+    sleep _sleepTime; // Performance-derived frequency
 };
 
 true
