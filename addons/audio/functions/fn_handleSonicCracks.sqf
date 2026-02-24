@@ -10,8 +10,8 @@ if (!_enabled) exitWith {};
 
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.";
 
-// Bypass HEMTT L-S02UE error by wrapping in getVariable
-[player, ["BulletSnap", {
+// Simple registration to satisfy SPE2 parser while remaining functional
+player addEventHandler ["BulletSnap", {
     params ["_unit", "_projectile", "_dist", "_velocity"];
     
     private _enabled = missionNamespace getVariable ["uksfta_audio_enableSonicCracks", true];
@@ -55,6 +55,6 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.
             playSound3D [_subWhiz, _unit, false, getPosASL _unit, _vol, _pitch, 20];
         };
     };
-}]] call (missionNamespace getVariable ["addEventHandler", {params ["_o", "_params"];}]);
+}];
 
 true
