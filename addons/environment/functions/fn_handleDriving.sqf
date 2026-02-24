@@ -14,10 +14,28 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
         
         // Only run if player is the driver
         if (!isNull _veh && { driver _veh == player } && { _veh isKindOf "LandVehicle" }) then {
+            
+            // --- 0. CENTER OF MASS NORMALIZATION ---
+            // Lower COM to prevent unrealistic 'Arcade Flipping' (Realistic Driving suite)
+            if (isNil {_veh getVariable "UKSFTA_COM_Adjusted"}) then {
+                private _com = getCenterOfMass _veh;
+                _veh setCenterOfMass [_com select 0, _com select 1, (_com select 2) - 0.2];
+                _veh setVariable ["UKSFTA_COM_Adjusted", true];
+            };
+
             private _speed = speed _veh;
             private _onRoad = isOnRoad _veh;
             private _surface = toLower (surfaceType (getPosVisual _veh));
             private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+
+            // --- 1. TOWING RECOVERY BRIDGE ---
+            // If vehicle is stuck, check for ropes to release it
+            if (_veh getVariable ["UKSFTA_IsStuck", false]) then {
+                if (ropes _veh isNotEqualTo []) then {
+                    _veh setVariable ["UKSFTA_IsStuck", false, true];
+                    hint "Vehicle recovering via tow...";
+                };
+            };
 
             if (!_onRoad && { abs _speed > 10 }) then {
                 // --- 1. TERRAIN BUMPS (Z-Force) ---
@@ -45,8 +63,9 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
                 // --- 3. STUCK SYSTEM (Mud / Sand / Snow) ---
                 private _isBoggy = (_surface find "mud" != -1) || (_surface find "sand" != -1) || (_biome == "ARCTIC" && overcast > 0.8);
                 if (_isBoggy && { _speed < 15 } && { abs _speed > 1 }) then {
-                    // Risk of getting bogged down
-                    private _stuckChance = (15 - _speed) / 500;
+                    // Risk of getting bogged down (Scale chance by Rain intensity)
+                    private _softnessMod = 1 + (rain * 0.5); // Up to 50% more likely in heavy rain
+                    private _stuckChance = ((15 - _speed) / 500) * _softnessMod;
                     if (random 1.0 < _stuckChance && { isNil {_veh getVariable "UKSFTA_IsStuck"} }) then {
                         _veh setVariable ["UKSFTA_IsStuck", true, true];
                         
