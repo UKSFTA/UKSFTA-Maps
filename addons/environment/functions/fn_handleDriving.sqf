@@ -70,7 +70,31 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
                         };
                     };
                 };
+
+                // --- 4. SLOPE INSTABILITY (Phase 18 Extension) ---
+                private _up = vectorUp _veh;
+                private _angle = acos (_up select 2);
+                if (_angle > 25) then {
+                    // Apply lateral force to simulate sliding on steep slopes
+                    private _slideForce = (sin _angle) * 2000;
+                    _veh addForce [[_slideForce, 0, 0], [0, 0, 0]];
+                    if (_angle > 35 && _speed > 20) then { _veh setVelocityModelSpace [0, -2, 0]; }; // Lose traction
+                };
             };
+
+            // --- 5. IMPACT / JUMP DAMAGE ---
+            private _velZ = (velocity _veh) select 2;
+            private _lastVelZ = _veh getVariable ["UKSFTA_LastVelZ", 0];
+            private _deltaZ = abs (_velZ - _lastVelZ);
+            
+            if (_deltaZ > 10 && {istouchingground _veh}) then {
+                // Hard landing detected (> 5m fall equivalent)
+                private _dmg = (_deltaZ - 10) / 20;
+                _veh setDamage (damage _veh + _dmg);
+                playSound3D ["A3\Sounds_F\vehicles\soft\Wheeled_Collision01.wss", _veh];
+                diag_log format ["[UKSF]: Vehicle Impact Damage: %1 (DeltaZ: %2)", _dmg, _deltaZ];
+            };
+            _veh setVariable ["UKSFTA_LastVelZ", _velZ];
         };
 
         sleep 1;
