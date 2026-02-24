@@ -24,8 +24,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     private _texRes = 512;
     private _sleepTime = 5;
 
-    // Detect Video Settings (Texture Quality)
-    // Quality levels: 0 (Low), 1 (Standard), 2 (High), 3 (Very High), 4 (Ultra)
+    // Detect Video Settings
     private _vidOpts = getVideoOptions;
     private _texQuality = _vidOpts getOrDefault ["textureQuality", 2];
 
@@ -34,10 +33,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         case 1: { _texRes = 512; _sleepTime = 5; };
         case 2: { _texRes = 128; _sleepTime = 10; };
         case 3: { 
-            // Auto-detect based on FPS and Video Settings
             private _fps = diag_fps;
-            
-            // Cap resolution by Video Settings first
             private _maxRes = 1024;
             if (_texQuality < 4) then { _maxRes = 512; };
             if (_texQuality < 2) then { _maxRes = 256; };
@@ -55,18 +51,21 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _unit = _x;
         if (isNil {_unit getVariable "UKSFTA_Accum_Init"}) then {
             _unit setVariable ["UKSFTA_Accum_Init", true];
-            _unit setVariable ["UKSFTA_Accum_Wetness", 0];
-            _unit setVariable ["UKSFTA_Accum_Snow", 0];
-            _unit setVariable ["UKSFTA_Accum_Mud", 0];
-            _unit setVariable ["UKSFTA_Accum_Blood", 0];
-            _unit setVariable ["UKSFTA_Accum_BloodSplatter", 0];
-            _unit setVariable ["UKSFTA_Accum_Burn", 0];
-            _unit setVariable ["UKSFTA_Accum_Ash", 0];
-            _unit setVariable ["UKSFTA_Accum_Snowfall", 0];
+            _unit setVariable ["UKSFTA_Accum_Wetness", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Snow", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Mud", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Blood", 0, true];
+            _unit setVariable ["UKSFTA_Accum_BloodSplatter", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Burn", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Ash", 0, true];
+            _unit setVariable ["UKSFTA_Accum_Snowfall", 0, true];
         };
 
         // --- 1. MATHEMATICAL ACCUMULATION (Owner Only) ---
         if (local _unit) then {
+            private _globalAsh = missionNamespace getVariable ["UKSFTA_Environment_Ashfall", 0];
+            private _nearFire = (nearestObjects [_unit, ["House", "Thing", "Car", "Tank"], 5]) select { getFireIntensity _x > 0 };
+
             // Wetness
             private _isSwimming = (getPosASL _unit select 2) < 0;
             private _isRaining = rain > 0.1;
@@ -87,6 +86,8 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             } else {
                 if (_wet > 0.5) then { _snow = (_snow - 0.01) max 0; };
             };
+            // Thermal Melting
+            if (count _nearFire > 0) then { _snow = (_snow - 0.05) max 0; };
             if (abs(_snow - _oldSnow) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Snow", _snow, true]; };
 
             // Mud
@@ -107,7 +108,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             
             if (!_isRaining && _wet < 0.1 && !_isMuddySurface) then {
                 private _dryRate = 0.0005;
-                if (_biome == "ARID") then { _dryRate = 0.002; }; // Faster drying in deserts
+                if (_biome == "ARID") then { _dryRate = 0.002; };
                 _mud = (_mud - _dryRate) max 0;
             };
             if (abs(_mud - _oldMud) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Mud", _mud, true]; };
@@ -132,10 +133,9 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                 _unit setVariable ["UKSFTA_Accum_BloodSplatter", _bloodSplat, true];
             };
 
-            // Burn (Dynamic Realism)
+            // Burn
             private _burn = _unit getVariable ["UKSFTA_Accum_Burn", 0];
             private _oldBurn = _burn;
-            private _nearFire = (nearestObjects [_unit, ["House", "Thing"], 3]) select { getFireIntensity _x > 0 };
             if (count _nearFire > 0) then {
                 _burn = (_burn + (0.05 * _globalRate)) min 1;
             };
@@ -149,18 +149,16 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             } else {
                 if (_wet > 0.5) then { _ash = (_ash - 0.01) max 0; };
             };
+            if (count _nearFire > 0 && {getFireIntensity (_nearFire select 0) > 0.7}) then { _ash = (_ash - 0.02) max 0; };
             if (abs(_ash - _oldAsh) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Ash", _ash, true]; };
 
-            // Snowfall (Visual overlay during active snow)
+            // Snowfall
             private _snowfall = 0;
-            if (_biome == "ARCTIC" && rain > 0.1) then {
-                _snowfall = rain;
-            };
+            if (_biome == "ARCTIC" && rain > 0.1) then { _snowfall = rain; };
             _unit setVariable ["UKSFTA_Accum_Snowfall", _snowfall, true];
         };
 
-        // --- 2. VISUAL APPLICATION (Everyone Renders) ---
-        
+        // --- 2. VISUAL APPLICATION ---
         private _uniform = uniform _unit;
         if (_uniform != "") then {
             private _uiName = _unit getVariable ["UKSFTA_Accum_UIName", ""];
@@ -169,23 +167,16 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                 if (!isNil "_baseTex" && {(_baseTex find "UKSFTA_Accumulation_Display") == -1}) then {
                     _uiName = format ["UKSFTA_ACCUM:%1:%2", _baseTex, floor(random 1000000)];
                     _unit setVariable ["UKSFTA_Accum_UIName", _uiName];
-                    
-                    // Apply procedural texture
-                    // Resolution is performance-derived
                     _unit setObjectTexture [0, format ["#(argb,%1,%1,5)ui(""UKSFTA_Accumulation_Display"",""%2"")", _texRes, _uiName]];
                 };
             };
 
-            // Update UI if it exists
             if (_uiName != "") then {
                 private _display = UKSFTA_Accum_DisplayMap get _uiName;
                 if (!isNil "_display" && {!isNull _display}) then {
                     {
                         private _ctrl = _display displayCtrl (_x select 0);
                         private _val = _unit getVariable [_x select 1, 0];
-                        
-                        // Use ctrlCommit with _sleepTime to create a perfectly smooth 
-                        // transition between accumulation states.
                         _ctrl ctrlSetFade (1 - _val);
                         _ctrl ctrlCommit _sleepTime;
                     } forEach [
@@ -205,7 +196,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
 
     } forEach _units;
 
-    sleep _sleepTime; // Performance-derived frequency
+    sleep _sleepTime;
 };
 
 true

@@ -82,6 +82,7 @@ class CfgFunctions {
             class handleVehicleDirt {};
             class handleAccumulation {};
             class handlePooling {};
+            class handleHeat {};
             class initAccumulationUI {};
             class getSunElevation {};
             class rainEffect {};
