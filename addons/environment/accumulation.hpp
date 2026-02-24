@@ -44,23 +44,23 @@ class UKSFTA_Accumulation_Display {
             text = "z\uksfta\addons\environment\data\blood_splat_1.paa";
             colorText[] = {1, 1, 1, 0};
         };
-        class Burn_Light: RscPicture {
+        class Burn_Stage1: RscPicture {
             idc = 109;
             x = 0; y = 0; w = 1; h = 1;
             text = "z\uksfta\addons\environment\data\burn_char_1.paa";
-            colorText[] = {0.5, 0.3, 0.2, 0}; // Light singe tint
+            colorText[] = {0.4, 0.2, 0.1, 0}; // Singe/Stage 1
         };
-        class Burn_Medium: RscPicture {
+        class Burn_Stage2: RscPicture {
             idc = 110;
             x = 0; y = 0; w = 1; h = 1;
             text = "z\uksfta\addons\environment\data\burn_char_2.paa";
-            colorText[] = {0.3, 0.1, 0.1, 0}; // Deeper charring
+            colorText[] = {0.2, 0.1, 0.1, 0}; // Charred/Stage 2
         };
-        class Burn: RscPicture {
+        class Burn_Stage3: RscPicture {
             idc = 105;
             x = 0; y = 0; w = 1; h = 1;
             text = "z\uksfta\addons\environment\data\burn_char_1.paa";
-            colorText[] = {1, 1, 1, 0}; // Extreme charring
+            colorText[] = {1, 1, 1, 0}; // Extreme/Stage 3
         };
         class Snowfall: RscPicture {
             idc = 106;

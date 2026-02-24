@@ -133,5 +133,12 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Initializing Pre-Ini
     }, true
 ] call CBA_fnc_addSetting;
 
+[
+    "uksfta_environment_enableConcussion", "CHECKBOX",
+    ["Enable Concussion Effects", "Toggles shellshock, blur, and camera shake from nearby explosions."],
+    "UKSFTA Environment", 
+    true, 1, {}, true
+] call CBA_fnc_addSetting;
+
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Pre-Init Settings Registered.";
 true

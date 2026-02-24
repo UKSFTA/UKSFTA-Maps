@@ -43,9 +43,10 @@ if (isServer) then {
                         [] spawn { call uksfta_environment_fnc_handleVehicleDirt; };
                                     [] spawn { call uksfta_environment_fnc_handleAccumulation; };
                                     [] spawn { call uksfta_environment_fnc_handlePooling; };
-                                    [] spawn { call uksfta_environment_fnc_handleHeat; };
-                        
-                                    [] spawn { call uksfta_environment_fnc_handleLightning; };        };
+                                                [] spawn { call uksfta_environment_fnc_handleHeat; };
+                                                [] spawn { call uksfta_environment_fnc_handleConcussion; };
+                                    
+                                                [] spawn { call uksfta_environment_fnc_handleLightning; };        };
     };
 };
 

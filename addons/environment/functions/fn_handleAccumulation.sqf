@@ -191,10 +191,10 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                     private _ash = _unit getVariable ["UKSFTA_Accum_Ash", 0];
                     private _snowfall = _unit getVariable ["UKSFTA_Accum_Snowfall", 0];
 
-                    // 3-Stage Burn Progression
-                    private _burnLight = linearConversion [0, 0.4, _burnLevel, 0, 1, true];
-                    private _burnMedium = linearConversion [0.3, 0.7, _burnLevel, 0, 1, true];
-                    private _burnExtreme = linearConversion [0.6, 1.0, _burnLevel, 0, 1, true];
+                    // Granular Burn Progression (Stages 1-3)
+                    private _burnStage1 = linearConversion [0, 0.3, _burnLevel, 0, 1, true];
+                    private _burnStage2 = linearConversion [0.25, 0.6, _burnLevel, 0, 1, true];
+                    private _burnStage3 = linearConversion [0.55, 1.0, _burnLevel, 0, 1, true];
 
                     {
                         private _ctrl = _display displayCtrl (_x select 0);
@@ -207,9 +207,9 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                         [103, _mud],
                         [104, _blood],
                         [107, _bloodSplat],
-                        [109, _burnLight],
-                        [110, _burnMedium],
-                        [105, _burnExtreme],
+                        [109, _burnStage1],
+                        [110, _burnStage2],
+                        [105, _burnStage3],
                         [108, _ash],
                         [106, _snowfall]
                     ];
