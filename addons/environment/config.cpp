@@ -159,6 +159,7 @@ class CfgFunctions {
             class handlePooling {};
             class handleHeat {};
             class handleConcussion {};
+            class handleThermalObjects {};
             class initAccumulationUI {};
             class getSunElevation {};
             class rainEffect {};

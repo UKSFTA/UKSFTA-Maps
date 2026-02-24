@@ -1,0 +1,37 @@
+#include "..\script_component.hpp"
+/**
+ * UKSFTA Environment - Thermal Object Handler (Phase 10)
+ * Enhances TI signatures for flares, tracers, and hot objects.
+ */
+
+if (!hasInterface) exitWith {};
+
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Thermal Object Engine Active.";
+
+// Event Handler for Projectiles (Flares/Tracers)
+addMissionEventHandler ["ProjectileCreated", {
+    params ["_projectile"];
+    
+    private _type = typeOf _projectile;
+    
+    // 1. FLARE THERMAL SIGNATURE
+    if (_type isKindOf "FlareCore" || _type find "Flare" != -1) then {
+        [_projectile] spawn {
+            params ["_flare"];
+            while {alive _flare} do {
+                // Force flare to be white-hot on TI
+                _flare setTIParameter [1, 1.0]; // Hot
+                sleep 0.5;
+            };
+        };
+    };
+
+    // 2. TRACER THERMAL SIGNATURE (Performance Throttled)
+    if (missionNamespace getVariable ["uksfta_environment_highFidTracers", false]) then {
+        if (getNumber(configFile >> "CfgAmmo" >> _type >> "tracerScale") > 0) then {
+            _projectile setTIParameter [1, 0.8]; // Moderate heat for tracers
+        };
+    };
+}];
+
+true
