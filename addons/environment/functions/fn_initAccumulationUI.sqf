@@ -42,6 +42,6 @@ private _burnTex = selectRandom [
     _ctrl ctrlSetFade 1;
     _ctrl ctrlSetAngle [random 360, 0.5, 0.5];
     _ctrl ctrlCommit 0;
-} forEach [101, 102, 103, 104, 105, 106, 107, 108];
+} forEach [101, 102, 103, 104, 105, 106, 107, 108, 109, 110];
 
 displayUpdate _display;

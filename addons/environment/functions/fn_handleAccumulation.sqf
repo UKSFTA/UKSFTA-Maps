@@ -162,34 +162,63 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _uniform = uniform _unit;
         if (_uniform != "") then {
             private _uiName = _unit getVariable ["UKSFTA_Accum_UIName", ""];
+            private _burnLevel = _unit getVariable ["UKSFTA_Accum_Burn", 0];
+
             if (_uiName == "") then {
-                private _baseTex = (getObjectTextures _unit) select 0;
+                private _textures = getObjectTextures _unit;
+                private _baseTex = _textures select 0;
                 if (!isNil "_baseTex" && {(_baseTex find "UKSFTA_Accumulation_Display") == -1}) then {
                     _uiName = format ["UKSFTA_ACCUM:%1:%2", _baseTex, floor(random 1000000)];
                     _unit setVariable ["UKSFTA_Accum_UIName", _uiName];
-                    _unit setObjectTexture [0, format ["#(argb,%1,%1,5)ui(""UKSFTA_Accumulation_Display"",""%2"")", _texRes, _uiName]];
+                    
+                    // Apply procedural texture to ALL valid selections
+                    private _procTex = format ["#(argb,%1,%1,5)ui(""UKSFTA_Accumulation_Display"",""%2"")", _texRes, _uiName];
+                    {
+                        if (_x != "") then { _unit setObjectTexture [_forEachIndex, _procTex]; };
+                    } forEach _textures;
                 };
             };
 
+            // Update UI if it exists
             if (_uiName != "") then {
                 private _display = UKSFTA_Accum_DisplayMap get _uiName;
                 if (!isNil "_display" && {!isNull _display}) then {
+                    private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
+                    private _snow = _unit getVariable ["UKSFTA_Accum_Snow", 0];
+                    private _mud = _unit getVariable ["UKSFTA_Accum_Mud", 0];
+                    private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
+                    private _bloodSplat = _unit getVariable ["UKSFTA_Accum_BloodSplatter", 0];
+                    private _ash = _unit getVariable ["UKSFTA_Accum_Ash", 0];
+                    private _snowfall = _unit getVariable ["UKSFTA_Accum_Snowfall", 0];
+
+                    // 3-Stage Burn Progression
+                    private _burnLight = linearConversion [0, 0.4, _burnLevel, 0, 1, true];
+                    private _burnMedium = linearConversion [0.3, 0.7, _burnLevel, 0, 1, true];
+                    private _burnExtreme = linearConversion [0.6, 1.0, _burnLevel, 0, 1, true];
+
                     {
                         private _ctrl = _display displayCtrl (_x select 0);
-                        private _val = _unit getVariable [_x select 1, 0];
+                        private _val = _x select 1;
                         _ctrl ctrlSetFade (1 - _val);
                         _ctrl ctrlCommit _sleepTime;
                     } forEach [
-                        [101, "UKSFTA_Accum_Wetness"],
-                        [102, "UKSFTA_Accum_Snow"],
-                        [103, "UKSFTA_Accum_Mud"],
-                        [104, "UKSFTA_Accum_Blood"],
-                        [107, "UKSFTA_Accum_BloodSplatter"],
-                        [105, "UKSFTA_Accum_Burn"],
-                        [108, "UKSFTA_Accum_Ash"],
-                        [106, "UKSFTA_Accum_Snowfall"]
+                        [101, _wet],
+                        [102, _snow],
+                        [103, _mud],
+                        [104, _blood],
+                        [107, _bloodSplat],
+                        [109, _burnLight],
+                        [110, _burnMedium],
+                        [105, _burnExtreme],
+                        [108, _ash],
+                        [106, _snowfall]
                     ];
                     displayUpdate _display;
+
+                    // Physical Face Change (High Intensity Burn)
+                    if (_burnLevel > 0.7 && {face _unit != "BurnFace"}) then {
+                        [_unit, "BurnFace"] remoteExec ["setFace", 0, _unit];
+                    };
                 };
             };
         };
