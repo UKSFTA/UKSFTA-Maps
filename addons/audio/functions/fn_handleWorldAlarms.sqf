@@ -41,8 +41,8 @@ player addEventHandler ["Explosion", {
 }];
 
 // 2. Realistic Car Alarms (Hit Driven) - Alarm + Horn Integration
-// Simple check for CBA function to satisfy SPE2 parser
-if (!isNil "CBA_fnc_addClassEventHandler") then {
+private _cbaHandler = missionNamespace getVariable ["CBA_fnc_addClassEventHandler", {}];
+if (!isNil "_cbaHandler") then {
     ["LandVehicle", "Hit", {
         params ["_unit", "_selection", "_damage", "_source", "_projectile"];
         
@@ -84,7 +84,7 @@ if (!isNil "CBA_fnc_addClassEventHandler") then {
                 };
             };
         };
-    }] call CBA_fnc_addClassEventHandler;
+    }] call _cbaHandler;
 };
 
 true
