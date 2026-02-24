@@ -1,7 +1,9 @@
 #ifndef UKSFTA_ENVIRONMENT_COMPONENT
 #define UKSFTA_ENVIRONMENT_COMPONENT
 
-#undef COMPONENT
+#ifdef COMPONENT
+    #undef COMPONENT
+#endif
 #define COMPONENT environment
 #define COMPONENT_BEAUTIFIED Environment
 #define PREFIX uksfta

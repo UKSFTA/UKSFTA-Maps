@@ -1,4 +1,6 @@
-#define COMPONENT main
+#ifndef COMPONENT
+    #define COMPONENT main
+#endif
 #define COMPONENT_BEAUTIFIED Core
 #define PREFIX uksfta
 
