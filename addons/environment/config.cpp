@@ -103,9 +103,18 @@ class CfgCloudlets {
     class Default;
     class Blood;
     class UKSFTA_BloodImpact: Blood {
-        particleShape = "\z\uksfta\addons\impact\models\gibs\BloodSplatter_Torso.p3d"; 
+        particleShape = "\z\uksfta\addons\impact\models\gibs\brain_splattered1.p3d"; 
         size[] = {0.05, 0.1};
         color[] = {{1, 1, 1, 1}}; // Use texture color
+    };
+    class UKSFTA_SkullChunks: Default {
+        interval = 0.01;
+        particleShape = "\z\uksfta\addons\impact\models\gibs\skull_chunk1.p3d";
+        lifeTime = 2.0;
+        size[] = {0.1, 0.15};
+        color[] = {{1, 1, 1, 1}};
+        moveVelocity[] = {0, 2, 0};
+        bounceOnSurface = 0.2;
     };
     class UKSFTA_MeatGibs: Default {
         interval = 0.01;

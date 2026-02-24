@@ -37,6 +37,12 @@ if (_selection == "head" && _damage > 0.8) then {
             removeHeadgear _unit;
             // Visual feedback handled by CfgCloudlets overrides
             playSound3D ["A3\Sounds_F\weapons\Closure\soft_revolve_01.wss", _unit, false, getPosASL _unit, 2, 1, 50];
+
+            // Spawn Skull Chunks
+            private _skull = "#particlesource" createVehicleLocal (getPosATL _unit);
+            _skull setParticleClass "UKSFTA_SkullChunks";
+            _skull attachTo [_unit, [0,0,0], "head"];
+            [_skull] spawn { sleep 0.1; deleteVehicle (_this select 0); };
         };
     };
 };
@@ -45,11 +51,19 @@ if (_selection == "head" && _damage > 0.8) then {
 if (_damage > 0.3) then {
     // Select random scream from Pain_Scream_1 to Pain_Scream_6
     // We use the internalized paths
-    private _scream = format ["z\uksfta\addons\audio\sounds\horror\Pain_Scream_%1.ogg", floor(random 6) + 1];
+    private _scream = format ["z\uksfta\addons\audio\sounds\physiology\Pain_Scream_%1.ogg", floor(random 6) + 1];
     private _pitch = 0.8 + random 0.4;
     private _vol = 1 + (_damage * 2);
     
     playSound3D [_scream, _unit, false, getPosASL _unit, _vol, _pitch, 100];
+
+    // Spawn Meat Gibs on torso for heavy impact
+    if (_damage > 0.6) then {
+        private _meat = "#particlesource" createVehicleLocal (getPosATL _unit);
+        _meat setParticleClass "UKSFTA_MeatGibs";
+        _meat attachTo [_unit, [0,0,0], "spine3"];
+        [_meat] spawn { sleep 0.1; deleteVehicle (_this select 0); };
+    };
 };
 
 // --- 4. GORE ACCUMULATION (Sovereign Sync) ---
