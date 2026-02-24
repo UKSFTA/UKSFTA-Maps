@@ -172,8 +172,11 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                     {
                         private _ctrl = _display displayCtrl (_x select 0);
                         private _val = _unit getVariable [_x select 1, 0];
+                        
+                        // Use ctrlCommit with _sleepTime to create a perfectly smooth 
+                        // transition between accumulation states.
                         _ctrl ctrlSetFade (1 - _val);
-                        _ctrl ctrlCommit 0;
+                        _ctrl ctrlCommit _sleepTime;
                     } forEach [
                         [101, "UKSFTA_Accum_Wetness"],
                         [102, "UKSFTA_Accum_Snow"],
