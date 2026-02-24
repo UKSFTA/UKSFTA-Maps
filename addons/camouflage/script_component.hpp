@@ -1,6 +1,7 @@
 #ifndef UKSFTA_CAMOUFLAGE_COMPONENT
 #define UKSFTA_CAMOUFLAGE_COMPONENT
 
+#undef COMPONENT
 #define COMPONENT camouflage
 #define COMPONENT_BEAUTIFIED Camouflage
 #define PREFIX uksfta

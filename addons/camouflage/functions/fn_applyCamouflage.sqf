@@ -73,8 +73,8 @@ while {missionNamespace getVariable ["uksfta_camouflage_enabled", false]} do {
                 // Low Fidelity Fallback: Use Biome Averages (Very fast)
                 private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
                 _baseCamo = switch (_biome) do {
-                    case "ARCTIC": { if (_uniform find "winter" != -1 || _uniform find "snow" != -1) then { 0.7 } else { 1.3 }; };
-                    case "ARID": { if (_uniform find "arid" != -1 || _uniform find "desert" != -1) then { 0.8 } else { 1.2 }; };
+                    case "ARCTIC": { [1.3, 0.7] select ((_uniform find "winter" != -1) || (_uniform find "snow" != -1)); };
+                    case "ARID": { [1.2, 0.8] select ((_uniform find "arid" != -1) || (_uniform find "desert" != -1)); };
                     default { 1.0 };
                 };
             };

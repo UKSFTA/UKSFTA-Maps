@@ -5,7 +5,7 @@ class CfgPatches {
         name = QUOTE(ADDON_NAME);
         units[] = {};
         weapons[] = {};
-        requiredVersion = 1.62;
+        requiredVersion = 2.02;
         requiredAddons[] = {
             "UKSFTA_Maps_Main", 
             "cba_main", 

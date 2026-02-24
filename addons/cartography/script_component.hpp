@@ -1,6 +1,7 @@
 #ifndef UKSFTA_CARTOGRAPHY_COMPONENT
 #define UKSFTA_CARTOGRAPHY_COMPONENT
 
+#undef COMPONENT
 #define COMPONENT cartography
 #define COMPONENT_BEAUTIFIED Cartography
 #define PREFIX uksfta

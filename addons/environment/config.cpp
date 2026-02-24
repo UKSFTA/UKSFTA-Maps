@@ -167,6 +167,7 @@ class CfgFunctions {
             class handleBallistics {};
             class handleStorms {};
             class handleTides {};
+            class handleWorldDestruction {};
             class coldBreath {};
             class katMedicalHook {};
             class signalInterference {};
