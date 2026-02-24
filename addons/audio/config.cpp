@@ -21,12 +21,14 @@ class CfgFunctions {
             class handleArtilleryWhistle {};
             class handleAmbientSoundscapes {};
             class handleDistanceAttenuation {};
+            class handlePhysiology {};
+            class handleDoppler {};
         };
     };
 };
 
 class Extended_PostInit_EventHandlers {
     class uksfta_audio_init {
-        init = "call uksfta_audio_fnc_handleSonicCracks; call uksfta_audio_fnc_handleWeaponTails; [] spawn uksfta_audio_fnc_handleFoley; [] spawn uksfta_audio_fnc_handleArtilleryWhistle; [] spawn uksfta_audio_fnc_handleAmbientSoundscapes;";
+        init = "call uksfta_audio_fnc_handleSonicCracks; call uksfta_audio_fnc_handleWeaponTails; [] spawn uksfta_audio_fnc_handleFoley; [] spawn uksfta_audio_fnc_handleArtilleryWhistle; [] spawn uksfta_audio_fnc_handleAmbientSoundscapes; [] spawn uksfta_audio_fnc_handlePhysiology; [] spawn uksfta_audio_fnc_handleDoppler;";
     };
 };

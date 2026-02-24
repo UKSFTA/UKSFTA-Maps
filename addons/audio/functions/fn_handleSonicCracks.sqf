@@ -27,6 +27,15 @@ player addEventHandler ["BulletSnap", {
         private _vol = (1.5 - (_dist / 15)) max 0.5; // Louder when closer
 
         playSound3D [_snap, _unit, false, getPosASL _unit, _vol, _pitch, 50];
+
+        // 2. FLYBY WHIZ (For rounds passing further than 5m)
+        if (_dist > 5) then {
+            private _whiz = selectRandom [
+                "A3\Sounds_F\weapons\Explosion\expl_shell_1.wss",
+                "A3\Sounds_F\weapons\Closure\soft_revolve_02.wss"
+            ];
+            playSound3D [_whiz, _unit, false, getPosASL _unit, _vol * 0.5, _pitch * 0.8, 30];
+        };
     };
 }];
 
