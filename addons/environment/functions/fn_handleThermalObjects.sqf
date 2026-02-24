@@ -40,8 +40,8 @@ addMissionEventHandler ["ProjectileCreated", {
 
 [] spawn {
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
-        if (vehicle player != player) then {
-            private _veh = vehicle player;
+        private _veh = objectParent player;
+        if (!isNull _veh) then {
             private _engineOn = isEngineOn _veh;
             private _speed = speed _veh;
             private _biome = missionNamespace getVariable ["UKSFTA_Environment_LocalBiome", "TEMPERATE"];

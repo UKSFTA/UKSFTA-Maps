@@ -15,7 +15,9 @@ private _ppFilmG = ppEffectCreate ["FilmGrain", 1503];
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _uav = getConnectedUAV player;
     
-    if (!isNull _uav) then {
+    if (isNull _uav) then {
+        _ppFilmG ppEffectEnable false;
+    } else {
         private _dist = player distance _uav;
         private _noise = 0;
 

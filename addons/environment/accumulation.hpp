@@ -6,7 +6,7 @@ class UKSFTA_Accumulation_Display {
     fadein = 0;
     fadeout = 0;
     duration = 1e+011;
-    onLoad = "_this call uksfta_environment_fnc_initAccumulationUI;";
+    onLoad = "call uksfta_environment_fnc_initAccumulationUI;";
 
     class Controls {
         class Base: RscPicture {
