@@ -56,6 +56,30 @@ class CfgVehicles {
     };
 };
 
+class CfgWorlds {
+    class CAWorld {
+        class HDRNewPars {
+            minAperture = 1e-005;
+            maxAperture = 256;
+            apertureRatioMax = 4;
+            apertureRatioMin = 10;
+            bloomImageScale = 1;
+            bloomScale = 0.09;
+            bloomExponent = 0.75;
+            tonemapMethod = 2;
+            eyeAdaptFactorLight = 3.3;
+            eyeAdaptFactorDark = 0.75;
+            nvgApertureMin = 10;
+            nvgApertureStandard = 12.5;
+            nvgApertureMax = 16.5;
+            nvgStandardAvgLum = 10;
+            nvgLightGain = 320;
+            nightShiftMaxEffect = 0.6;
+            nightShiftLuminanceScale = 600;
+        };
+    };
+};
+
 class CfgCloudlets {
     class Default;
     class Blood;
@@ -63,6 +87,23 @@ class CfgCloudlets {
         particleShape = "ser_imp\models\brain_fleck3.p3d"; // Using analysis from SER_IMP
         size[] = {0.1, 0.2};
         color[] = {{0.4, 0, 0, 1}, {0.2, 0, 0, 0}};
+    };
+    class Missile0: Default {
+        interval = 0.002;
+        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal";
+        particleFSNtieth = 16;
+        particleFSIndex = 12;
+        particleFSFrameCount = 8;
+        lifeTime = 2.8;
+        size[] = {1, 2.8, 4};
+        color[] = {{0.7, 0.7, 0.7, 0.18}, {0.75, 0.75, 0.75, 0.06}, {0.8, 0.8, 0.8, 0}};
+    };
+    class FX_MissileTrail_SAM: Default {
+        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal";
+        interval = 0.0026;
+        lifeTime = 10;
+        size[] = {2, 6};
+        color[] = {{0.8, 0.8, 0.8, 0.8}, {0.9, 0.9, 0.9, 0.4}, {1, 1, 1, 0}};
     };
 };
 
