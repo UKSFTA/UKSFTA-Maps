@@ -1,6 +1,6 @@
 # UKSFTA Universal Realism - Tactical Roadmap
 
-Status: **Phase 10 Complete**
+Status: **Phase 11 Complete**
 
 ## ✅ Completed (Integrated)
 - **Modular Color Grading**: Detached from static configs; uses solar elevation and weather desaturation.
@@ -38,11 +38,12 @@ Status: **Phase 10 Complete**
 - **Master Naturalism**: Physically accurate Linear Tonemapping and real-time Kelvin grading.
 - **Shade-Aware Micro-Climates**: Dynamic temperature drops in occluded/shaded areas.
 - **Thermal Object Signatures**: High-fidelity TI signatures for flares and tracers.
+- **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients (A3RO Integration).
+- **Vehicle Thermo-Signature**: Dynamic thermal signature and heat haze based on engine state and ambient biome temperature.
 
-## 🚧 Phase 11: Advanced Terrestrial Simulation
+## 🚧 Phase 12: Advanced Environmental Dynamics
 - [ ] **Tidal Shifts**: Procedural water level adjustment for coastal maps based on lunar phase.
-- [ ] **Dynamic Ballistics (Atmospheric)**: Link air density and humidity directly to projectile drag coefficients.
-- [ ] **Vehicle Thermo-Signature**: Dynamic thermal signature based on engine state and ambient biome temperature.
+- [ ] **Dynamic Reverb**: Adjust sound reverb environment based on local terrain/structure density (Audio Engine).
 
 ---
 *Maintained by UKSFTA Strategic Engineering*
