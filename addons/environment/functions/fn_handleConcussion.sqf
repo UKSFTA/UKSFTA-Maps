@@ -28,8 +28,8 @@ UKSFTA_Concussion_Chrom ppEffectCommit 0;
 UKSFTA_Concussion_Current = 0;
 UKSFTA_Concussion_Thread = scriptNull;
 
-// 1. SUPPRESSION EH (Near-Miss Camera Shake)
-player addEventHandler ["Suppression", {
+// 1. SUPPRESSED EH (Near-Miss Camera Shake)
+player addEventHandler ["Suppressed", {
     params ["_unit", "_distance", "_shooter", "_instigator", "_ammoObject", "_ammoClassName", "_ammoConfig"];
     
     if !(missionNamespace getVariable ["uksfta_environment_enableConcussion", true]) exitWith {};

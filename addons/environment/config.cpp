@@ -144,6 +144,7 @@ class CfgFunctions {
             class applyVisuals {};
             class getNextState {};
             class analyzeBiome {};
+            class handleBallistics {};
             class handleStorms {};
             class coldBreath {};
             class katMedicalHook {};

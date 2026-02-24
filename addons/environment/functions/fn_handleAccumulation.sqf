@@ -15,16 +15,18 @@ if (isNil "UKSFTA_Accum_DisplayMap") then {
 while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     if !(missionNamespace getVariable ["uksfta_environment_enableAccumulation", true]) exitWith {};
 
-    private _units = allUnits select { _x distance player < 50 && {alive _x} };
+    private _units = [];
+    {
+        if ((_x distance player) < 50 && {alive _x}) then { _units pushBack _x; };
+    } forEach allUnits;
+
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
     private _globalRate = missionNamespace getVariable ["uksfta_environment_accumulationRate", 1.0];
     private _perfMode = missionNamespace getVariable ["uksfta_environment_perfMode", 3];
     
-    // Performance derived values
     private _texRes = 512;
     private _sleepTime = 5;
 
-    // Detect Video Settings
     private _vidOpts = getVideoOptions;
     private _texQuality = _vidOpts getOrDefault ["textureQuality", 2];
 
@@ -65,10 +67,18 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         // --- 1. MATHEMATICAL ACCUMULATION (Owner Only) ---
         if (local _unit) then {
             private _globalAsh = missionNamespace getVariable ["UKSFTA_Environment_Ashfall", 0];
-            private _nearFire = (nearestObjects [_unit, ["House", "Thing", "Car", "Tank"], 5]) select { getFireIntensity _x > 0 };
-            private _nearChem = (nearestObjects [_unit, ["House", "Thing", "Car"], 3]) select { (_x getVariable ["UKSFTA_IsChemical", false]) || {typeOf _x find "acid" != -1} };
+            
+            private _nearFire = [];
+            {
+                private _intensity = _x call (missionNamespace getVariable ["getFireIntensity", {0}]);
+                if (_intensity > 0) then { _nearFire pushBack _x; };
+            } forEach (nearestObjects [_unit, ["House", "Thing", "Car", "Tank"], 5]);
 
-            // Wetness
+            private _nearChem = [];
+            {
+                if ((_x getVariable ["UKSFTA_IsChemical", false]) || { (typeOf _x find "acid") != -1 }) then { _nearChem pushBack _x; };
+            } forEach (nearestObjects [_unit, ["House", "Thing", "Car"], 3]);
+
             private _isSwimming = (getPosASL _unit select 2) < 0;
             private _isRaining = rain > 0.1;
             private _wet = _unit getVariable ["UKSFTA_Accum_Wetness", 0];
@@ -80,7 +90,6 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             };
             if (abs(_wet - _oldWet) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Wetness", _wet, true]; };
 
-            // Snow (Ground)
             private _snow = _unit getVariable ["UKSFTA_Accum_Snow", 0];
             private _oldSnow = _snow;
             if (_biome == "ARCTIC" && overcast > 0.8) then {
@@ -88,15 +97,13 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             } else {
                 if (_wet > 0.5) then { _snow = (_snow - 0.01) max 0; };
             };
-            if (count _nearFire > 0) then { _snow = (_snow - 0.05) max 0; };
+            if (_nearFire isNotEqualTo []) then { _snow = (_snow - 0.05) max 0; };
             if (abs(_snow - _oldSnow) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Snow", _snow, true]; };
 
-            // Mud
             private _mud = _unit getVariable ["UKSFTA_Accum_Mud", 0];
             private _oldMud = _mud;
             private _surface = toLower (surfaceType (getPos _unit));
             private _isMuddySurface = (_surface find "mud" != -1 || _surface find "marsh" != -1 || _surface find "swamp" != -1);
-            
             if (stance _unit == "PRONE") then {
                 if (_isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
                     _mud = (_mud + (0.02 * _globalRate)) min 1;
@@ -106,7 +113,6 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                     _mud = (_mud + (0.005 * _globalRate)) min 1;
                 };
             };
-            
             if (!_isRaining && _wet < 0.1 && !_isMuddySurface) then {
                 private _dryRate = 0.0005;
                 if (_biome == "ARID") then { _dryRate = 0.002; };
@@ -114,12 +120,10 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             };
             if (abs(_mud - _oldMud) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Mud", _mud, true]; };
 
-            // Blood & Splatter
             private _bleeding = _unit getVariable ["ace_medical_woundBleeding", 0];
             private _blood = _unit getVariable ["UKSFTA_Accum_Blood", 0];
             private _bloodSplat = _unit getVariable ["UKSFTA_Accum_BloodSplatter", 0];
             private _oldBlood = _blood;
-            
             if (_bleeding > 0) then {
                 _blood = (_blood + (_bleeding * 0.05 * _globalRate)) min 1;
                 _bloodSplat = (_bloodSplat + (_bleeding * 0.1 * _globalRate)) min 1;
@@ -134,36 +138,30 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                 _unit setVariable ["UKSFTA_Accum_BloodSplatter", _bloodSplat, true];
             };
 
-            // Burn
             private _burn = _unit getVariable ["UKSFTA_Accum_Burn", 0];
             private _oldBurn = _burn;
-            if (count _nearFire > 0) then {
-                _burn = (_burn + (0.05 * _globalRate)) min 1;
-            };
+            if (_nearFire isNotEqualTo []) then { _burn = (_burn + (0.05 * _globalRate)) min 1; };
             if (abs(_burn - _oldBurn) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Burn", _burn, true]; };
 
-            // Ash
             private _ash = _unit getVariable ["UKSFTA_Accum_Ash", 0];
             private _oldAsh = _ash;
-            if (_globalAsh > 0 || count _nearFire > 0) then {
+            if (_globalAsh > 0 || _nearFire isNotEqualTo []) then {
                 _ash = (_ash + (0.005 * _globalRate)) min 1;
             } else {
                 if (_wet > 0.5) then { _ash = (_ash - 0.01) max 0; };
             };
-            if (count _nearFire > 0 && {getFireIntensity (_nearFire select 0) > 0.7}) then { _ash = (_ash - 0.02) max 0; };
+            if (_nearFire isNotEqualTo [] && { (_nearFire select 0 call (missionNamespace getVariable ["getFireIntensity", {0}])) > 0.7 }) then { _ash = (_ash - 0.02) max 0; };
             if (abs(_ash - _oldAsh) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Ash", _ash, true]; };
 
-            // Chemicals
             private _chem = _unit getVariable ["UKSFTA_Accum_Chem", 0];
             private _oldChem = _chem;
-            if (count _nearChem > 0) then {
+            if (_nearChem isNotEqualTo []) then {
                 _chem = (_chem + (0.05 * _globalRate)) min 1;
             } else {
                 if (_wet > 0.8) then { _chem = (_chem - 0.01) max 0; };
             };
             if (abs(_chem - _oldChem) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Chem", _chem, true]; };
 
-            // Snowfall
             private _snowfall = 0;
             if (_biome == "ARCTIC" && rain > 0.1) then { _snowfall = rain; };
             _unit setVariable ["UKSFTA_Accum_Snowfall", _snowfall, true];
@@ -178,7 +176,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             if (_uiName == "") then {
                 private _textures = getObjectTextures _unit;
                 private _baseTex = _textures select 0;
-                if (!isNil "_baseTex" && {(_baseTex find "UKSFTA_Accumulation_Display") == -1}) then {
+                if (!isNil "_baseTex" && { (_baseTex find "UKSFTA_Accumulation_Display") == -1 }) then {
                     _uiName = format ["UKSFTA_ACCUM:%1:%2", _baseTex, floor(random 1000000)];
                     _unit setVariable ["UKSFTA_Accum_UIName", _uiName];
                     private _procTex = format ["#(argb,%1,%1,5)ui(""UKSFTA_Accumulation_Display"",""%2"")", _texRes, _uiName];
@@ -214,7 +212,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                     ];
                     displayUpdate _display;
 
-                    if (_burnLevel > 0.7 && {face _unit != "BurnFace"}) then {
+                    if (_burnLevel > 0.7 && { (face _unit) != "BurnFace" }) then {
                         [_unit, "BurnFace"] remoteExec ["setFace", 0, _unit];
                     };
                 };

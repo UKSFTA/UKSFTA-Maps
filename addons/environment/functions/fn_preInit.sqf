@@ -129,7 +129,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Initializing Pre-Ini
     ["Enable Global Ashfall (Nuclear Winter)", "Activates a global slow-falling ash effect and uniform accumulation."],
     "UKSFTA Environment", 
     false, 1, { 
-        missionNamespace setVariable ["UKSFTA_Environment_Ashfall", if (_this) then {1} else {0}, true]; 
+        missionNamespace setVariable ["UKSFTA_Environment_Ashfall", parseNumber _this, true]; 
     }, true
 ] call CBA_fnc_addSetting;
 

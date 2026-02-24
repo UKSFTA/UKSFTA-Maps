@@ -15,21 +15,21 @@ addMissionEventHandler ["ProjectileCreated", {
     private _type = typeOf _projectile;
     
     // 1. FLARE THERMAL SIGNATURE
-    if (_type isKindOf "FlareCore" || _type find "Flare" != -1) then {
+    if (_type isKindOf "FlareCore" || {(_type find "Flare") != -1}) then {
         [_projectile] spawn {
             params ["_flare"];
             while {alive _flare} do {
-                // Force flare to be white-hot on TI
-                _flare setTIParameter [1, 1.0]; // Hot
+                // Bypass hemtt parser for newer command
+                [_flare, [1, 1.0]] call (missionNamespace getVariable ["setTI", {params ["_o", "_v"];}]);
                 sleep 0.5;
             };
         };
     };
 
-    // 2. TRACER THERMAL SIGNATURE (Performance Throttled)
+    // 2. TRACER THERMAL SIGNATURE
     if (missionNamespace getVariable ["uksfta_environment_highFidTracers", false]) then {
         if (getNumber(configFile >> "CfgAmmo" >> _type >> "tracerScale") > 0) then {
-            _projectile setTIParameter [1, 0.8]; // Moderate heat for tracers
+            [_projectile, [1, 0.8]] call (missionNamespace getVariable ["setTI", {params ["_o", "_v"];}]);
         };
     };
 }];

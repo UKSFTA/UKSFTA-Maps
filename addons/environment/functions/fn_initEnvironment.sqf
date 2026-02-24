@@ -46,6 +46,7 @@ if (isServer) then {
                                                 [] spawn { call uksfta_environment_fnc_handleHeat; };
                                                             [] spawn { call uksfta_environment_fnc_handleConcussion; };
                                                             [] spawn { call uksfta_environment_fnc_handleThermalObjects; };
+                                                            [] spawn { call uksfta_environment_fnc_handleBallistics; };
                                                 
                                                             [] spawn { call uksfta_environment_fnc_handleLightning; };        };
     };
