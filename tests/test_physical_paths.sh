@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# UKSFTA Physical VFS Audit (Corrected Path Logic)
+# UKSFTA Physical VFS Audit (Phase 19 Gold Master)
 
 echo "🧪 INITIATING PHYSICAL VFS MAPPING AUDIT..."
 
@@ -8,45 +8,44 @@ ERRORS=0
 
 check_file() {
     local virtual_path=$1
-    local physical_base=$2
+    local physical_path="$WS/$2"
     
-    # We ignore the virtual prefix for physical verification
-    # and just check the physical file system directly
-    if [ -f "$physical_base/$3" ]; then
-        echo "  ✅ PHYSICAL MATCH: $virtual_path -> $physical_base/$3"
+    if [ -f "$physical_path" ]; then
+        echo "  ✅ PHYSICAL MATCH: $virtual_path -> $physical_path"
     else
-        echo "  ❌ MISSING PHYSICAL: $virtual_path (Expected at $physical_base/$3)"
+        echo "  ❌ MISSING PHYSICAL: $virtual_path (Expected at $physical_path)"
         ERRORS=$((ERRORS + 1))
     fi
 }
 
-# --- CARTOGRAPHY ---
-BASE="$WS/addons/cartography"
-V="\z\uksfta\addons\cartography"
-check_file "$V\functions\fn_preInit.sqf" "$BASE" "functions/fn_preInit.sqf"
-check_file "$V\functions\fn_initCartography.sqf" "$BASE" "functions/fn_initCartography.sqf"
-check_file "$V\functions\fn_handleMapDraw.sqf" "$BASE" "functions/fn_handleMapDraw.sqf"
-check_file "$V\functions\fn_toggleMode.sqf" "$BASE" "functions/fn_toggleMode.sqf"
+# --- 1. CORE ENGINES (SQF) ---
+check_file "\z\uksfta\addons\environment\functions\fn_handleDriving.sqf" "addons/environment/functions/fn_handleDriving.sqf"
+check_file "\z\uksfta\addons\environment\functions\fn_handlePhysicality.sqf" "addons/environment/functions/fn_handlePhysicality.sqf"
+check_file "\z\uksfta\addons\environment\functions\fn_handleModCompat.sqf" "addons/environment/functions/fn_handleModCompat.sqf"
+check_file "\z\uksfta\addons\audio\functions\fn_handleObstruction.sqf" "addons/audio/functions/fn_handleObstruction.sqf"
+check_file "\z\uksfta\addons\audio\functions\fn_handleWorldAlarms.sqf" "addons/audio/functions/fn_handleWorldAlarms.sqf"
 
-# --- ENVIRONMENT ---
-BASE="$WS/addons/environment"
-V="\z\uksfta\addons\environment"
-check_file "$V\functions\fn_preInit.sqf" "$BASE" "functions/fn_preInit.sqf"
-check_file "$V\functions\fn_initEnvironment.sqf" "$BASE" "functions/fn_initEnvironment.sqf"
-check_file "$V\functions\fn_weatherCycle.sqf" "$BASE" "functions/fn_weatherCycle.sqf"
-check_file "$V\functions\fn_analyzeBiome.sqf" "$BASE" "functions/fn_analyzeBiome.sqf"
-check_file "$V\functions\fn_getSunElevation.sqf" "$BASE" "functions/fn_getSunElevation.sqf"
-check_file "$V\functions\fn_handleThermals.sqf" "$BASE" "functions/fn_handleThermals.sqf"
+# --- 2. BLASTCORE MODELS (P3D) ---
+check_file "\z\uksfta\addons\environment\models\impact\Explosion_01.p3d" "addons/environment/models/impact/Explosion_01.p3d"
+check_file "\z\uksfta\addons\environment\models\impact\Dirt.p3d" "addons/environment/models/impact/Dirt.p3d"
+check_file "\z\uksfta\addons\environment\models\impact\LargeFire_01.p3d" "addons/environment/models/impact/LargeFire_01.p3d"
 
-# --- CAMOUFLAGE ---
-BASE="$WS/addons/camouflage"
-V="\z\uksfta\addons\camouflage"
-check_file "$V\functions\fn_preInit.sqf" "$BASE" "functions/fn_preInit.sqf"
-check_file "$V\functions\fn_init.sqf" "$BASE" "functions/fn_init.sqf"
-check_file "$V\functions\fn_applyCamouflage.sqf" "$BASE" "functions/fn_applyCamouflage.sqf"
+# --- 3. GORE MODELS (P3D) ---
+check_file "\z\uksfta\addons\impact\models\gibs\BloodSplatter_Torso.p3d" "addons/impact/models/gibs/BloodSplatter_Torso.p3d"
+check_file "\z\uksfta\addons\impact\models\gibs\skull_chunk1.p3d" "addons/impact/models/gibs/skull_chunk1.p3d"
+check_file "\z\uksfta\addons\impact\models\gibs\brain_Half.p3d" "addons/impact/models/gibs/brain_Half.p3d"
+
+# --- 4. HIGH-FIDELITY AUDIO (OGG/WSS) ---
+check_file "\z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg" "addons/audio/sounds/world/Car_Alarm.ogg"
+check_file "\z\uksfta\addons\audio\sounds\world\Car_Alarm1.ogg" "addons/audio/sounds/world/Car_Alarm1.ogg"
+check_file "\z\uksfta\addons\audio\sounds\world\Facility_Alarm.ogg" "addons/audio/sounds/world/Facility_Alarm.ogg"
+check_file "\z\uksfta\addons\audio\sounds\impact\bullet_hit_1.ogg" "addons/audio/sounds/impact/bullet_hit_1.ogg"
+
+# --- 5. CBA SETTINGS ---
+check_file "\z\uksfta\addons\main\XEH_preInit.sqf" "addons/main/XEH_preInit.sqf"
 
 if [ $ERRORS -eq 0 ]; then
-    echo "✅ PHYSICAL VFS AUDIT COMPLETE: 13/13 scripts physically verified and mapped."
+    echo "✅ PHYSICAL VFS AUDIT COMPLETE: All Gold Master assets physically verified."
 else
     echo "❌ PHYSICAL VFS AUDIT FAILED: $ERRORS files missing from physical map."
     exit 1
