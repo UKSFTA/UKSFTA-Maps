@@ -124,5 +124,14 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Initializing Pre-Ini
     [0, 5, 1, 1], 1, {}, true
 ] call CBA_fnc_addSetting;
 
+[
+    "uksfta_environment_ashfall", "CHECKBOX",
+    ["Enable Global Ashfall (Nuclear Winter)", "Activates a global slow-falling ash effect and uniform accumulation."],
+    "UKSFTA Environment", 
+    false, 1, { 
+        missionNamespace setVariable ["UKSFTA_Environment_Ashfall", if (_this) then {1} else {0}, true]; 
+    }, true
+] call CBA_fnc_addSetting;
+
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Pre-Init Settings Registered.";
 true

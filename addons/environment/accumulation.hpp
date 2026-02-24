@@ -56,5 +56,11 @@ class UKSFTA_Accumulation_Display {
             text = "z\uksfta\addons\environment\data\snowfall_ca.paa";
             colorText[] = {1, 1, 1, 0};
         };
+        class Ash: RscPicture {
+            idc = 108;
+            x = 0; y = 0; w = 1; h = 1;
+            text = "z\uksfta\addons\environment\data\snow_ca.paa";
+            colorText[] = {0.2, 0.2, 0.2, 0};
+        };
     };
 };

@@ -104,4 +104,25 @@ switch (_biome) do {
     };
 };
 
+// 3. GLOBAL HAZARDS (Ashfall / Nuclear Winter)
+private _globalAsh = missionNamespace getVariable ["UKSFTA_Environment_Ashfall", 0];
+if (_globalAsh > 0) then {
+    if (isNil "UKSFTA_Environment_AshfallEffect") then {
+        UKSFTA_Environment_AshfallEffect = "#particlesource" createVehicleLocal (getPosATL player);
+    };
+    
+    // Slow falling dark grey flakes
+    UKSFTA_Environment_AshfallEffect setParticleParams [
+        ["A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 1], "", "Billboard", 1, 10,
+        [0, 0, 0], [0, 0, -0.2], 1, 0.000001, 0, 1.4, [0.05, 0.05], [[0.1, 0.1, 0.1, 1]], [0, 1], 0.2, 1.2, "", "", player
+    ];
+    UKSFTA_Environment_AshfallEffect setParticleRandom [0, [20, 20, 10], [0, 0, 0], 0, 0.01, [0, 0, 0, 0.5], 0, 0];
+    UKSFTA_Environment_AshfallEffect setDropInterval (0.01 / (_multiplier max 0.01));
+} else {
+    if (!isNil "UKSFTA_Environment_AshfallEffect") then {
+        deleteVehicle UKSFTA_Environment_AshfallEffect;
+        UKSFTA_Environment_AshfallEffect = nil;
+    };
+};
+
 true

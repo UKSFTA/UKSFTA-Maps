@@ -61,6 +61,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             _unit setVariable ["UKSFTA_Accum_Blood", 0];
             _unit setVariable ["UKSFTA_Accum_BloodSplatter", 0];
             _unit setVariable ["UKSFTA_Accum_Burn", 0];
+            _unit setVariable ["UKSFTA_Accum_Ash", 0];
             _unit setVariable ["UKSFTA_Accum_Snowfall", 0];
         };
 
@@ -140,6 +141,16 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             };
             if (abs(_burn - _oldBurn) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Burn", _burn, true]; };
 
+            // Ash
+            private _ash = _unit getVariable ["UKSFTA_Accum_Ash", 0];
+            private _oldAsh = _ash;
+            if (_globalAsh > 0 || count _nearFire > 0) then {
+                _ash = (_ash + (0.005 * _globalRate)) min 1;
+            } else {
+                if (_wet > 0.5) then { _ash = (_ash - 0.01) max 0; };
+            };
+            if (abs(_ash - _oldAsh) > 0.01) then { _unit setVariable ["UKSFTA_Accum_Ash", _ash, true]; };
+
             // Snowfall (Visual overlay during active snow)
             private _snowfall = 0;
             if (_biome == "ARCTIC" && rain > 0.1) then {
@@ -184,6 +195,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
                         [104, "UKSFTA_Accum_Blood"],
                         [107, "UKSFTA_Accum_BloodSplatter"],
                         [105, "UKSFTA_Accum_Burn"],
+                        [108, "UKSFTA_Accum_Ash"],
                         [106, "UKSFTA_Accum_Snowfall"]
                     ];
                     displayUpdate _display;
