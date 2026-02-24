@@ -28,13 +28,18 @@ player addEventHandler ["BulletSnap", {
 
         playSound3D [_snap, _unit, false, getPosASL _unit, _vol, _pitch, 50];
 
-        // 2. FLYBY WHIZ (For rounds passing further than 5m)
-        if (_dist > 5) then {
-            private _whiz = selectRandom [
-                "A3\Sounds_F\weapons\Explosion\expl_shell_1.wss",
-                "A3\Sounds_F\weapons\Closure\soft_revolve_02.wss"
-            ];
-            playSound3D [_whiz, _unit, false, getPosASL _unit, _vol * 0.5, _pitch * 0.8, 30];
+        // 2. FLYBY WHIZ (Caliber-Specific)
+        if (_dist > 2) then {
+            private _whiz = "A3\Sounds_F\weapons\Closure\soft_revolve_02.wss"; // Default light
+            private _whizVol = _vol * 0.5;
+
+            // Heavy Caliber (> 10mm) whiz
+            if (_speed > 800 && { _dist < 10 }) then {
+                _whiz = "A3\Sounds_F\weapons\Explosion\expl_shell_1.wss"; // Terrifying deep whiz
+                _whizVol = _vol * 0.8;
+            };
+
+            playSound3D [_whiz, _unit, false, getPosASL _unit, _whizVol, _pitch * 0.8, 40];
         };
     };
 }];

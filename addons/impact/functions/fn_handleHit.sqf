@@ -43,9 +43,9 @@ if (_selection == "head" && _damage > 0.8) then {
 
 // --- 3. PAIN SCREAMS (Horror Mod Integration) ---
 if (_damage > 0.3) then {
-    // Select random scream from Flood_death_1 to Flood_death_6
+    // Select random scream from Pain_Scream_1 to Pain_Scream_6
     // We use the internalized paths
-    private _scream = format ["z\uksfta\addons\audio\sounds\horror\Flood_death_%1.ogg", floor(random 6) + 1];
+    private _scream = format ["z\uksfta\addons\audio\sounds\horror\Pain_Scream_%1.ogg", floor(random 6) + 1];
     private _pitch = 0.8 + random 0.4;
     private _vol = 1 + (_damage * 2);
     
