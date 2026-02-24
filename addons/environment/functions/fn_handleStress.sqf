@@ -103,6 +103,23 @@ UKSFTA_Env_PP_Blur ppEffectEnable true;
         // Share stress level for other systems (e.g. sway, aim accuracy)
         player setVariable ["UKSFTA_Stress_Level", _stress, true];
 
+        // --- ACE3 / KAT MEDICAL INTEGRATION ---
+        if (_stress > 0.5) then {
+            // Induce high heart rate in ACE3
+            private _currentHR = player getVariable ["ace_medical_heartRate", 80];
+            if (_currentHR < (80 + (_stress * 100))) then {
+                player setVariable ["ace_medical_heartRate", (_currentHR + 5), true];
+            };
+
+            // Induce high breath rate (Respiratory Rate) for KAT/Physicality
+            // Resting: 12-16. Stress: up to 40.
+            private _respRate = 16 + (_stress * 24);
+            player setVariable ["kat_medical_respiratoryRate", _respRate, true];
+            missionNamespace setVariable ["UKSFTA_Environment_BreathRate", _respRate];
+        } else {
+            missionNamespace setVariable ["UKSFTA_Environment_BreathRate", 16];
+        };
+
         sleep 1;
     };
 };

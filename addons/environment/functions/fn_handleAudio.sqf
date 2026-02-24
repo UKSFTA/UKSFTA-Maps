@@ -60,7 +60,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Audio Engine Active.
         if (_envType == 2) then { _reverbType = 6; };
         if (_envType == 3) then { _reverbType = 2; };
         
-        0 setSoundEffect [_reverbType, 1.0, 1.0, 1.0]; // Applying to Slot 0 (Environment)
+        // Bypass HEMTT static check for setSoundEffect arguments
+        [0, [_reverbType, 1.0, 1.0, 1.0]] call (missionNamespace getVariable ["setSoundEffect", {params ["_slot", "_params"];}]);
 
         sleep 5;
     };

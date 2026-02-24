@@ -18,12 +18,15 @@ class CfgFunctions {
             class handleSonicCracks {};
             class handleWeaponTails {};
             class handleFoley {};
+            class handleArtilleryWhistle {};
+            class handleAmbientSoundscapes {};
+            class handleDistanceAttenuation {};
         };
     };
 };
 
 class Extended_PostInit_EventHandlers {
     class uksfta_audio_init {
-        init = "call uksfta_audio_fnc_handleSonicCracks; call uksfta_audio_fnc_handleWeaponTails; [] spawn uksfta_audio_fnc_handleFoley;";
+        init = "call uksfta_audio_fnc_handleSonicCracks; call uksfta_audio_fnc_handleWeaponTails; [] spawn uksfta_audio_fnc_handleFoley; [] spawn uksfta_audio_fnc_handleArtilleryWhistle; [] spawn uksfta_audio_fnc_handleAmbientSoundscapes;";
     };
 };

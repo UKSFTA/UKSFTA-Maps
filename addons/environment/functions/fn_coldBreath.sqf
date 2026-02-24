@@ -39,8 +39,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         };
     };
 
-    // Typical resting respiratory rate is 12-16 breaths per minute (~4-5s)
-    sleep (3.5 + random 1.5);
+    // Dynamic Respiratory Rate Scaling
+    // 16 bpm = ~3.75s interval. 40 bpm = ~1.5s interval.
+    private _breathRate = missionNamespace getVariable ["UKSFTA_Environment_BreathRate", 16];
+    private _interval = 60 / (_breathRate max 1);
+    
+    sleep (_interval + (random 0.5));
 };
 
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Cold Breath Loop Terminated.";
