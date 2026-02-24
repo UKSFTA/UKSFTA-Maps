@@ -59,40 +59,40 @@ class CfgVehicles {
 class CfgWorlds {
     class CAWorld {
         class HDRNewPars {
-            minAperture = 0.00001; // MW2019 style deep blacks
-            maxAperture = 200; 
-            apertureRatioMax = 3.5; // Fast responsive light adaptation
-            apertureRatioMin = 8;
+            minAperture = 0.00001; 
+            maxAperture = 256; 
+            apertureRatioMax = 4.0;
+            apertureRatioMin = 10;
             bloomImageScale = 1;
-            bloomScale = 0.1; // Restrained realistic bloom
-            bloomExponent = 0.8;
-            bloomLuminanceOffset = 0.5;
-            bloomLuminanceScale = 0.2;
-            bloomLuminanceExponent = 0.3;
-            tonemapMethod = 1; // Reinhard cinematic tonemapping
-            tonemapShoulderStrength = 0.25;
-            tonemapLinearStrength = 0.15;
-            tonemapLinearAngle = 0.05;
-            tonemapToeStrength = 0.25;
-            tonemapToeNumerator = 0.02;
-            tonemapToeDenominator = 0.18;
-            tonemapLinearWhite = 10;
-            tonemapExposureBias = 1.1;
-            tonemapLinearWhiteReinhard = "2.2f";
-            eyeAdaptFactorLight = 3.5;
-            eyeAdaptFactorDark = 1.0;
-            nvgApertureMin = 8;
-            nvgApertureStandard = 12;
-            nvgApertureMax = 15;
-            nvgStandardAvgLum = 8;
-            nvgLightGain = 300;
+            bloomScale = 0.05; 
+            bloomExponent = 1.0;
+            bloomLuminanceOffset = 0.8;
+            bloomLuminanceScale = 0.1;
+            bloomLuminanceExponent = 1.0;
+            tonemapMethod = 2; // Linear
+            tonemapShoulderStrength = 1.0;
+            tonemapLinearStrength = 1.0;
+            tonemapLinearAngle = 0.0;
+            tonemapToeStrength = 1.0;
+            tonemapToeNumerator = 1.0;
+            tonemapToeDenominator = 1.0;
+            tonemapLinearWhite = 1.0;
+            tonemapExposureBias = 0.0;
+            tonemapLinearWhiteReinhard = "2.5f";
+            eyeAdaptFactorLight = 2.0; 
+            eyeAdaptFactorDark = 0.5;
+            nvgApertureMin = 10;
+            nvgApertureStandard = 13;
+            nvgApertureMax = 18;
+            nvgStandardAvgLum = 10;
+            nvgLightGain = 280;
             nvgTransition = 1;
-            nvgTransitionCoefOn = "35.0f";
-            nvgTransitionCoefOff = "0.015f";
-            nightShiftMinAperture = 0.0001;
-            nightShiftMaxAperture = 0.0015;
-            nightShiftMaxEffect = 0.7;
-            nightShiftLuminanceScale = 500;
+            nvgTransitionCoefOn = "40.0f";
+            nvgTransitionCoefOff = "0.01f";
+            nightShiftMinAperture = 0;
+            nightShiftMaxAperture = 0.002;
+            nightShiftMaxEffect = 0.5;
+            nightShiftLuminanceScale = 600;
         };
     };
 };

@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Advanced Visual Engine (Clarity Edition)
- * Optimized to suppress engine distance haze.
+ * UKSFTA Environment - Master Naturalism Engine (Phase 10)
+ * High-fidelity, real-time color grading without external shaders.
  */
 
 if (!hasInterface) exitWith {};
@@ -9,87 +9,85 @@ if (!hasInterface) exitWith {};
 waitUntil { !isNil "uksfta_environment_enabled" };
 if !(missionNamespace getVariable ["uksfta_environment_enabled", false]) exitWith {};
 
-private _ccHandle = 1501;
-private _filmHandle = 1502;
-
+private _ccHandle = ppEffectCreate ["ColorCorrections", 1501];
 _ccHandle ppEffectEnable true;
 _ccHandle ppEffectForceInNVG true;
-_filmHandle ppEffectEnable true;
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Haze-Suppression Grading Active.";
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Master Naturalism Engine Active.";
 
 while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
     private _intensity = missionNamespace getVariable ["uksfta_environment_visualIntensity", 1.0];
     private _overcast = overcast;
-    
     private _sunElevation = call uksfta_environment_fnc_getSunElevation;
     
+    // 1. BASELINE NATURALISM
     private _rgb = [1, 1, 1];
     private _sat = 1.0;
-    private _contrast = 1.1; // Baseline contrast bump to fight haze
+    private _contrast = 1.05; // Subtle pop
     private _brightness = 1.0;
+    private _offset = [0, 0, 0, 0];
 
-    // 1. Solar State Logic
-    if (_sunElevation > 5) then { // Day
+    // 2. KELVIN-ACCURATE SOLAR GRADING
+    if (_sunElevation > 15) then { // Noon
         _rgb = [1.0, 1.0, 1.0];
         _sat = 1.0;
     } else {
-        if (_sunElevation > -5) then { // Golden/Blue
-            _rgb = [1.05, 0.95, 0.9];
-            _sat = 1.05;
-        } else { // Night
-            private _moon = moonIntensity; // 0 to 1
-            // Adjust based on moon intensity for grading (Phase 3: Lunar Grading)
-            _rgb = [0.8 + (0.1 * _moon), 0.85 + (0.1 * _moon), 1.0 + (0.1 * _moon)];
-            _sat = 0.6 + (0.2 * _moon);
-            _brightness = 0.85 + (0.15 * _moon);
-            _contrast = _contrast - (0.05 * (1 - _moon)); // Lower contrast on pitch black nights
+        if (_sunElevation > 0) then { // Golden Hour
+            private _factor = linearConversion [0, 15, _sunElevation, 0, 1, true];
+            _rgb = [1.1 - (0.1 * _factor), 0.95 + (0.05 * _factor), 0.85 + (0.15 * _factor)];
+            _sat = 1.1 - (0.1 * _factor);
+            _contrast = 1.1 - (0.05 * _factor);
+        } else { // Night & Twilight
+            if (_sunElevation > -10) then { // Blue Hour
+                _rgb = [0.8, 0.85, 1.1];
+                _sat = 0.7;
+                _brightness = 0.9;
+            } else { // Full Night
+                private _moon = moonIntensity;
+                _rgb = [0.7 + (0.1 * _moon), 0.75 + (0.15 * _moon), 1.0 + (0.1 * _moon)];
+                _sat = 0.5 + (0.2 * _moon);
+                _brightness = 0.8 + (0.2 * _moon);
+                _contrast = 0.95 + (0.1 * _moon);
+            };
         };
     };
 
-    // 2. HAZE MITIGATION PASS
-    // We increase mid-tone contrast specifically during high overcast to fight the "milky" look
-    if (_overcast > 0.4) then {
-        private _hazeFactor = linearConversion [0.4, 1.0, _overcast, 0, 1, true];
-        _contrast = _contrast + (0.15 * _hazeFactor); // Aggressive contrast to keep distance clear
-        _sat = _sat * (1 - (0.2 * _hazeFactor));
+    // 3. HAZE MITIGATION & ATMOSPHERIC DENSITY
+    if (_overcast > 0.5) then {
+        private _haze = linearConversion [0.5, 1.0, _overcast, 0, 1, true];
+        _contrast = _contrast + (0.1 * _haze);
+        _sat = _sat * (1 - (0.15 * _haze));
+        _rgb = _rgb vectorMultiply (1 - (0.05 * _haze));
     };
 
-    // 3. Biome Overlay
+    // 4. BIOME SPECIFIC REFINEMENT
     switch (_biome) do {
-        case "ARID": { _rgb = [(_rgb select 0) * 1.02, _rgb select 1, (_rgb select 2) * 0.98]; };
-        case "ARCTIC": { _sat = _sat * 0.85; _contrast = _contrast + 0.1; };
+        case "ARID": { 
+            _rgb = [(_rgb select 0) * 1.02, (_rgb select 1), (_rgb select 2) * 0.95]; 
+            _contrast = _contrast + 0.05;
+        };
+        case "ARCTIC": { 
+            _sat = _sat * 0.85; 
+            _rgb = [(_rgb select 0) * 0.95, (_rgb select 1) * 0.98, (_rgb select 2) * 1.05];
+            _contrast = _contrast + 0.1;
+        };
     };
 
-    // 3a. Sub-Biome Overlay (Phase 4: Enoch Scattering)
-    private _subBiome = missionNamespace getVariable ["UKSFTA_Environment_SubBiome", ""];
-    if (_subBiome == "WOODLAND") then {
-        // Enoch-style: Cooler shadows, slight green tint, punchier contrast
-        _rgb = [(_rgb select 0) * 0.95, (_rgb select 1) * 1.02, (_rgb select 2) * 0.98]; 
-        _contrast = _contrast + 0.05;
-        _sat = _sat * 0.95; // Slightly desaturated "gritty" look
-    };
-
-    // 4. Local Micro-Climate Offset (Snow/Altitude)
-    private _localDesat = missionNamespace getVariable ["uksfta_environment_visualDesatLocal", 0];
-    _sat = (_sat - _localDesat) max 0.1;
-
-    // 5. Final Grading (Refined for Clarity)
+    // 5. APPLY MASTER GRADING
     _ccHandle ppEffectAdjust [
         _brightness, 
         _contrast, 
-        -0.02, 
-        [0, 0, 0, 0], 
+        0, 
+        _offset, 
         [(_rgb select 0) * _intensity, (_rgb select 1) * _intensity, (_rgb select 2) * _intensity, _sat], 
-        [0.299, 0.587, 0.114, 0],
-        [-1, -1, 0, 0, 0, 0, 0]
+        [0.299, 0.587, 0.114, 0]
     ];
-    _ccHandle ppEffectCommit 10;
+    _ccHandle ppEffectCommit 15;
 
-    sleep 10;
+    sleep 15;
 };
 
 _ccHandle ppEffectEnable false;
-_filmHandle ppEffectEnable false;
+ppEffectDestroy _ccHandle;
 true
