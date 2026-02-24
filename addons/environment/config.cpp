@@ -144,20 +144,14 @@ class CfgCloudlets {
     };
     class UKSFTA_VehicleExplosion: Default {
         interval = 0.01;
-        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal";
-        particleFSNtieth = 16;
-        particleFSIndex = 12;
-        particleFSFrameCount = 8;
+        particleShape = "\z\uksfta\addons\environment\models\impact\Explosion_01.p3d";
         lifeTime = 5;
         size[] = {5, 10, 15};
         color[] = {{0.1, 0.1, 0.1, 0.8}, {0.05, 0.05, 0.05, 0.4}, {0, 0, 0, 0}};
     };
     class UKSFTA_GroundImpact: Default {
         interval = 0.005;
-        particleShape = "\A3\data_f\ParticleEffects\Universal\Universal";
-        particleFSNtieth = 16;
-        particleFSIndex = 12;
-        particleFSFrameCount = 8;
+        particleShape = "\z\uksfta\addons\environment\models\impact\Dirt.p3d";
         lifeTime = 2;
         size[] = {0.5, 2, 4};
         color[] = {{0.4, 0.35, 0.2, 0.5}, {0.4, 0.35, 0.2, 0}};
