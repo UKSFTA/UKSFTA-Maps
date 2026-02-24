@@ -37,12 +37,32 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _bleeding = _x getVariable ["ace_medical_woundBleeding", 0];
         if (_bleeding > 0.5 && {count UKSFTA_Env_ActivePools < (_maxPools + 10)}) then {
             private _pos = getPosASL _x;
-            private _pool = createSimpleObject ["z\uksfta\addons\bloodsplatter\models\plane\bloodsplatter_smallplane.p3d", _pos];
-            _pool setDir (random 360);
-            _pool setVectorUp (surfaceNormal _pos);
-            _pool setObjectTexture [0, "z\uksfta\addons\environment\data\blood_ca.paa"];
             
-            UKSFTA_Env_ActivePools pushBack [_pool, time + 300]; // Blood stays longer
+            // --- BLOOD DIFFUSION LOGIC ---
+            // Scan for nearby rain puddles to "infect" them with blood
+            private _nearbyRainPuddles = nearestObjects [_pos, ["UKSFTA_SurfacePlane"], 2];
+            if (_nearbyRainPuddles isNotEqualTo []) then {
+                {
+                    private _puddle = _x;
+                    private _bloodLevel = _puddle getVariable ["UKSFTA_Puddle_BloodLevel", 0];
+                    _bloodLevel = (_bloodLevel + 0.2) min 1.0;
+                    _puddle setVariable ["UKSFTA_Puddle_BloodLevel", _bloodLevel];
+                    
+                    // Gradually shift texture to red using procedural color
+                    // Uses argb procedural to tint the wetness texture
+                    private _red = 0.4 * _bloodLevel;
+                    private _tex = format ["#(argb,8,8,3)color(%1,0,0,0.5,ca)z\uksfta\addons\environment\data\wet_ca.paa", _red];
+                    _puddle setObjectTexture [0, _tex];
+                } forEach _nearbyRainPuddles;
+            } else {
+                // Regular blood pool if no rain puddle found
+                private _pool = createSimpleObject ["z\uksfta\addons\bloodsplatter\models\plane\bloodsplatter_smallplane.p3d", _pos];
+                _pool setDir (random 360);
+                _pool setVectorUp (surfaceNormal _pos);
+                _pool setObjectTexture [0, "z\uksfta\addons\environment\data\blood_ca.paa"];
+                
+                UKSFTA_Env_ActivePools pushBack [_pool, time + 300]; // Blood stays longer
+            };
         };
     } forEach _units;
 

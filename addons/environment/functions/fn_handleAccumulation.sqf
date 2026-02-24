@@ -91,7 +91,10 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             private _oldWet = _wet;
             if (_isSwimming || _isRaining || _inPuddle || (_unit == player && _tidalWet > 0)) then {
                 private _wetRate = 0.01;
-                if (_inPuddle && !_isRaining) then { _wetRate = 0.005; }; // Stepping in a puddle is slower than total immersion
+                if (_inPuddle && !_isRaining) then { 
+                    _wetRate = 0.005; 
+                    if (stance _unit == "PRONE") then { _wetRate = 0.02; }; // Laying in a puddle is fast soaking
+                }; 
                 _wet = (_wet + (_wetRate * _globalRate)) min 1;
             } else {
                 _wet = (_wet - 0.001) max 0;
@@ -113,8 +116,10 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
             private _surface = toLower (surfaceType (getPos _unit));
             private _isMuddySurface = (_surface find "mud" != -1 || _surface find "marsh" != -1 || _surface find "swamp" != -1);
             if (stance _unit == "PRONE") then {
-                if (_isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
-                    _mud = (_mud + (0.02 * _globalRate)) min 1;
+                if (_inPuddle || _isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
+                    private _mudRate = 0.02;
+                    if (_inPuddle) then { _mudRate = 0.04; }; // Guaranteed mud in puddles
+                    _mud = (_mud + (_mudRate * _globalRate)) min 1;
                 };
             } else {
                 if (stance _unit == "CROUCH" && _isMuddySurface) then {
