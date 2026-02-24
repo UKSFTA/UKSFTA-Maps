@@ -52,8 +52,28 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
 
         // Mud
         private _mud = _unit getVariable ["UKSFTA_Accum_Mud", 0];
-        if (stance _unit == "PRONE" && _wet > 0.2) then {
-            _mud = (_mud + 0.02) min 1;
+        private _surface = toLower (surfaceType (getPos _unit));
+        private _isMuddySurface = (_surface find "mud" != -1 || _surface find "marsh" != -1 || _surface find "swamp" != -1);
+        
+        // Mud only accumulates if:
+        // 1. We are prone on a surface that is naturally muddy
+        // 2. We are prone on dirt/grass AND it is currently raining or we are wet
+        if (stance _unit == "PRONE") then {
+            if (_isMuddySurface || {(_wet > 0.3 || _isRaining) && (_surface find "dirt" != -1 || _surface find "grass" != -1)}) then {
+                _mud = (_mud + 0.02) min 1;
+            };
+        } else {
+            // Slight accumulation for crouching in mud
+            if (stance _unit == "CROUCH" && _isMuddySurface) then {
+                _mud = (_mud + 0.005) min 1;
+            };
+        };
+        
+        // Drying logic: Mud stays longer than water but eventually flakes off in dry heat
+        if (!_isRaining && _wet < 0.1 && !_isMuddySurface) then {
+            private _dryRate = 0.0005;
+            if (_biome == "ARID") then { _dryRate = 0.002; }; // Faster drying in deserts
+            _mud = (_mud - _dryRate) max 0;
         };
         _unit setVariable ["UKSFTA_Accum_Mud", _mud];
 

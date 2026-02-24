@@ -1,95 +1,37 @@
-# UKSFTA Realism Framework - Technical Manual
+# UKSFTA Realism Framework - Technical Specification
 
-## 1. Overview
+## 1. Sovereign Accumulation Engine (Phase 7)
+The environment engine utilizes a high-performance procedural UI-to-Texture layering system to simulate environmental impact on personnel and equipment.
 
-The UKSFTA Realism Framework is a modular, high-fidelity environmental and physical simulation suite designed to provide a consistent tactical experience across all unit operations. It is 100% map-agnostic and utilizes heuristic analysis to adapt to any terrain in the Arma 3 ecosystem.
+### 1.1 Dynamic Texture Layering
+Instead of static class-based compatibility, the engine uses the `ui(...)` procedural texture method to overlay effects directly onto any uniform or backpack.
+- **Wetness**: Darkens textures and adds a "sheen" based on rain intensity and immersion.
+- **Snow**: Gradually whitens equipment during Arctic blizzards.
+- **Mud**: Cackes equipment based on stance (Prone/Crouch) and surface moisture.
+- **Blood**: Dynamic splatter linked directly to ACE3 medical bleeding rates.
+- **Burns**: Visual charring from nearby explosions or fires.
 
-## 2. Universal Environment Engine
+### 1.2 Contextual Mud Logic
+Mud accumulation is physically governed by moisture availability. 
+- In **Arid** or **Temperate** biomes, mud will only accumulate on dirt/grass surfaces if it is actively raining or the unit is already wet.
+- Naturally muddy surfaces (swamps/marshes) will always cause accumulation regardless of weather.
+- Drying rates are biome-dependent; mud "flakes off" significantly faster in **Arid** zones.
 
-### Heuristic Biome Detection
+## 2. Advanced Stealth & Camouflage (Phase 8)
+The stealth engine has been upgraded from static keyword-based checks to a pixel-perfect terrain sampling model.
 
-The engine "interrogates" the loaded map at runtime using three layers of intelligence:
+### 2.1 Color Similarity Sampling
+The engine samples the average RGB values of the player's current visual state (including all accumulation layers) and compares them against the underlying terrain texture.
+- **Dynamic Matching**: An MTP uniform covered in snow will provide a high camouflage rating on an Arctic map.
+- **Sinusoidal Scaling**: Detection coefficients are scaled using a sinusoidal model to ensure realistic AI spotting distances.
 
-1.  **Latitude Audit**: Automatically detects Arctic or Tropical conditions based on geographic metadata. Now assigns **Sub-Biomes** (e.g., `WOODLAND`) based on temperate latitude ranges (40-60° N/S).
-2.  **Vegetation Analysis**: Scans map clutter for keywords (e.g., "palm", "sand", "snow") to identify the physical environment.
-3.  **Regional Keywords**: Fallback detection for known unit theatres (e.g., `zagor`, `livonia`).
+### 2.2 Environmental Obscuration
+- **Aerosol Density**: Fog and heavy rain provide up to 40% reduction in AI visibility.
+- **Night Compensation**: AI detection ranges are dynamically scaled based on ambient and dynamic lighting at the unit's position.
 
-### Dynamic Weather State Machine
+## 3. Physiological Sync
+- **Stamina & Fatigue**: Extreme temperatures (Arid/Arctic) directly scale the `ace_advanced_fatigue_performanceFactor`.
+- **Respiratory Visuals**: Cold breath particles are procedurally spawned based on local temperature and respiratory rate, visible in both first and third person.
 
-Weather transitions are handled via a logical Markov-Chain matrix:
-
-- **States**: 0 (Clear), 1 (Overcast), 2 (Storm).
-- **Transitions**: Controlled 30-60 minute interpolation windows to prevent "weather snaps."
-- **Synchronization**: Automatically links wind speed, gusts, and wave height to atmospheric intensity.
-
-### Modular Visual Engine
-
-The UKSFTA framework utilizes a **Modular Visual Engine** that operates independently of terrain configurations (`CfgWorlds`), ensuring 100% fidelity on any map.
-
-- **Dynamic Color Grading**: Utilizes a sovereign Post-Processing stack (Handle 1501) driven by real-time solar elevation and weather extinction.
-- **Enoch-Style Scattering**: Automatically applies high-contrast, green-shifted grading on maps identified as `WOODLAND` to replicate the atmosphere of the Contact DLC.
-- **Solar Interpolation**: Automatically shifts RGB balance from warm golden-hour tones to high-contrast night-blue based on physical sun angles.
-- **Lunar Grading**: Dynamically adjusts night-time RGB/Brightness based on the current `moonIntensity` (Full Moon vs. New Moon).
-- **Dynamic Caustics**: Real-time underwater light refraction and chromatic aberration that scales with sun elevation.
-- **Atmospheric FX**: Integrates local particle-based raindrops and adaptive film grain to provide tactile grit during intense operations.
-
-## 3. Technical Integrations
-
-### ACE3 Ballistics & Weather
-
-- **Aerosol Density**: Dynamically adjusts player `camouflageCoef` based on fog and sandstorm intensity, simulating atmospheric obscuration for AI.
-- **Thermal Washout**: Simulates ground heat soak at high noon in `ARID` biomes, resulting in decreased thermal contrast and increased visual noise.
-- **Dynamic Wind Audio**: Procedural wind "howling" that scales with gust speed and player exposure.
-- **Dynamic Weather**: Pushes temperature, humidity, and barometric pressure into the `ace_weather` core.
-- Profiles are biome-specific (e.g., Arid: 45°C / 10% Humid; Arctic: -30°C / 80% Humid).
-
-### KAT Medical
-
-- Synchronizes environmental temperature with KAT's core body temperature simulation.
-- Impact on stamina and treatment efficiency scales with biome severity.
-
-### TFAR & ACRE2 Comms
-
-- **Signal Degradation**: 20-40% reduction in radio range during severe storms.
-- **EMI (Electromagnetic Interference)**: Rare "static bursts" synchronized with engine lightning strikes.
-
-### Aviation Physics
-
-- **Turbulence Engine**: Applies random physical forces to aircraft in heavy clouds/storms.
-- **AFM Awareness**: Automatically disables overrides if the Advanced Flight Model or conflicting mods are detected.
-
-## 4. Camouflage & Concealment (Ghost Ops)
-
-- **AI Grass Fix**: 80% visibility reduction when prone in grassy/forested surfaces.
-- **Uniform Matching**: 20% bonus for correct camo choice; 50% penalty for mismatch (e.g., dark camo in snow).
-- **AI Mod Balancing**: Detects **Lambs Danger** or **VCOM AI** and applies an automated concealment buffer to ensure tactical fairness.
-
-## 5. Tactical Cartography
-
-### Layer Toggling
-
-Operators can switch between visual styles via the CBA Addon Options:
-
-- **STANDARD**: Vanilla or Enhanced Map view.
-- **SATELLITE**: High-fidelity overhead imagery.
-- **OS_HYBRID**: Professional Ordnance Survey style (Topographic + Satellite).
-
-### Performance Optimization
-
-Uses a viewport-specific renderer that only draws what the operator sees, eliminating map lag common in other overlay mods.
-
-## 6. Configuration & Control
-
-### CBA Addon Options
-
-- **Framework Preset**: Toggle between **ARCADE** (easier play) and **REALISM** (Diamond Standard).
-- **Intensity Sliders**: Individual controls for Thermal noise, Turbulence, and Signal loss.
-- **Performance Toggles**: Clients can independently disable particles or breath vapor to save FPS.
-
-### Eden Editor
-
-Mission makers can lock settings per-mission via **Attributes -> Map -> UKSFTA Environment**:
-
-- Force a specific Biome.
-- Set the Initial Weather State.
-- Preview visual effects in real-time within the editor.
+---
+*UKSFTA Strategic Engineering - 2026*
