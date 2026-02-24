@@ -5,6 +5,8 @@
  */
 
 if (!hasInterface) exitWith {};
+private _enabled = missionNamespace getVariable ["uksfta_audio_enableWeaponTails", true];
+if (!_enabled) exitWith {};
 
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Dynamic Tail Engine Active.";
 

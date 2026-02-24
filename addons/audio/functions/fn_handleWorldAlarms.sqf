@@ -40,28 +40,46 @@ player addEventHandler ["Explosion", {
     };
 }];
 
-// 2. Dedicated Car Alarms (Hit Driven)
+// 2. Realistic Car Alarms (Hit Driven) - Alarm + Horn Integration
 ["LandVehicle", "Hit", {
     params ["_unit", "_selection", "_damage", "_source", "_projectile"];
     
     if (_damage > 0.1 && {isNil {_unit getVariable "UKSFTA_Alarm_Active"}}) then {
-        _unit setVariable ["UKSFTA_Alarm_Active", true];
-        
-        [_unit] spawn {
-            params ["_veh"];
-            // Use authentic dedicated car alarm beep
-            private _sound = "z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg";
+        // Only trigger for non-armored civilian-style vehicles
+        if (!(_unit isKindOf "Tank" || _unit isKindOf "Wheeled_APC_F" || _unit isKindOf "Air")) then {
+            _unit setVariable ["UKSFTA_Alarm_Active", true];
             
-            for "_i" from 1 to 30 do {
-                if (!alive _veh || isNull _veh) exitWith {};
+            [_unit] spawn {
+                params ["_veh"];
                 
-                // Procedural Rhythmic Variation (Whoop-Whoop / Beep-Beep)
-                private _pitch = if (_i % 2 == 0) then { 1.2 } else { 1.0 };
-                playSound3D [_sound, _veh, false, getPosASL _veh, 3, _pitch, 250];
+                // Select one of the two new realistic alarm sounds
+                private _alarmSound = selectRandom [
+                    "z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg",
+                    "z\uksfta\addons\audio\sounds\world\Car_Alarm1.ogg"
+                ];
                 
-                sleep 0.8; // Standard rhythmic car alarm interval
+                // Realistic horns for layering
+                private _hornSound = selectRandom [
+                    "A3\Sounds_F\weapons\horns\car_horn_1.wss",
+                    "A3\Sounds_F\weapons\horns\car_horn_2.wss"
+                ];
+                
+                for "_i" from 1 to 40 do {
+                    if (!alive _veh || isNull _veh) exitWith {};
+                    
+                    // Layer 1: The Alarm Beep
+                    private _pitch = if (_i % 2 == 0) then { 1.1 } else { 1.0 };
+                    playSound3D [_alarmSound, _veh, false, getPosASL _veh, 3, _pitch, 250];
+                    
+                    // Layer 2: The Horn (Synchronized rhythmic honking)
+                    if (_i % 2 == 0) then {
+                        playSound3D [_hornSound, _veh, false, getPosASL _veh, 2.5, 1.0, 300];
+                    };
+                    
+                    sleep 0.6; // High-intensity alarm tempo
+                };
+                _veh setVariable ["UKSFTA_Alarm_Active", nil];
             };
-            _unit setVariable ["UKSFTA_Alarm_Active", nil];
         };
     };
 }] call (missionNamespace getVariable ["CBA_fnc_addClassEventHandler", {params ["_class", "_event", "_code"];}]);

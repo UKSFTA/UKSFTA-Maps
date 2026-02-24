@@ -5,6 +5,8 @@
  */
 
 if (!hasInterface) exitWith {};
+private _enabled = missionNamespace getVariable ["uksfta_audio_enableSonicCracks", true];
+if (!_enabled) exitWith {};
 
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.";
 
@@ -12,7 +14,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.
 [player, ["BulletSnap", {
     params ["_unit", "_projectile", "_dist", "_velocity"];
     
-    if !(missionNamespace getVariable ["uksfta_audio_enableSonicCracks", true]) exitWith {};
+    private _enabled = missionNamespace getVariable ["uksfta_audio_enableSonicCracks", true];
+    if (!_enabled) exitWith {};
     
     private _speed = vectorMagnitude _velocity;
     
