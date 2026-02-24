@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /**
  * UKSFTA Audio - Sovereign World Alarm Engine (Phase 19)
- * Triggers building and car alarms in response to urban explosions.
+ * Triggers building and car alarms in response to urban combat.
  */
 
 if (!hasInterface) exitWith {};
@@ -40,7 +40,7 @@ player addEventHandler ["Explosion", {
     };
 }];
 
-// 2. Car Alarms (Hit Driven)
+// 2. Dedicated Car Alarms (Hit Driven)
 ["LandVehicle", "Hit", {
     params ["_unit", "_selection", "_damage", "_source", "_projectile"];
     
@@ -49,15 +49,19 @@ player addEventHandler ["Explosion", {
         
         [_unit] spawn {
             params ["_veh"];
-            // Use realistic rhythmic car alarm
-            private _sound = "z\uksfta\addons\audio\sounds\world\Siren_Alarm_1.ogg";
+            // Use authentic dedicated car alarm beep
+            private _sound = "z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg";
             
-            for "_i" from 1 to 20 do {
+            for "_i" from 1 to 30 do {
                 if (!alive _veh || isNull _veh) exitWith {};
-                playSound3D [_sound, _veh, false, getPosASL _veh, 3, 1.2, 250];
-                sleep 1.2; // Fast rhythmic car alarm
+                
+                // Procedural Rhythmic Variation (Whoop-Whoop / Beep-Beep)
+                private _pitch = if (_i % 2 == 0) then { 1.2 } else { 1.0 };
+                playSound3D [_sound, _veh, false, getPosASL _veh, 3, _pitch, 250];
+                
+                sleep 0.8; // Standard rhythmic car alarm interval
             };
-            _veh setVariable ["UKSFTA_Alarm_Active", nil];
+            _unit setVariable ["UKSFTA_Alarm_Active", nil];
         };
     };
 }] call (missionNamespace getVariable ["CBA_fnc_addClassEventHandler", {params ["_class", "_event", "_code"];}]);
