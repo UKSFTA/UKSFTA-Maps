@@ -18,22 +18,34 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     private _units = allUnits select { _x distance player < 50 && {alive _x} };
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
     private _globalRate = missionNamespace getVariable ["uksfta_environment_accumulationRate", 1.0];
-    private _perfMode = missionNamespace getVariable ["uksfta_environment_perfMode", 1];
+    private _perfMode = missionNamespace getVariable ["uksfta_environment_perfMode", 3];
     
     // Performance derived values
     private _texRes = 512;
     private _sleepTime = 5;
+
+    // Detect Video Settings (Texture Quality)
+    // Quality levels: 0 (Low), 1 (Standard), 2 (High), 3 (Very High), 4 (Ultra)
+    private _vidOpts = getVideoOptions;
+    private _texQuality = _vidOpts getOrDefault ["textureQuality", 2];
 
     switch (_perfMode) do {
         case 0: { _texRes = 1024; _sleepTime = 2; };
         case 1: { _texRes = 512; _sleepTime = 5; };
         case 2: { _texRes = 128; _sleepTime = 10; };
         case 3: { 
-            // Auto-detect based on FPS
+            // Auto-detect based on FPS and Video Settings
             private _fps = diag_fps;
-            if (_fps > 50) then { _texRes = 1024; _sleepTime = 3; } else {
-                if (_fps > 25) then { _texRes = 512; _sleepTime = 6; } else {
-                    _texRes = 256; _sleepTime = 12;
+            
+            // Cap resolution by Video Settings first
+            private _maxRes = 1024;
+            if (_texQuality < 4) then { _maxRes = 512; };
+            if (_texQuality < 2) then { _maxRes = 256; };
+            if (_texQuality < 1) then { _maxRes = 128; };
+
+            if (_fps > 50) then { _texRes = _maxRes; _sleepTime = 3; } else {
+                if (_fps > 25) then { _texRes = (_maxRes / 2) max 128; _sleepTime = 6; } else {
+                    _texRes = (_maxRes / 4) max 64; _sleepTime = 12;
                 };
             };
         };
