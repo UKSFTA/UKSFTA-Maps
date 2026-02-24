@@ -24,7 +24,6 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [CAMOUFLAGE]: Master Initialization
         };
         
         call uksfta_camouflage_fnc_applyCamouflage;
-        sleep 5;
     };
     
     diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [CAMOUFLAGE]: Stealth Processing Loop Terminated.";
