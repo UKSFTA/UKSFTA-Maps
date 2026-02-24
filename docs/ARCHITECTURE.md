@@ -13,6 +13,8 @@ This project adheres to **UKSF Taskforce Alpha "Zero Trust" Engineering Standard
 ### `addons/environment` (The Driver)
 - **Heuristic Engine**: Real-time biome and terrain interrogation.
 - **Atmosphere Engine**: Dynamic weather state machine and solar-driven color grading.
+- **Sovereign Ballistics**: Real-time atmospheric drag scaling based on air density (Phase 11).
+- **Thermal Dynamics**: Shade-aware climates and dynamic vehicle TI signatures.
 - **Physical Integration**: Hooks for Medical (KAT), Ballistics (ACE3), and Comms (TFAR/ACRE).
 
 ### `addons/cartography` (The Interface)
