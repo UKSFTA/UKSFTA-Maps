@@ -68,7 +68,7 @@ player addEventHandler ["Explosion", {
                     if (!alive _veh || isNull _veh) exitWith {};
                     
                     // Layer 1: The Alarm Beep
-                    private _pitch = if (_i % 2 == 0) then { 1.1 } else { 1.0 };
+                    private _pitch = [1.0, 1.1] select (_i % 2 == 0);
                     playSound3D [_alarmSound, _veh, false, getPosASL _veh, 3, _pitch, 250];
                     
                     // Layer 2: The Horn (Synchronized rhythmic honking)

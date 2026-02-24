@@ -20,6 +20,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     private _intensity = missionNamespace getVariable ["uksfta_environment_visualIntensity", 1.0];
     private _overcast = overcast;
     private _sunElevation = call uksfta_environment_fnc_getSunElevation;
+    private _desat = missionNamespace getVariable ["uksfta_environment_visualDesatLocal", 0];
     
     // 1. BASELINE NATURALISM
     private _rgb = [1, 1, 1];
@@ -41,12 +42,12 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
         } else { // Night & Twilight
             if (_sunElevation > -10) then { // Blue Hour
                 _rgb = [0.8, 0.85, 1.1];
-                _sat = 0.7;
+                _sat = 0.8;
                 _brightness = 0.9;
             } else { // Full Night
                 private _moon = moonIntensity;
                 _rgb = [0.7 + (0.1 * _moon), 0.75 + (0.15 * _moon), 1.0 + (0.1 * _moon)];
-                _sat = 0.5 + (0.2 * _moon);
+                _sat = 0.7 + (0.3 * _moon);
                 _brightness = 0.8 + (0.2 * _moon);
                 _contrast = 0.95 + (0.1 * _moon);
             };
@@ -75,6 +76,7 @@ while {missionNamespace getVariable ["uksfta_environment_enabled", false]} do {
     };
 
     // 5. APPLY MASTER GRADING
+    _sat = _sat * (1 - _desat);
     _ccHandle ppEffectAdjust [
         _brightness, 
         _contrast, 

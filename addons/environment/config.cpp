@@ -47,14 +47,284 @@ class CfgVehicles {
     class UKSFTA_SurfacePlane: House {
         scope = 1;
         model = "\z\uksfta\addons\bloodsplatter\models\plane\bloodsplatter_plane.p3d";
-        hiddenSelections[] = {"BloodSplatter_Plane"};
-        hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\wet_ca.paa"};
+        hiddenSelections[] = {"BloodSplatter_Plane", "BloodSplatter_Blood"};
+        hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\wet_ca.paa", "z\uksfta\addons\bloodsplatter\models\plane\bloodsplatter_plane_blood_ca.paa"};
     };
     class UKSFTA_SurfacePlaneSmall: House {
         scope = 1;
         model = "\z\uksfta\addons\bloodsplatter\models\plane\bloodsplatter_smallplane.p3d";
-        hiddenSelections[] = {"BloodSplatter_Plane"};
-        hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\blood_ca.paa"};
+        hiddenSelections[] = {"BloodSplatter_Plane", "Burn"};
+        hiddenSelectionTextures[] = {"z\uksfta\addons\environment\data\blood_ca.paa", "z\uksfta\addons\environment\data\burn_ca.paa"};
+    };
+    // Impact Effect Models
+    class Thing;
+    class UKSFTA_Impact_AmmoBelt_Links: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\AmmoBelt_Links.p3d";
+    };
+    class UKSFTA_Impact_CraterLong: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\CraterLong.p3d";
+    };
+    class UKSFTA_Impact_CraterLong_small: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\CraterLong_small.p3d";
+    };
+    class UKSFTA_Impact_Dirt_big: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Dirt_big.p3d";
+    };
+    class UKSFTA_Impact_Embers: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Embers.p3d";
+    };
+    class UKSFTA_Impact_Explosion_02: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_02.p3d";
+    };
+    class UKSFTA_Impact_Explosion_04: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_04.p3d";
+    };
+    class UKSFTA_Impact_Explosion_05: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_05.p3d";
+    };
+    class UKSFTA_Impact_Explosion_07: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_07.p3d";
+    };
+    class UKSFTA_Impact_Explosion_08: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_08.p3d";
+    };
+    class UKSFTA_Impact_Explosion_09: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_09.p3d";
+    };
+    class UKSFTA_Impact_Explosion_11: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_11.p3d";
+    };
+    class UKSFTA_Impact_Explosion_12: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Explosion_12.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_00: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_00.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_01: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_01.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_02: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_02.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_03: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_03.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_04: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_04.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_05: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_05.p3d";
+    };
+    class UKSFTA_Impact_GlassParts_06: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassParts_06.p3d";
+    };
+    class UKSFTA_Impact_GlassShards: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GlassShards.p3d";
+    };
+    class UKSFTA_Impact_GrassMesh: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\GrassMesh.p3d";
+    };
+    class UKSFTA_Impact_Grass_volume: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Grass_volume.p3d";
+    };
+    class UKSFTA_Impact_HitEffect: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\HitEffect.p3d";
+    };
+    class UKSFTA_Impact_LargeFire_01: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\LargeFire_01.p3d";
+    };
+    class UKSFTA_Impact_Leaves: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Leaves.p3d";
+    };
+    class UKSFTA_Impact_Leaves_Green: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Leaves_Green.p3d";
+    };
+    class UKSFTA_Impact_Meat_ca: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Meat_ca.p3d";
+    };
+    class UKSFTA_Impact_Mud: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Mud.p3d";
+    };
+    class UKSFTA_Impact_PStone: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\PStone.p3d";
+    };
+    class UKSFTA_Impact_Pspark: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Pspark.p3d";
+    };
+    class UKSFTA_Impact_Smoke_03: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Smoke_03.p3d";
+    };
+    class UKSFTA_Impact_SparksBall: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\SparksBall.p3d";
+    };
+    class UKSFTA_Impact_SparksEffect: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\SparksEffect.p3d";
+    };
+    class UKSFTA_Impact_SparksEffectMulti: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\SparksEffectMulti.p3d";
+    };
+    class UKSFTA_Impact_Sparks_Big: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Sparks_Big.p3d";
+    };
+    class UKSFTA_Impact_Sticks: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Sticks.p3d";
+    };
+    class UKSFTA_Impact_Sticks_Green: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Sticks_Green.p3d";
+    };
+    class UKSFTA_Impact_StoneSmall: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\StoneSmall.p3d";
+    };
+    class UKSFTA_Impact_TreePart: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\TreePart.p3d";
+    };
+    class UKSFTA_Impact_UnderWaterSmoke: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\UnderWaterSmoke.p3d";
+    };
+    class UKSFTA_Impact_UniversalOnSurface: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\UniversalOnSurface.p3d";
+    };
+    class UKSFTA_Impact_Universal_02: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\Universal_02.p3d";
+    };
+    class UKSFTA_Impact_WallPart: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WallPart.p3d";
+    };
+    class UKSFTA_Impact_WallPart2: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WallPart2.p3d";
+    };
+    class UKSFTA_Impact_WeelEffect: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WeelEffect.p3d";
+    };
+    class UKSFTA_Impact_WheelEffect: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WheelEffect.p3d";
+    };
+    class UKSFTA_Impact_WoodChippings: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WoodChippings.p3d";
+    };
+    class UKSFTA_Impact_WoodParts_01: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WoodParts_01.p3d";
+    };
+    class UKSFTA_Impact_WoodParts_02: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WoodParts_02.p3d";
+    };
+    class UKSFTA_Impact_WoodParts_03: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WoodParts_03.p3d";
+    };
+    class UKSFTA_Impact_WoodParts_04: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\WoodParts_04.p3d";
+    };
+    class UKSFTA_Impact_bleed_1: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\bleed_1.p3d";
+    };
+    class UKSFTA_Impact_bleed_2: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\bleed_2.p3d";
+    };
+    class UKSFTA_Impact_coal: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\coal.p3d";
+    };
+    class UKSFTA_Impact_dir: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\dir.p3d";
+    };
+    class UKSFTA_Impact_flare: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\flare.p3d";
+    };
+    class UKSFTA_Impact_rocketsparks: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\rocketsparks.p3d";
+    };
+    class UKSFTA_Impact_shard: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\shard.p3d";
+    };
+    class UKSFTA_Impact_shard2: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\shard2.p3d";
+    };
+    class UKSFTA_Impact_shard3: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\shard3.p3d";
+    };
+    class UKSFTA_Impact_shard4: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\shard4.p3d";
+    };
+    class UKSFTA_Impact_smoke: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\smoke.p3d";
+    };
+    class UKSFTA_Impact_smoke_01: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\smoke_01.p3d";
+    };
+    class UKSFTA_Impact_smoke_02: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\smoke_02.p3d";
+    };
+    class UKSFTA_Impact_stones: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\stones.p3d";
+    };
+    class UKSFTA_Impact_test_Arrow: Thing {
+        scope = 1;
+        model = "\z\uksfta\addons\environment\models\impact\test_Arrow.p3d";
     };
 };
 
@@ -71,7 +341,7 @@ class CfgWorlds {
             bloomLuminanceOffset = 0.8;
             bloomLuminanceScale = 0.1;
             bloomLuminanceExponent = 1.0;
-            tonemapMethod = 2; // Linear
+            tonemapMethod = 1; // ACE
             tonemapShoulderStrength = 1.0;
             tonemapLinearStrength = 1.0;
             tonemapLinearAngle = 0.0;

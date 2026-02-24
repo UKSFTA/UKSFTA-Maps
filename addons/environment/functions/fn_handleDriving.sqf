@@ -106,7 +106,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
             private _lastVelZ = _veh getVariable ["UKSFTA_LastVelZ", 0];
             private _deltaZ = abs (_velZ - _lastVelZ);
             
-            if (_deltaZ > 10 && {istouchingground _veh}) then {
+            if (_deltaZ > 10 && {isTouchingGround _veh}) then {
                 // Hard landing detected (> 5m fall equivalent)
                 private _dmg = (_deltaZ - 10) / 20;
                 _veh setDamage (damage _veh + _dmg);

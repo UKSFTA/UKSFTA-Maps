@@ -1,4 +1,18 @@
-# UKSFTA Project Contributors
+# UKSFTA Taskforce Alpha - Contributors & Acknowledgments
 
-- UKSF Taskforce Alpha Team
-- Senior Production Engineer & Security Architect (Agent)
+This project is a unified realism framework created by UKSFTA Strategic Engineering. 
+We acknowledge and credit the following authors and mod teams whose assets or logic concepts inspired or were internalized into this autonomous engine:
+
+## 🏆 Primary Logic & Asset Sources
+- **LordJarhead (JSRS Studios)**: High-fidelity character foley, breathing, and weapon tail audio.
+- **Optical (Blastcore Team)**: High-fidelity explosion models, particle structures, and refraction effects.
+- **Aaren (Aaren's Sound Core / SFX Project R)**: Realistic facility alarms, bullet hits, and physiological audio.
+- **Misc.yn (Realistic Driving Terrains)**: Mechanical logic for off-road bumps, wheel fatigue, and stuck systems.
+- **Goko (Goko Custom Gore)**: Physiological "gib" model concepts and splatter textures.
+- **BloodSplatter Mod Team**: Surface plane and blood accumulation models.
+
+## 🛠️ Engineering & Integration
+- **UKSFTA Strategic Engineering**: Heuristic Biome Engine, Sovereign Ballistics, Kelvin Grading, UI2Texture Logic, and Inter-Mod Compatibility Bridge.
+
+---
+*Integrity is the foundation of realism.*

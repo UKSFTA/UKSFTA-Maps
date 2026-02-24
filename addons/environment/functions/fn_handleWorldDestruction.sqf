@@ -22,7 +22,7 @@ UKSFTA_Env_fnc_triggerCollapse = {
         // 1. Initial Rumble
         if (player distance _obj < 100) then {
             addCamShake [2, 5, 10];
-            playSound3D ["A3\Sounds_F\environmentuinsuins_collapse_1.wss", _obj];
+            playSound3D ["A3\Sounds_F\environment\uins\uins_collapse_1.wss", _obj];
         };
 
         // 2. Progressive Collapse (Vanguard/Blastcore Synergy)

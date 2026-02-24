@@ -60,7 +60,7 @@ if (!hasInterface) exitWith {};
         missionNamespace setVariable ["uksfta_environment_visualDesatLocal", _desat];
 
         // --- ACE3 LOCAL SYNC ---
-        private _aceBaselineT = _localTemp - _altOffset; 
+        private _aceBaselineT = _localTemp; 
         missionNamespace setVariable ["ace_weather_currentTemperature", _aceBaselineT];
         
         // Local Humidity shift
