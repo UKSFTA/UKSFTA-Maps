@@ -33,6 +33,15 @@ player addEventHandler ["Explosion", {
                     for "_i" from 1 to 12 do {
                         if (isNull _house) exitWith {};
                         playSound3D [_sound, _house, false, getPosASL _house, 4, 1, 400];
+                        
+                        // --- PREDATORY AI HOOK (Phase 20) ---
+                        if (missionNamespace getVariable ["uksfta_ai_enableReactivity", true]) then {
+                            private _nearAI = allUnits select { !isPlayer _x && { _x distance _house < 300 } };
+                            if (_nearAI isNotEqualTo []) then {
+                                [selectRandom _nearAI, _house] call (missionNamespace getVariable ["lambs_danger_fnc_assault", {params ["_u", "_p"];}]);
+                            };
+                        };
+                        
                         sleep 4.2;
                     };
                     _house setVariable ["UKSFTA_Alarm_Active", nil];

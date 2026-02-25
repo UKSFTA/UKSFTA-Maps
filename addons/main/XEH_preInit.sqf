@@ -92,4 +92,23 @@ private _catPhys = "UKSFTA: Physicality & Driving";
     _catPhys, true
 ] call CBA_fnc_addSetting;
 
+// --- 5. SENSOR & AI INTEGRATION (Phase 20) ---
+[
+    "uksfta_ai_enableReactivity", "CHECKBOX",
+    ["AI Predatory Reactivity", "Force AI (LAMBS/VCOM) to investigate triggered alarms and near-miss flybys."],
+    "UKSFTA: AI & Sensors", true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_sensor_enableNoise", "CHECKBOX",
+    ["Meteorological Sensor Noise", "Adds grain and bloom to Thermal/NVG based on humidity and temperature."],
+    "UKSFTA: AI & Sensors", true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_sensor_enableDirtyLens", "CHECKBOX",
+    ["Dirty Lens Hook (ACE)", "Link uniform accumulation (Mud/Ash) to ACE Goggles dirt/condensation."],
+    "UKSFTA: AI & Sensors", true
+] call CBA_fnc_addSetting;
+
 diag_log "[UKSFTA] <INFO>: CBA Settings Overhaul Complete.";
