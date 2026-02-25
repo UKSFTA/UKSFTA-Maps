@@ -3,7 +3,7 @@
 #endif
 
 #ifndef COMPONENT
-    #define COMPONENT camouflage
+    #define COMPONENT bloodsplatter
 #endif
 
 #include "..\main\script_component.hpp"

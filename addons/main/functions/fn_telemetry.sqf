@@ -1,6 +1,7 @@
+#include "..\script_component.hpp"
 /**
- * UKSFTA Technical Infrastructure - UKSFTA Logger
- * Standardized multi-level logging for all unit technologies.
+ * UKSFTA Core - High-Performance Logging Backend
+ * Handles tiered diagnostic output based on CBA settings.
  */
 
 params [
@@ -9,15 +10,16 @@ params [
     ["_component", "Core"]
 ];
 
-private _threshold = missionNamespace getVariable ["uksfta_environment_logLevel", 1];
+private _logThreshold = missionNamespace getVariable ["uksfta_logLevel", 1];
+private _numericLevel = 1;
 
-// 0: Errors, 1: Info, 2: Trace
-private _lvlVal = 1;
-if (_level == "ERROR") then { _lvlVal = 0; };
-if (_level == "TRACE") then { _lvlVal = 2; };
-
-if (_lvlVal <= _threshold) then {
-    diag_log text (format ["[UKSF TASKFORCE ALPHA] <%1> [%2]: %3", toUpper _level, toUpper _component, _msg]);
+switch (toUpper _level) do {
+    case "ERROR": { _numericLevel = 0; };
+    case "WARN":  { _numericLevel = 1; };
+    case "INFO":  { _numericLevel = 1; };
+    case "TRACE": { _numericLevel = 2; };
 };
 
-true
+if (_numericLevel <= _logThreshold) then {
+    diag_log text (format ["[UKSF TASKFORCE ALPHA] <%1> [%2]: %3", toUpper _level, toUpper _component, _msg]);
+};

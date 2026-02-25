@@ -1,5 +1,9 @@
-#ifdef COMPONENT
-    #undef COMPONENT
+#ifndef PREFIX
+    #define PREFIX uksfta
 #endif
-#define COMPONENT impact
+
+#ifndef COMPONENT
+    #define COMPONENT impact
+#endif
+
 #include "..\main\script_component.hpp"

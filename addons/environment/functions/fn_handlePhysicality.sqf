@@ -5,15 +5,16 @@
 
 if (!hasInterface) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Physicality Engine (PFH Mode) Starting...";
+LOG("Physicality Engine (PFH Mode) Starting...");
 
 [
     {
-        if !(missionNamespace getVariable ["uksfta_main_enabled", true] && {missionNamespace getVariable ["uksfta_phys_enablePhysicality", true]}) exitWith {};
+        if !(missionNamespace getVariable [QGVAR(enabled), true] && {missionNamespace getVariable [QGVAR(physPhysicality), true]}) exitWith {};
 
         private _stress = player getVariable ["UKSFTA_Stress_Level", 0];
         private _fatigue = getFatigue player;
         private _load = load player;
+        private _speed = vectorMagnitude (velocity player);
         
         // --- 1. STRESS-DRIVEN AIMING ---
         player setCustomAimCoef (1.0 + (_stress * 2.0) + (_fatigue * 1.0));
@@ -37,7 +38,6 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Physicality Engine (
         if (diag_frameCount % 60 == 0 && {currentVisionMode player == 1}) then {
             private _nearFlares = player nearObjects ["FlareCore", 50];
             if (_nearFlares isNotEqualTo []) then {
-                // Auto-gating Whiteout
                 private _pp = ppEffectCreate ["ColorCorrections", 3005];
                 _pp ppEffectEnable true;
                 _pp ppEffectAdjust [1, 1, 0, [1, 1, 1, 0], [1, 1, 1, 1], [0, 0, 0, 0]];
@@ -46,7 +46,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Physicality Engine (
             };
         };
     },
-    0.5 // Run every 0.5s instead of every frame
+    0.5
 ] call CBA_fnc_addPerFrameHandler;
 
 true
