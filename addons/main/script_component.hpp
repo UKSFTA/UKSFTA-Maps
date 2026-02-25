@@ -44,12 +44,13 @@
     #define LOG_LEVEL_TRACE 2
 #endif
 
+// Single-argument logging to resolve PE9 parser errors
 #ifndef LOG_BASE
-    #define LOG_BASE(LEVEL,MSG) [LEVEL, MSG, QUOTE(COMPONENT)] call uksfta_main_fnc_telemetry
+    #define LOG_BASE(LEVEL,MSG) [LEVEL,MSG,QUOTE(COMPONENT)] call uksfta_main_fnc_telemetry
     #define LOG(MSG) LOG_BASE("INFO",MSG)
-    #define LOG_TRACE(MSG) if (missionNamespace getVariable [QUOTE(GVAR(logLevel)), 1] >= LOG_LEVEL_TRACE) then { LOG_BASE("TRACE",MSG) }
     #define LOG_ERROR(MSG) LOG_BASE("ERROR",MSG)
     #define LOG_WARN(MSG) LOG_BASE("WARN",MSG)
+    #define LOG_TRACE(MSG) if (missionNamespace getVariable [QUOTE(GVAR(logLevel)), 1] >= 2) then { ["TRACE",MSG,QUOTE(COMPONENT)] call uksfta_main_fnc_telemetry }
 #endif
 
 // --- Internalized Versioning ---
