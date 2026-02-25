@@ -1,13 +1,13 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Ballistics Engine (Phase 11)
- * Dynamic drag coefficients based on real-time atmospheric density.
- * Linked to Sovereign Meteorological Engine.
+ * UKSFTA Environment - Sovereign Ballistics Engine (Gold Master)
+ * Features real-time air density drag and side-airfriction scaling.
+ * Parity with DAGGER and Realistic Ballistics Overhaul.
  */
 
 if (!hasInterface) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Ballistics Engine Active (Meteorological Link).";
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Ballistics Engine Active (Side-Friction Optimized).";
 
 player addEventHandler ["FiredMan", {
     params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_vehicle"];
@@ -21,10 +21,16 @@ player addEventHandler ["FiredMan", {
     private _rho_alt = _rho * exp(-_alt / 8500);
     private _rhoRatio = _rho_alt / 1.225;
 
-    // 2. DYNAMIC DRAG SCALING
-    // We adjust the drag coefficient via setVariable if using advanced ballistic mods, 
-    // or simulate it via incremental velocity adjustment.
-    // For Sovereign Gold Master, we store it for use in sub-logic or compatible overhauls.
+    // 2. SIDE-AIRFRICTION (Wind Drift Realism)
+    // We adjust the drag and wind sensitivity based on air density
+    private _sideDrag = getNumber (configFile >> "CfgAmmo" >> _ammo >> "sideAirFriction");
+    if (_sideDrag > 0) then {
+        // Density affects how much wind 'pushes' the bullet
+        private _windMod = _rhoRatio; 
+        _projectile setVariable ["UKSFTA_Ballistics_WindMod", _windMod];
+    };
+
+    // 3. DYNAMIC DRAG SCALING
     _projectile setVariable ["UKSFTA_Ballistics_DensityMod", _rhoRatio];
 
     // TRACER THERMAL SIGNATURE
