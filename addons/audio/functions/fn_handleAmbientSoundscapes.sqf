@@ -29,8 +29,9 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Biome Soundscape Engine Ac
                 _sound = "A3\Sounds_F\environment\ambient\winds\wind_desert_1.wss";
                 _vol = 0.4;
             };
-            default { // TEMPERATE
-                _sound = ["A3\Sounds_F\environment\ambient\forest\forest_wind_1.wss", "A3\Sounds_F\environment\ambient\night\night_crickets_1.wss"] select (_isNight);
+            default { // TEMPERATE / WOODLAND
+                // forest_wind_1.wss is missing in some vanilla versions, using forest_wind_2.wss instead
+                _sound = ["A3\Sounds_F\environment\ambient\forest\forest_wind_2.wss", "A3\Sounds_F\environment\ambient\night\night_crickets_1.wss"] select (_isNight);
                 _vol = 0.5;
             };
         };

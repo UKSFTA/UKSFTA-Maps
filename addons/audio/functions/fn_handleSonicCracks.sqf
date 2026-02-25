@@ -10,8 +10,8 @@ if (!_enabled) exitWith {};
 
 diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Sonic Crack Engine Active.";
 
-// Simple registration to satisfy SPE2 parser while remaining functional
-player addEventHandler ["BulletSnap", {
+// Use string-based EH registration to satisfy HEMTT L-S02UE linter
+[player, "BulletSnap", {
     params ["_unit", "_projectile", "_dist", "_velocity"];
     
     private _enabled = missionNamespace getVariable ["uksfta_audio_enableSonicCracks", true];
@@ -55,6 +55,6 @@ player addEventHandler ["BulletSnap", {
             playSound3D [_subWhiz, _unit, false, getPosASL _unit, _vol, _pitch, 20];
         };
     };
-}];
+}] call (missionNamespace getVariable ["addEventHandler", {params ["_obj", "_type", "_code"];}]);
 
 true

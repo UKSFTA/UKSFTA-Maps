@@ -14,7 +14,7 @@ UKSFTA_Env_TargetHumid = 0.5;
 
 // --- SMOOTHING THREAD ---
 [] spawn {
-    private _fnc_setCloud = missionNamespace getVariable ["setCloudColor", {params ["_rgb"];}];
+    private _setCloud = missionNamespace getVariable ["setCloudColor", {params ["_r", "_g", "_b"];}];
     
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _currTemp = missionNamespace getVariable ["ace_weather_currentTemperature", 20];
@@ -51,7 +51,7 @@ UKSFTA_Env_TargetHumid = 0.5;
                 _rgb = [0.2, 0.2, 0.25];
             };
         };
-        [_rgb] call _fnc_setCloud;
+        _rgb call _setCloud;
 
         sleep 5;
     };
