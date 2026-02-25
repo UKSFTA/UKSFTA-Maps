@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Accumulation Engine (Phase 20)
+ * UKSFTA Environment - UKSFTA Accumulation Engine (Phase 20)
  * Features Priority Logic LOD and ACE Goggles "Dirty Lens" Hook.
  */
 

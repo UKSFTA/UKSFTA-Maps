@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# UKSFTA Physical VFS Audit (Phase 19 Gold Master)
+# UKSFTA Physical VFS Audit (Phase 19 Production)
 
 echo "🧪 INITIATING PHYSICAL VFS MAPPING AUDIT..."
 
@@ -45,7 +45,7 @@ check_file "\z\uksfta\addons\audio\sounds\impact\bullet_hit_1.ogg" "addons/audio
 check_file "\z\uksfta\addons\main\XEH_preInit.sqf" "addons/main/XEH_preInit.sqf"
 
 if [ $ERRORS -eq 0 ]; then
-    echo "✅ PHYSICAL VFS AUDIT COMPLETE: All Gold Master assets physically verified."
+    echo "✅ PHYSICAL VFS AUDIT COMPLETE: All Production assets physically verified."
 else
     echo "❌ PHYSICAL VFS AUDIT FAILED: $ERRORS files missing from physical map."
     exit 1

@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Camouflage - Sovereign Stealth Engine (Gold Master)
+ * UKSFTA Camouflage - UKSFTA Stealth Engine (Production)
  * Features Pixel-Perfect Sampling and DAGGER-Parity Stealth Capping.
  * Multiplayer Optimized: Server-Side AI Scaling.
  */

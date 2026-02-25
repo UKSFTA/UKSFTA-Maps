@@ -14,12 +14,12 @@ This project adheres to **UKSF Taskforce Alpha "Zero Trust" Engineering Standard
 - **Heuristic Engine**: Real-time biome and terrain interrogation.
 - **Atmosphere Engine**: Dynamic weather state machine and solar-driven color grading.
 - **Physicality & Driving**: Stress-driven aiming, weight-based inertia, and off-road vehicle dynamics.
-- **Sovereign Ballistics**: Real-time atmospheric drag scaling based on air density.
+- **UKSFTA Ballistics**: Real-time atmospheric drag scaling based on air density.
 - **Thermal Dynamics**: Shade-aware climates and dynamic vehicle TI signatures.
 - **Inter-Mod Bridge**: Active synchronization for ACE3, TFAR, ACRE, LAMBS, and VCOM.
 
 ### `addons/audio` (The Soundscape)
-- **Sovereign Audio Engine**: High-fidelity sonic cracks, flyby whizzes, and distance attenuation.
+- **UKSFTA Audio Engine**: High-fidelity sonic cracks, flyby whizzes, and distance attenuation.
 - **Acoustic Obstruction**: Real-time sound muffling based on line-of-sight visibility.
 - **World Alarm Engine**: Procedural building and car alarms triggered by urban combat.
 
@@ -46,4 +46,4 @@ This project adheres to **UKSF Taskforce Alpha "Zero Trust" Engineering Standard
 - **Locality**: 100% guard enforcement (`isServer`, `hasInterface`).
 
 ---
-*UKSFTA Sovereign Engineering Architecture v2.2 (Gold Master)*
+*UKSFTA UKSFTA Frameworkering Architecture v2.2 (Production)*

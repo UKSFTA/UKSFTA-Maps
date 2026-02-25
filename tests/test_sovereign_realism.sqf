@@ -1,5 +1,5 @@
 /**
- * UKSFTA Sovereign Realism - Logic Pillar Audit (Phases 7-10)
+ * UKSFTA UKSFTA Realism - Logic Pillar Audit (Phases 7-10)
  */
 
 #include "mock_arma.sqf"
@@ -16,7 +16,7 @@ if (isNil "linearConversion") then {
 };
 
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-diag_log "🧪 UKSFTA SOVEREIGN REALISM ENGINE AUDIT";
+diag_log "🧪 UKSFTA UKSFTA REALISM ENGINE AUDIT";
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
 // 1. BURN STAGE LOGIC VALIDATION
@@ -94,6 +94,6 @@ if (abs(_perfectMatch - 0.6) < 0.01 && abs(_poorMatch - 1.6) < 0.01) then {
 };
 
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-diag_log "🏁 SOVEREIGN REALISM AUDIT COMPLETE";
+diag_log "🏁 UKSFTA REALISM AUDIT COMPLETE";
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 true;

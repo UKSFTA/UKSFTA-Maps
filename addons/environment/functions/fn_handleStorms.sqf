@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Storm Engine (Phase 8)
+ * UKSFTA Environment - UKSFTA Storm Engine (Phase 8)
  * Dynamic Blizzard and Sandstorm particles based on WBK inspiration.
  */
 

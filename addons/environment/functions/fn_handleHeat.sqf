@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Heat Engine (Phase 8)
+ * UKSFTA Environment - UKSFTA Heat Engine (Phase 8)
  * Dynamic ground scorching, grass burning, and heat haze.
  */
 

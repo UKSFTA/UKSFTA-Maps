@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Audio - Sovereign World Alarm Engine (Phase 19)
+ * UKSFTA Audio - UKSFTA World Alarm Engine (Phase 19)
  * Triggers building and car alarms in response to urban combat.
  */
 

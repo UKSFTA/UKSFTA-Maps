@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign World Destruction (Phase 13 Extension)
+ * UKSFTA Environment - UKSFTA World Destruction (Phase 13 Extension)
  * Advanced building collapse, vegetation damage, and secondary explosions.
  */
 

@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Ballistics Engine (Gold Master)
+ * UKSFTA Environment - UKSFTA Ballistics Engine (Production)
  * Features real-time air density drag and side-airfriction scaling.
  * Parity with DAGGER and Realistic Ballistics Overhaul.
  */

@@ -1,5 +1,5 @@
 /**
- * UKSFTA Impact - Sovereign Impact Logic Audit (Phase 13)
+ * UKSFTA Impact - UKSFTA Impact Logic Audit (Phase 13)
  */
 
 #include "mock_arma.sqf"

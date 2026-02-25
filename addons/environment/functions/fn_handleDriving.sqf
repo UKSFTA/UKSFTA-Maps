@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Driving Dynamics (Optimized PFH)
+ * UKSFTA Environment - UKSFTA Driving Dynamics (Optimized PFH)
  * Features Component Caching and Surface Throttling.
  */
 

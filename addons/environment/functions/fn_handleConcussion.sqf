@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Concussion Engine (Phase 9)
+ * UKSFTA Environment - UKSFTA Concussion Engine (Phase 9)
  * High-fidelity shellshock and explosion impact visuals.
  * Inspiration: CG7 Suppression Overhaul
  */

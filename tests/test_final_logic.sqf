@@ -11,7 +11,7 @@ private _dayTime = 12;
 private _biome = "ARCTIC";
 
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-diag_log "🧪 UKSFTA INTEGRATED LOGIC AUDIT (SOVEREIGN GATE)";
+diag_log "🧪 UKSFTA INTEGRATED LOGIC AUDIT (UKSFTA GATE)";
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
 // 1. Solar/Temp Logic

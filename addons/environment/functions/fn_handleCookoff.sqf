@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Cook-off Engine (Phase 16 Extension)
+ * UKSFTA Environment - UKSFTA Cook-off Engine (Phase 16 Extension)
  * Simulates procedural ammunition cook-off for destroyed armored vehicles.
  */
 

@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Audio Engine (Phase 14)
+ * UKSFTA Environment - UKSFTA Audio Engine (Phase 14)
  * Dynamic reverb and audio filtering based on local terrain density.
  */
 

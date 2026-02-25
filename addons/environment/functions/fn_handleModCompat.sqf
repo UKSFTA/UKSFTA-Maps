@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Compatibility Bridge (Phase 16)
- * Actively syncs Sovereign environmental data to external mod variables (ACE, TFAR, LAMBS, etc).
+ * UKSFTA Environment - UKSFTA Compatibility Bridge (Phase 16)
+ * Actively syncs UKSFTA environmental data to external mod variables (ACE, TFAR, LAMBS, etc).
  */
 
 if (!hasInterface && !isServer) exitWith {};
@@ -19,7 +19,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Compatibility Bridge
             private _localHumid = missionNamespace getVariable ["UKSFTA_Environment_GlobalHumid", 0.5];
             private _localWind = missionNamespace getVariable ["UKSFTA_Environment_WindSpeed", 0];
             
-            // Push Sovereign Temp to ACE
+            // Push UKSFTA Temp to ACE
             missionNamespace setVariable ["ace_weather_currentTemperature", _localTemp];
             missionNamespace setVariable ["ace_weather_currentHumidity", _localHumid];
             
@@ -81,7 +81,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Compatibility Bridge
                     _x setSkill ["spotDistance", (_baseSkill * _weatherMod)];
                     
                     // VCOM / LAMBS Suppression Handling
-                    // If Sovereign Stress is high on AI, force suppression state
+                    // If UKSFTA Stress is high on AI, force suppression state
                     // (Requires AI stress logic, placeholder for now)
                 };
             } forEach allUnits;

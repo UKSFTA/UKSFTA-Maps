@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Impact - Sovereign Impact Engine (Gold Master)
+ * UKSFTA Impact - UKSFTA Impact Engine (Production)
  * Optimized kinetic reactions and material-aware gore.
  * Features FPS-Aware Culling and Quota Management to prevent lag.
  */

@@ -1,5 +1,5 @@
 /**
- * UKSFTA Technical Infrastructure - Sovereign Logger
+ * UKSFTA Technical Infrastructure - UKSFTA Logger
  * Standardized multi-level logging for all unit technologies.
  */
 

@@ -1,12 +1,12 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Meteorological Engine (Multiplayer Optimized)
+ * UKSFTA Environment - UKSFTA Meteorological Engine (Multiplayer Optimized)
  * Server-Side Authority with State-Machine Offloading.
  */
 
 if (!isServer) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Sovereign Meteorological Engine (Server Mode) Starting...";
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: UKSFTA Meteorological Engine (Server Mode) Starting...";
 
 // --- 1. SERVER-SIDE MET MATH ---
 UKSFTA_Env_Server_Pressure = 1013.25;

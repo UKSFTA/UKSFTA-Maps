@@ -1,6 +1,6 @@
 # UKSFTA Realism Framework - Technical Specification
 
-## 1. Sovereign Accumulation Engine (Phase 7)
+## 1. UKSFTA Accumulation Engine (Phase 7)
 The environment engine utilizes a high-performance procedural UI-to-Texture layering system to simulate environmental impact on personnel and equipment.
 
 ### 1.1 Dynamic Texture Layering
@@ -31,7 +31,7 @@ The project utilizes physically accurate Linear Tonemapping with calibrated aper
 - **Temperature Drop**: Ambient temperature drops by up to 5°C when in occluded/shaded areas (under trees, building shadows, or overhangs).
 - **Thermal Object Signatures**: High-fidelity TI signatures applied to flares, tracers, and heated objects via `setTI`.
 
-## 3. Sovereign Ballistics Engine (Phase 11)
+## 3. UKSFTA Ballistics Engine (Phase 11)
 Atmospheric-linked ballistics standardization based on real-time climate data.
 
 ### 3.1 Dynamic Atmospheric Drag
@@ -50,10 +50,10 @@ Projectiles experience variable air resistance based on the calculated **Density
 - **Sinusoidal Scaling**: Camouflage coefficients are mathematically balanced to ensure realistic AI spotting distances across all biomes.
 
 ## 5. Inter-Mod Compatibility Bridge (Phase 16)
-The Sovereign Engine actively synchronizes its environmental data with external mod frameworks to ensure a unified realism experience.
+The UKSFTA Framework actively synchronizes its environmental data with external mod frameworks to ensure a unified realism experience.
 
 ### 5.1 ACE3 & KAT Medical
-- **Weather Sync**: Pushes Sovereign Temperature and Humidity directly into `ace_weather` variables.
+- **Weather Sync**: Pushes UKSFTA Temperature and Humidity directly into `ace_weather` variables.
 - **Stamina/Stress**: High stress levels (calculated via combat intensity) accelerate ACE3 fatigue and increase KAT respiratory rates.
 
 ### 5.2 TFAR & ACRE Support

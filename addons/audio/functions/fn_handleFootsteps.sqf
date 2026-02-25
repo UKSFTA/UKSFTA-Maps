@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Audio - Sovereign Footstep Engine (Gold Master)
+ * UKSFTA Audio - UKSFTA Footstep Engine (Production)
  * Synchronized surface-aware movement audio with weight-based volume scaling.
  */
 

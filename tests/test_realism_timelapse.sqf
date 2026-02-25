@@ -1,5 +1,5 @@
 /**
- * UKSFTA Test - Sovereign Meteorological Chain Audit (Final Verification)
+ * UKSFTA Test - UKSFTA Meteorological Chain Audit (Final Verification)
  * Verifies: Pressure -> Air Density -> Altitude Scaling -> Accumulation
  */
 

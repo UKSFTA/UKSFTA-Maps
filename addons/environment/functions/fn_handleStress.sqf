@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Stress Engine (Phase 15)
+ * UKSFTA Environment - UKSFTA Stress Engine (Phase 15)
  * Dynamic anxiety, panic, and suppression visualization.
  */
 

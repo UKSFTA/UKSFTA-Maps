@@ -1,5 +1,5 @@
 #include "mock_arma.sqf"
-diag_log "🧪 INITIATING SOVEREIGN TOTAL MATRIX (FLUID EDITION)...";
+diag_log "🧪 INITIATING UKSFTA TOTAL MATRIX (FLUID EDITION)...";
 
 private _biomes = ["TEMPERATE", "ARID", "ARCTIC", "TROPICAL", "MEDITERRANEAN"];
 private _presets = ["ARCADE", "REALISM"];

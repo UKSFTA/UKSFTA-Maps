@@ -1,10 +1,10 @@
 #include "script_component.hpp"
 /**
- * UKSFTA Sovereign - CBA Settings Framework (Gold Master Edition)
+ * UKSFTA UKSFTA - CBA Settings Framework (Production Release)
  * Professional-grade configuration for Taskforce Alpha operations.
  */
 
-private _catCore = "UKSFTA: Sovereign Core";
+private _catCore = "UKSFTA: Core";
 private _catAudio = "UKSFTA: Acoustic Immersion";
 private _catEnv = "UKSFTA: Environment & FX";
 private _catPhys = "UKSFTA: Physicality & Driving";
@@ -12,7 +12,7 @@ private _catPhys = "UKSFTA: Physicality & Driving";
 // --- 1. CORE SYSTEM ---
 [
     "uksfta_main_enabled", "CHECKBOX",
-    ["Enable Sovereign Engine", "Master toggle for all UKSFTA realism and immersion modules."],
+    ["Enable UKSFTA Framework", "Master toggle for all UKSFTA realism and immersion modules."],
     _catCore, true, 1,
     { if !(_this) then { diag_log "[UKSFTA] <INFO>: Realism Engine Suspended."; }; }
 ] call CBA_fnc_addSetting;
@@ -26,7 +26,7 @@ private _catPhys = "UKSFTA: Physicality & Driving";
 // --- 2. ACOUSTIC IMMERSION ---
 [
     "uksfta_audio_enableAudio", "CHECKBOX",
-    ["Enable Sovereign Audio", "Global toggle for advanced audio engines (Reverb, Ducking, Cracks)."],
+    ["Enable UKSFTA Audio", "Global toggle for advanced audio engines (Reverb, Ducking, Cracks)."],
     _catAudio, true
 ] call CBA_fnc_addSetting;
 

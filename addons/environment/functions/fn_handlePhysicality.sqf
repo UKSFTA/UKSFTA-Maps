@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Physicality Engine (PFH Optimized)
+ * UKSFTA Environment - UKSFTA Physicality Engine (PFH Optimized)
  */
 
 if (!hasInterface) exitWith {};

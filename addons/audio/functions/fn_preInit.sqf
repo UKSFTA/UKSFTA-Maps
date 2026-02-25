@@ -20,7 +20,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Initializing Pre-Init Sett
 // --- MASTER ENABLE ---
 [
     "uksfta_audio_enabled", "CHECKBOX",
-    ["Enable Audio Framework", "Master toggle for the sovereign audio engine."],
+    ["Enable Audio Framework", "Master toggle for the uksfta audio engine."],
     "UKSFTA Audio",
     true, 1, {}, true
 ] call CBA_fnc_addSetting;

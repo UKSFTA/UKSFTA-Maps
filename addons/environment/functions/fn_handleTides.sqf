@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Tidal Engine (Phase 12)
+ * UKSFTA Environment - UKSFTA Tidal Engine (Phase 12)
  * Simulates procedural water level shifts and shoreline dynamics based on lunar phase.
  */
 

@@ -1,10 +1,10 @@
 /**
- * UKSFTA Sovereign - Virtual File System (VFS) Integrity Audit
+ * UKSFTA UKSFTA - Virtual File System (VFS) Integrity Audit
  * Uses Arma 3 'fileExists' to guarantee asset accessibility in-game.
  */
 
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-diag_log "🧪 INITIATING SOVEREIGN VFS INTEGRITY AUDIT (SQF LEVEL)";
+diag_log "🧪 INITIATING UKSFTA VFS INTEGRITY AUDIT (SQF LEVEL)";
 diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
 private _manifest = [

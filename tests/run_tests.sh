@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# UKSFTA Sovereign Diamond Audit Orchestrator
+# UKSFTA UKSFTA Diamond Audit Orchestrator
 # Triple-Lock Validation: HEMTT + SQFLINT + SQFVM
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -56,7 +56,7 @@ else
 fi
 
 # 4. TOTAL OPERATIONAL MATRIX
-echo -e "\n💎 [4/7] AUDITING SOVEREIGN TOTAL MATRIX (PRECISION)..."
+echo -e "\n💎 [4/7] AUDITING UKSFTA TOTAL MATRIX (PRECISION)..."
 sqfvm -a $MAPS -i "$WS/tests/test_total_matrix.sqf" > /tmp/uksfta_matrix.log 2>&1
 grep "📊" /tmp/uksfta_matrix.log | sed 's/\[DIAG\]//g' | grep -E "ARCTIC|TROPICAL|ARID|TEMPERATE|MEDITERRANEAN"
 if grep -q "❌" /tmp/uksfta_matrix.log; then 
@@ -74,7 +74,7 @@ CORE_TESTS=(
     "test_environmental_scenarios.sqf" 
     "test_camouflage_matrix.sqf" 
     "test_realism_fx.sqf" 
-    "test_sovereign_realism.sqf" 
+    "test_uksfta_realism.sqf" 
     "test_ballistics_logic.sqf" 
     "test_puddle_interactions.sqf" 
     "test_impact_logic.sqf" 
