@@ -1,44 +1,64 @@
-diag_log "🧪 INITIATING SOVEREIGN VFS DISCOVERY AUDIT (RELATIVE)...";
+/**
+ * UKSFTA Sovereign - Virtual File System (VFS) Integrity Audit
+ * Uses Arma 3 'fileExists' to guarantee asset accessibility in-game.
+ */
+
+diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+diag_log "🧪 INITIATING SOVEREIGN VFS INTEGRITY AUDIT (SQF LEVEL)";
+diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
 private _manifest = [
-    // --- CARTOGRAPHY ---
-    "z/uksfta/addons/cartography/functions/fn_preInit.sqf",
-    "z/uksfta/addons/cartography/functions/fn_initCartography.sqf",
-    "z/uksfta/addons/cartography/functions/fn_handleMapDraw.sqf",
-    "z/uksfta/addons/cartography/functions/fn_toggleMode.sqf",
-    
-    // --- ENVIRONMENT ---
-    "z/uksfta/addons/environment/functions/fn_preInit.sqf",
-    "z/uksfta/addons/environment/functions/fn_initEnvironment.sqf",
-    "z/uksfta/addons/environment/functions/fn_weatherCycle.sqf",
-    "z/uksfta/addons/environment/functions/fn_analyzeBiome.sqf",
-    "z/uksfta/addons/environment/functions/fn_getSunElevation.sqf",
-    "z/uksfta/addons/environment/functions/fn_handleThermals.sqf",
-    
-    // --- CAMOUFLAGE ---
-    "z/uksfta/addons/camouflage/functions/fn_preInit.sqf",
-    "z/uksfta/addons/camouflage/functions/fn_init.sqf",
-    "z/uksfta/addons/camouflage/functions/fn_applyCamouflage.sqf"
+    // --- 1. CORE ENGINE SCRIPTS ---
+    "\z\uksfta\addons\environment\functions\fn_handleDriving.sqf",
+    "\z\uksfta\addons\environment\functions\fn_handlePhysicality.sqf",
+    "\z\uksfta\addons\environment\functions\fn_handleModCompat.sqf",
+    "\z\uksfta\addons\audio\functions\fn_handleObstruction.sqf",
+    "\z\uksfta\addons\audio\functions\fn_handleWorldAlarms.sqf",
+    "\z\uksfta\addons\audio\functions\fn_handleSonicCracks.sqf",
+
+    // --- 2. BLASTCORE PARTICLE MODELS ---
+    "\z\uksfta\addons\environment\models\impact\Explosion_01.p3d",
+    "\z\uksfta\addons\environment\models\impact\Dirt.p3d",
+    "\z\uksfta\addons\environment\models\impact\LargeFire_01.p3d",
+    "\z\uksfta\addons\environment\models\impact\Refract.p3d",
+
+    // --- 3. GORE / GIB MODELS ---
+    "\z\uksfta\addons\impact\models\gibs\BloodSplatter_Torso.p3d",
+    "\z\uksfta\addons\impact\models\gibs\skull_chunk1.p3d",
+    "\z\uksfta\addons\impact\models\gibs\brain_Half.p3d",
+
+    // --- 4. HIGH-FIDELITY AUDIO ---
+    "\z\uksfta\addons\audio\sounds\world\Car_Alarm.ogg",
+    "\z\uksfta\addons\audio\sounds\world\Car_Alarm1.ogg",
+    "\z\uksfta\addons\audio\sounds\world\Facility_Alarm.ogg",
+    "\z\uksfta\addons\audio\sounds\impact\bullet_hit_1.ogg",
+    "\z\uksfta\addons\audio\sounds\character\breath\breath.ogg",
+
+    // --- 5. TECHNICAL INFRASTRUCTURE ---
+    "\z\uksfta\addons\main\XEH_preInit.sqf",
+    "\z\uksfta\addons\environment\accumulation.hpp"
 ];
 
 private _found = 0;
 private _missing = 0;
 
 {
-    private _path = _x;
-    private _content = preprocessFile _path;
-    
-    if (_content != "") then {
-        diag_log format ["  ✅ DISCOVERED: %1", _path];
+    // Use fileExists for standard Arma VFS check
+    if (fileExists _x) then {
+        diag_log format ["  ✅ VFS ACCESSIBLE: %1", _x];
         _found = _found + 1;
     } else {
-        diag_log format ["  ❌ NOT FOUND: %1", _path];
+        diag_log format ["  ❌ VFS MISSING:    %1", _x];
         _missing = _missing + 1;
     };
 } forEach _manifest;
 
+diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 if (_missing == 0) then {
-    diag_log format ["✅ VFS AUDIT COMPLETE: %1/13 scripts verified accessible.", _found];
+    diag_log format ["🏆 VFS GOLD STATUS: %1/%1 ASSETS VERIFIED.", count _manifest];
 } else {
-    diag_log format ["❌ VFS AUDIT FAILED: %1 scripts missing from virtual mapping.", _missing];
+    diag_log format ["🚨 VFS DEFECT: %1 ASSETS MISSING FROM VIRTUAL MAP.", _missing];
 };
+diag_log "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+
+_missing == 0
