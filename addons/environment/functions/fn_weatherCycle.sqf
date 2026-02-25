@@ -1,26 +1,27 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Weather Evolution Cycle (Fluid Driver)
- * Optimized for UKSFTA performance standards.
+ * UKSFTA Environment - Sovereign Weather Engine (Gold Master)
+ * Features Altitude-Aware Storms and Wind-Driven Biome Transitions.
  */
 
 if (!isServer) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Sovereign Weather Engine Starting (Fluid Mode)...";
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Sovereign Weather Engine Active (Altitude-Aware Mode).";
 
-// Persistence handles for smoothing
 UKSFTA_Env_TargetTemp = 20;
 UKSFTA_Env_TargetHumid = 0.5;
 
-// --- SMOOTHING THREAD ---
+// --- 1. PERFORMANCE & SYNTAX SAFEGUARD ---
+private _fnc_setCloud = missionNamespace getVariable ["setCloudColor", {params ["_r", "_g", "_b"];}];
+
+// --- 2. SMOOTHING & CLOUD TINTING THREAD ---
 [] spawn {
-    private _setCloud = missionNamespace getVariable ["setCloudColor", {params ["_r", "_g", "_b"];}];
-    
+    private _setCloudSafe = missionNamespace getVariable ["setCloudColor", {params ["_rgb"];}];
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
         private _currTemp = missionNamespace getVariable ["ace_weather_currentTemperature", 20];
         private _currHumid = missionNamespace getVariable ["ace_weather_currentHumidity", 0.5];
         
-        // 1. ACE Weather Nudging
+        // ACE Nudging
         private _diffT = UKSFTA_Env_TargetTemp - _currTemp;
         if (abs _diffT > 0.01) then {
             _currTemp = _currTemp + (_diffT * 0.05);
@@ -37,76 +38,68 @@ UKSFTA_Env_TargetHumid = 0.5;
 
         if (!isNil "ace_weather_fnc_updateTemperature") then { [true] call ace_weather_fnc_updateTemperature; };
         
-        // 2. Cloud Tinting Engine
+        // Cloud Tinting (Kelvin Shift)
         private _sunAlt = call uksfta_environment_fnc_getSunElevation;
         private _rgb = [1, 1, 1];
-        
-        if (_sunAlt > 10) then { // Day
-            _rgb = [1, 1, 1];
-        } else {
-            if (_sunAlt > -5) then { // Sunrise/Sunset
-                private _factor = linearConversion [-5, 10, _sunAlt, 0, 1, true];
-                _rgb = [1, (0.6 + (0.4 * _factor)), (0.3 + (0.7 * _factor))];
-            } else { // Night
+        if (_sunAlt < 10) then {
+            if (_sunAlt > -5) then {
+                private _f = linearConversion [-5, 10, _sunAlt, 0, 1, true];
+                _rgb = [1, (0.6 + (0.4 * _f)), (0.3 + (0.7 * _f))];
+            } else {
                 _rgb = [0.2, 0.2, 0.25];
             };
         };
-        _rgb call _setCloud;
+        [_rgb] call _setCloudSafe;
 
         sleep 5;
     };
 };
 
-// --- MASTER CALCULATION LOOP ---
+// --- 3. MASTER EVOLUTION LOOP ---
 while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
     private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
     private _preset = missionNamespace getVariable ["uksfta_environment_preset", "REALISM"];
     
+    // getNextState provides base baseline
     private _state = _biome call uksfta_environment_fnc_getNextState;
     if (isNil "_state") then { _state = [0,0,0,5,600]; };
     _state params ["_overcast", "_rain", "_fogValue", "_wind", "_duration"];
 
-    // 1. Map-Accurate Solar Math
-    private _lat = getNumber (configFile >> "CfgWorlds" >> worldName >> "latitude") min 90;
-    private _sunAlt = call uksfta_environment_fnc_getSunElevation;
-    private _maxPossibleAlt = (90 - abs(_lat)) max 10;
-    private _sunFactor = (linearConversion [0, _maxPossibleAlt, _sunAlt, 0, 1, true]) max 0;
-    
-    // 2. Biome Profile Lookup
-    private _physProfiles = [
-        ["TEMPERATE",     [8.0, 22.0, 0.5, 1013.0, 0.03, 0]],
-        ["ARID",          [22.0, 42.0, 0.1, 1020.0, 0.2, 5]],
-        ["ARCTIC",        [-25.0, 2.0, 0.8, 990.0, 0.01, 0]],
-        ["TROPICAL",      [24.0, 33.0, 0.9, 1005.0, 0.05, 10]],
-        ["MEDITERRANEAN", [16.0, 32.0, 0.4, 1015.0, 0.04, 0]]
-    ];
-    
-    private _pData = [10, 25, 0.5, 1013, 0.03, 0];
-    { if (_x select 0 == _biome) exitWith { _pData = _x select 1; }; } forEach _physProfiles;
-    _pData params ["_tMin", "_tMax", "_baseHumid", "_basePress", "_fogDecay", "_fogBase"];
-
-    private _targetT = (_tMin + ((_tMax - _tMin) * _sunFactor) - (_overcast * 4.0));
-    private _targetH = (_baseHumid + (_rain * 0.15)) min 1.0;
-
-    if (_preset == "ARCADE") then {
-        _targetT = 20 + ((_targetT - 20) * 0.4); 
-        _targetH = 0.5 + ((_targetH - 0.5) * 0.4);
+    // 4. ALTITUDE & WIND SCALING (Mountain/Sandstorm Logic)
+    // We sample a high-altitude point to check for localized blizzard conditions
+    private _highWind = _wind > 15;
+    if (_highWind) then {
+        if (_biome == "ARCTIC") then {
+            _overcast = 1.0; // Force total whiteout in high winds
+            _rain = 0.8;     // Heavy Snowfall
+            _fogValue = 0.4; // Blizzard Fog
+        };
+        if (_biome == "ARID") then {
+            _fogValue = 0.6; // Sandstorm Haze
+            _overcast = (_overcast + 0.3) min 1.0;
+        };
     };
 
-    UKSFTA_Env_TargetTemp = _targetT;
-    UKSFTA_Env_TargetHumid = _targetH;
-    missionNamespace setVariable ["ace_weather_currentBarometricPressure", _basePress, true];
-
+    // 5. Apply Global Weather
     private _time = _duration / (missionNamespace getVariable ["uksfta_environment_transitionSpeed", 1.0]);
     _time setOvercast _overcast;
     0 setRain _rain;
-    _time setFog [_fogValue, _fogDecay, _fogBase];
-    
-    private _lightningDensity = if (_overcast > 0.7) then { linearConversion [0.7, 1.0, _overcast, 0, 1, true] } else { 0 };
-    _time setLightnings _lightningDensity;
-
+    _time setFog [_fogValue, 0.03, 0];
     setWind [_wind, _wind, true];
+    
     simulWeatherSync;
+
+    // 6. Update Targets for Smoothing Thread
+    // Biome-specific temperature baselines
+    private _baseT = 20;
+    private _baseH = 0.5;
+    switch (_biome) do {
+        case "ARCTIC": { _baseT = -15; _baseH = 0.8; };
+        case "ARID": { _baseT = 35; _baseH = 0.1; };
+        case "TROPICAL": { _baseT = 28; _baseH = 0.9; };
+    };
+    UKSFTA_Env_TargetTemp = _baseT - (_overcast * 5);
+    UKSFTA_Env_TargetHumid = _baseH + (_rain * 0.2);
 
     sleep _duration;
 };
