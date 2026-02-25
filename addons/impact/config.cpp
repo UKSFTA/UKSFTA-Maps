@@ -14,7 +14,7 @@ class CfgFunctions {
         tag = "uksfta_impact";
         class functions {
             file = "z\uksfta\addons\impact\functions";
-            class handleHit {};
+            // Removed handleHit (Refactored to audio handleBulletImpacts for performance)
         };
     };
 };
@@ -22,12 +22,9 @@ class CfgFunctions {
 class CfgVehicles {
     class Man;
     class CAManBase: Man {
-        class EventHandlers {
-            class UKSFTA_Impact_Handler {
-                handleDamage = "_this call uksfta_impact_fnc_handleHit; _this select 2";
-            };
-        };
+        // Impact logic is now handled globally via uksfta_audio_fnc_handleBulletImpacts (HitPart Class EH)
     };
+    
     // Gib Models
     class Thing;
     class UKSFTA_Gib_BloodSplatter_LeftHand: Thing {
