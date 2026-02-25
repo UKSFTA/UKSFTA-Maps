@@ -87,7 +87,9 @@ missionNamespace setVariable ["UKSFTA_Env_State_Moisture", UKSFTA_Env_System_Moi
         60 setRain _targetRain;
         simulWeatherSync;
 
-        LOG_TRACE(format ["Weather Evolution Tick: P:%1 hPa | M:%2", round UKSFTA_Env_Server_Pressure, round (UKSFTA_Env_Server_Moisture * 100)]);
+        if (missionNamespace getVariable [QGVAR(logLevel), 1] >= 2) then {
+            diag_log text (format ["[UKSF] <TRACE> [MET]: P:%1 hPa | M:%2", round UKSFTA_Env_Server_Pressure, round (UKSFTA_Env_Server_Moisture * 100)]);
+        };
     },
     10 
 ] call CBA_fnc_addPerFrameHandler;

@@ -36,16 +36,12 @@
     #define ADDON DOUBLES(PREFIX,COMPONENT)
 #endif
 
-// --- Professional Logging Suite ---
-// We use a simplified macro set to avoid PE9 parser errors
+// --- Professional Logging Backend ---
 #ifndef LOG_BASE
     #define LOG_BASE(LEVEL,MSG) [LEVEL,MSG,QUOTE(COMPONENT)] call uksfta_main_fnc_telemetry
     #define LOG(MSG) LOG_BASE("INFO",MSG)
     #define LOG_ERROR(MSG) LOG_BASE("ERROR",MSG)
     #define LOG_WARN(MSG) LOG_BASE("WARN",MSG)
-    
-    // TRACE uses a local check to ensure zero overhead in production
-    #define LOG_TRACE(MSG) if (missionNamespace getVariable [QUOTE(GVAR(logLevel)), 1] >= 2) then { diag_log text format ["[UKSF] <TRACE> [%1]: %2", QUOTE(COMPONENT), MSG] }
 #endif
 
 // --- Internalized Versioning ---
