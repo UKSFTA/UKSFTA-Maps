@@ -54,6 +54,17 @@ if (!hasInterface) exitWith {};
 
         private _altOffset = (_alt / 1000) * -6.5;
         private _localTemp = _globalTemp + _altOffset + _surfaceOffset + _shadeOffset;
+
+        // --- WIND-CHILL FACTOR (DAGGER Synergy) ---
+        // Effective temp drops in high winds (Approx formula)
+        private _windStr = windStr;
+        private _exposure = 1.0;
+        if ([player, "VIEW", objNull] checkVisibility [eyePos player, (eyePos player) vectorAdd [0,0,50]] < 0.5) then { _exposure = 0.3; }; // Sheltered
+        
+        if (_localTemp < 10 && _windStr > 5) then {
+            private _windChill = (35.74 + (0.6215 * _localTemp) - (35.75 * (_windStr^0.16)) + (0.4275 * _localTemp * (_windStr^0.16)));
+            _localTemp = (_localTemp min _windChill); // Apply the colder value
+        };
         
         missionNamespace setVariable ["UKSFTA_Environment_LocalTemp", _localTemp];
         missionNamespace setVariable ["UKSFTA_Environment_LocalBiome", _localBiome];

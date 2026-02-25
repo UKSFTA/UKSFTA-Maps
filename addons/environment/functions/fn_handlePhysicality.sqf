@@ -23,6 +23,16 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Physicality Engine (
         player setAnimSpeedCoef (1.0 - (_load * 0.15));
         player setUnitTrait ["loadCoef", (1.0 + _load)];
 
+        // --- 2a. ICY FOOTING (DAGGER Synergy) ---
+        private _surface = toLower (surfaceType (getPosVisual player));
+        private _biome = missionNamespace getVariable ["UKSFTA_Environment_Biome", "TEMPERATE"];
+        if (_biome == "ARCTIC" && {(_surface find "snow" != -1 || _surface find "ice" != -1)}) then {
+            if (_speed > 3) then {
+                // Subtle slide force
+                player addForce [(vectorDir player vectorMultiply 500), [0,0,0]];
+            };
+        };
+
         // --- 3. SENSOR REALISM (Throttled) ---
         if (diag_frameCount % 60 == 0 && {currentVisionMode player == 1}) then {
             private _nearFlares = player nearObjects ["FlareCore", 50];
