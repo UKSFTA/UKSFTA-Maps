@@ -1,11 +1,12 @@
 #include "..\script_component.hpp"
 /**
- * UKSFTA Environment - Sovereign Driving Dynamics (PFH Optimized)
+ * UKSFTA Environment - Sovereign Driving Dynamics (Optimized PFH)
+ * Features Component Caching and Surface Throttling.
  */
 
 if (!hasInterface) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics (PFH Mode) Starting...";
+diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics (Optimized) Starting...";
 
 [
     {
@@ -25,32 +26,40 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics (PF
             private _onRoad = isOnRoad _veh;
 
             // --- 1. PERFORMANCE THROTTLING ---
-            // Only run physics updates if moving or off-road
             if (!_onRoad && { abs _speed > 5 }) then {
-                private _surface = toLower (surfaceType (getPosVisual _veh));
                 
-                // TERRAIN BUMPS (Z-Force)
+                // Cache surface type (every 1s)
+                private _surface = _veh getVariable ["UKSFTA_Drv_CachedSurface", ""];
+                if (diag_frameCount % 60 == 0) then {
+                    _surface = toLower (surfaceType (getPosVisual _veh));
+                    _veh setVariable ["UKSFTA_Drv_CachedSurface", _surface];
+                };
+                
+                // TERRAIN BUMPS
                 private _bumpForce = (random (_speed / 50)) min 2;
                 if (_bumpForce > 0.3) then {
                     _veh addForce [[0, 0, _bumpForce * 500], [0, 0, 0]];
                     addCamShake [_bumpForce, 0.5, 15];
                 };
 
-                // COMPONENT FATIGUE (Throttled)
-                if (diag_frameCount % 30 == 0 && _speed > 60) then {
-                    if (random 1 < 0.05) then {
+                // COMPONENT FATIGUE (Cached Hitpoints)
+                if (diag_frameCount % 120 == 0 && _speed > 60) then {
+                    private _wheels = _veh getVariable ["UKSFTA_Drv_CachedWheels", []];
+                    if (_wheels isEqualTo []) then {
                         private _hitPoints = getAllHitPointsDamage _veh select 0;
-                        private _wheels = _hitPoints select { (_x find "wheel" != -1) || (_x find "track" != -1) };
-                        if (_wheels isNotEqualTo []) then {
-                            [_veh, [selectRandom _wheels, (damage _veh) + 0.05]] remoteExec ["setHitPointDamage", _veh];
-                            ["Off-road component fatigue detected.", "WARN"] call uksfta_main_fnc_notify;
-                        };
+                        _wheels = _hitPoints select { (_x find "wheel" != -1) || (_x find "track" != -1) };
+                        _veh setVariable ["UKSFTA_Drv_CachedWheels", _wheels];
+                    };
+
+                    if (random 1 < 0.05 && _wheels isNotEqualTo []) then {
+                        [_veh, [selectRandom _wheels, (damage _veh) + 0.05]] remoteExec ["setHitPointDamage", _veh];
+                        ["Off-road component fatigue detected.", "WARN"] call uksfta_main_fnc_notify;
                     };
                 };
             };
         };
     },
-    0.1 // High-frequency but throttled internally
+    0.1
 ] call CBA_fnc_addPerFrameHandler;
 
 true
