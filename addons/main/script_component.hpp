@@ -8,7 +8,6 @@
 
 #include "script_version.hpp"
 
-// --- Standardized Macro Guards ---
 #ifndef DOUBLES
     #define DOUBLES(var1,var2) var1##_##var2
 #endif
@@ -38,19 +37,15 @@
 #endif
 
 // --- Professional Logging Suite ---
-#ifndef LOG_LEVEL_ERROR
-    #define LOG_LEVEL_ERROR 0
-    #define LOG_LEVEL_INFO 1
-    #define LOG_LEVEL_TRACE 2
-#endif
-
-// Single-argument logging to resolve PE9 parser errors
+// We use a simplified macro set to avoid PE9 parser errors
 #ifndef LOG_BASE
     #define LOG_BASE(LEVEL,MSG) [LEVEL,MSG,QUOTE(COMPONENT)] call uksfta_main_fnc_telemetry
     #define LOG(MSG) LOG_BASE("INFO",MSG)
     #define LOG_ERROR(MSG) LOG_BASE("ERROR",MSG)
     #define LOG_WARN(MSG) LOG_BASE("WARN",MSG)
-    #define LOG_TRACE(MSG) if (missionNamespace getVariable [QUOTE(GVAR(logLevel)), 1] >= 2) then { ["TRACE",MSG,QUOTE(COMPONENT)] call uksfta_main_fnc_telemetry }
+    
+    // TRACE uses a local check to ensure zero overhead in production
+    #define LOG_TRACE(MSG) if (missionNamespace getVariable [QUOTE(GVAR(logLevel)), 1] >= 2) then { diag_log text format ["[UKSF] <TRACE> [%1]: %2", QUOTE(COMPONENT), MSG] }
 #endif
 
 // --- Internalized Versioning ---
