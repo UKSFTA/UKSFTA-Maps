@@ -10,6 +10,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
 
 [] spawn {
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
+        if !(missionNamespace getVariable ["uksfta_main_enabled", true] && {missionNamespace getVariable ["uksfta_phys_enableDriving", true]}) exitWith {};
+        
         private _veh = objectParent player;
         
         // Only run if player is the driver
@@ -33,7 +35,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
             if (_veh getVariable ["UKSFTA_IsStuck", false]) then {
                 if (ropes _veh isNotEqualTo []) then {
                     _veh setVariable ["UKSFTA_IsStuck", false, true];
-                    hint "Vehicle recovering via tow...";
+                    ["Vehicle recovering via tow...", "INFO"] call uksfta_main_fnc_notify;
                 };
             };
 
@@ -55,7 +57,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
                         private _wheels = _hitPoints select { (_x find "wheel" != -1) || (_x find "track" != -1) };
                         if (_wheels isNotEqualTo []) then {
                             [_veh, [selectRandom _wheels, (damage _veh) + 0.05]] remoteExec ["setHitPointDamage", _veh];
-                            diag_log format ["[UKSF] <WARN>: Off-road component fatigue on %1", typeOf _veh];
+                            ["Off-road component fatigue detected.", "WARN"] call uksfta_main_fnc_notify;
                         };
                     };
                 };
@@ -71,7 +73,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
                         
                         [_veh] spawn {
                             params ["_v"];
-                            hint "Vehicle Bogged Down! Try to tow or reverse.";
+                            ["Vehicle Bogged Down! Towing required.", "ALERT"] call uksfta_main_fnc_notify;
                             
                             // Physically sink the vehicle slightly
                             private _pos = getPosASL _v;
@@ -86,6 +88,7 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics Act
                             
                             detach _v;
                             deleteVehicle _helper;
+                            ["Vehicle Recovered.", "INFO"] call uksfta_main_fnc_notify;
                         };
                     };
                 };

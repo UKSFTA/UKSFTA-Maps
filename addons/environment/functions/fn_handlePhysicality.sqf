@@ -10,6 +10,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Physicality Engine A
 
 [] spawn {
     while {missionNamespace getVariable ["uksfta_environment_enabled", true]} do {
+        if !(missionNamespace getVariable ["uksfta_main_enabled", true] && {missionNamespace getVariable ["uksfta_phys_enablePhysicality", true]}) exitWith {};
+        
         private _stress = player getVariable ["UKSFTA_Stress_Level", 0];
         private _fatigue = getFatigue player;
         private _load = load player; // 0 to 1 range (approx)

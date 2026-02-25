@@ -19,6 +19,7 @@ class CfgFunctions {
             file = "z\uksfta\addons\main\functions";
             class preInit { preInit = 1; };
             class telemetry {};
+            class notify {};
         };
     };
 };

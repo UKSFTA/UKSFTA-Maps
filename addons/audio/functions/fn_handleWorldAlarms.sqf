@@ -12,6 +12,8 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: World Alarm Engine Active.
 player addEventHandler ["Explosion", {
     params ["_unit", "_damage"];
     
+    if !(missionNamespace getVariable ["uksfta_audio_enableAlarms", true]) exitWith {};
+    
     if (_damage > 0.5) then {
         // Find nearby buildings in an urban zone
         private _pos = getPosVisual player;
