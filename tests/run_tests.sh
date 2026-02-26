@@ -88,7 +88,7 @@ CORE_TESTS=(
     "test_audio_reactive.sqf" 
     "test_local_ace_sync.sqf" 
     "test_visual_effects.sqf" 
-    "test_asset_integration.sqf" "test_vfs_discovery.sqf" "test_realism_timelapse.sqf" "test_driving_simulation.sqf"
+    "test_asset_integration.sqf" "test_vfs_discovery.sqf" "test_realism_timelapse.sqf" "test_driving_simulation.sqf" "test_deep_synergy.sqf"
 )
 for t in "${CORE_TESTS[@]}"; do
     sqfvm -a $MAPS -i "$WS/tests/$t" > /tmp/uksfta_core.log 2>&1
