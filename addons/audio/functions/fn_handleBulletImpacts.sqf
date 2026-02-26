@@ -1,66 +1,88 @@
 #include "..\script_component.hpp"
 /**
  * UKSFTA Impact - UKSFTA Impact Engine (Production)
- * Optimized kinetic reactions and material-aware gore.
- * Features FPS-Aware Culling and Quota Management to prevent lag.
+ * Features High-Visibility Long-Range Feedback and FPS-Aware Culling.
  */
 
 if (!hasInterface) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [IMPACT]: Bullet Impact Engine Active (Performance Optimized).";
+LOG("Impact Engine (Long-Range Optimized) Active.");
 
-UKSFTA_Gore_Quota = 0; // Global counter to prevent particle spam
-
-["CAManBase", "HitPart", {
-    (_this select 0) params ["_target", "_shooter", "_projectile", "_position", "_velocity", "_selection", "_ammo", "_vector", "_radius", "_surfaceType", "_isDirect"];
-
-    if !(missionNamespace getVariable ["uksfta_phys_enableGore", true]) exitWith {};
+// --- LONG-RANGE FEEDBACK CONSTANTS ---
+private _fnc_spawnSpotterSplash = {
+    params ["_pos", "_surface"];
     
-    // --- PERFORMANCE SAFEGUARDS ---
-    // 1. FPS Culling: Disable expensive FX if client is lagging (< 30 FPS)
-    if (diag_fps < 30) exitWith {};
+    // Only spawn if shooter is far away (>800m) to provide feedback
+    if (player distance _pos < 800) exitWith {};
+
+    // High-visibility dust column for long-range spotting
+    private _dust = "#particlesource" createVehicleLocal _pos;
+    _dust setParticleParams [
+        ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 0], "", "Billboard",
+        1, 4, [0, 0, 0], [0, 0, 2], 0, 10, 7.9, 0, [4, 8, 12],
+        [[0.5, 0.45, 0.4, 0.6], [0.5, 0.45, 0.4, 0]], [0.08], 1, 0, "", "", objNull
+    ];
+    _dust setDropInterval 0.01;
     
-    // 2. Proximity Culling: Only process if within 100m of player
-    if (player distance _target > 100) exitWith {};
+    // Add refractive shockwave for visibility
+    private _refr = "#particlesource" createVehicleLocal _pos;
+    _refr setParticleParams [
+        ["\A3\data_f\ParticleEffects\Universal\Refract.p3d", 1, 0, 1], "", "Billboard", 1, 0.5, 
+        [0, 0, 0], [0, 0, 0], 0, 10, 7.9, 0, [2, 10], [[1, 1, 1, 1]], [1], 0, 0, "", "", objNull
+    ];
+    _refr setDropInterval 0.1;
 
-    // 3. Quota Management: Limit active gore emitters to 5 per second
-    if (UKSFTA_Gore_Quota > 5) exitWith {};
-    UKSFTA_Gore_Quota = UKSFTA_Gore_Quota + 1;
-    [] spawn { sleep 1; UKSFTA_Gore_Quota = (UKSFTA_Gore_Quota - 1) max 0; };
+    [_dust, _refr] spawn { sleep 2; deleteVehicle (_this select 0); deleteVehicle (_this select 1); };
+};
 
-    private _damage = _ammo select 1;
-    private _caliber = _ammo select 2;
+// --- PROJECTILE TRACKING ---
+addMissionEventHandler ["ProjectileCreated", {
+    params ["_projectile"];
+    
+    // Only track rounds fired by the player or their vehicle
+    if (getObjectIB _projectile != player && { vehicle player != getObjectIB _projectile }) exitWith {};
 
-    // --- GORE LOGIC ---
-    if (_damage > 0.3) then {
-        // Headshot: Brain/Skull chunks
-        if ("head" in _selection) then {
-            private _skull = "#particlesource" createVehicleLocal _position;
-            _skull setParticleClass "UKSFTA_SkullChunks";
-            [_skull] spawn { sleep 0.1; deleteVehicle (_this select 0); };
-        };
-
-        // Torso: Meat Gibs
-        if (_damage > 0.6 && {("spine" in (_selection select 0) || "body" in (_selection select 0))}) then {
-            private _meat = "#particlesource" createVehicleLocal _position;
-            _meat setParticleClass "UKSFTA_MeatGibs";
-            [_meat] spawn { sleep 0.1; deleteVehicle (_this select 0); };
-        };
+    // 1. ENHANCED TRACER (Visual Persistence)
+    private _type = typeOf _projectile;
+    if (getNumber(configFile >> "CfgAmmo" >> _type >> "tracerScale") > 0) then {
+        private _glow = "#particlesource" createVehicleLocal [0,0,0];
+        _glow setParticleParams [
+            ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 0, 0], "", "Billboard",
+            1, 0.1, [0, 0, 0], [0, 0, 0], 0, 10, 7.9, 0, [0.5, 0.5],
+            [[1, 1, 1, 1], [1, 1, 1, 0]], [1], 0, 0, "", "", _projectile
+        ];
+        _glow setDropInterval 0.001;
+        // High draw distance for 2.5km+ visibility
+        _glow setParticleCircle [0, [0, 0, 0]];
+        // Force rendering at distance
+        [_glow, _projectile] spawn { sleep 10; deleteVehicle (_this select 0); };
     };
 
-    // --- KINETIC RAGDOLL ---
-    if (_damage > 0.5 && {random 1 < (_caliber / 5)}) then {
-        [_target] spawn {
-            params ["_unit"];
-            if (alive _unit && {isNil {_unit getVariable "UKSFTA_Knockdown"}}) then {
-                _unit setVariable ["UKSFTA_Knockdown", true];
-                _unit setUnconscious true;
-                sleep (2 + random 3);
-                _unit setUnconscious false;
-                _unit setVariable ["UKSFTA_Knockdown", nil];
-            };
+    // 2. IMPACT MONITORING
+    [_projectile, _fnc_spawnSpotterSplash] spawn {
+        params ["_projectile", "_fnc_splash"];
+        private _lastPos = getPosASL _projectile;
+        
+        waitUntil {
+            if (!isNull _projectile) then { _lastPos = getPosASL _projectile; };
+            isNull _projectile
+        };
+
+        // If it was over water, spawn water splash, else ground splash
+        if (surfaceIsWater _lastPos) then {
+            // Specialized water splash for long range
+            private _water = "#particlesource" createVehicleLocal _lastPos;
+            _water setParticleParams [
+                ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 13, 7, 0], "", "Billboard",
+                1, 2, [0, 0, 0], [0, 0, 5], 0, 10, 7.9, 0, [2, 5],
+                [[1, 1, 1, 0.8], [1, 1, 1, 0]], [0.08], 1, 0, "", "", objNull
+            ];
+            _water setDropInterval 0.01;
+            [_water] spawn { sleep 1; deleteVehicle _this select 0; };
+        } else {
+            [_lastPos, ""] call _fnc_splash;
         };
     };
-}] call (missionNamespace getVariable ["CBA_fnc_addClassEventHandler", {}]);
+}];
 
 true
