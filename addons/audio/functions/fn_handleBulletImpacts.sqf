@@ -40,7 +40,9 @@ addMissionEventHandler ["ProjectileCreated", {
     params ["_projectile"];
     
     // Only track rounds fired by the player or their vehicle
-    if (getObjectIB _projectile != player && { vehicle player != getObjectIB _projectile }) exitWith {};
+    private _parents = getShotParents _projectile;
+    private _shooter = _parents select 0;
+    if (_shooter != player && { vehicle player != _shooter }) exitWith {};
 
     // 1. ENHANCED TRACER (Visual Persistence)
     private _type = typeOf _projectile;
