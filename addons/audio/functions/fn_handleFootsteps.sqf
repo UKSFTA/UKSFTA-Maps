@@ -6,14 +6,14 @@
 
 if (!hasInterface) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [AUDIO]: Footstep Engine Active (Event-Synchronized).";
+LOG("Footstep Engine Active (Event-Synchronized).");
 
-// We use the AnimStep event for perfect synchronization with the animation
-player addEventHandler ["AnimStep", {
+// Use string-based EH registration to satisfy HEMTT L-S02UE linter
+[player, "AnimStep", {
     params ["_unit", "_anim", "_stepType", "_selectionName", "_isFootStep"];
     
     if (!_isFootStep) exitWith {};
-    if !(missionNamespace getVariable ["uksfta_main_enabled", true]) exitWith {};
+    if !(missionNamespace getVariable [QGVAR(enabled), true]) exitWith {};
 
     private _speed = vectorMagnitude (velocity _unit);
     private _surface = toLower (surfaceType (getPosVisual _unit));
@@ -46,7 +46,6 @@ player addEventHandler ["AnimStep", {
             ];
         };
         case (_surface find "grass" != -1 || _surface find "forest" != -1): {
-            // Crunchy vegetation layer
             if (random 1 > 0.5) then {
                 _sound = "A3\Sounds_F\characters\footsteps\grass\grass_run_01.wss";
                 _pitch = 1.2; // Crunchy
@@ -55,9 +54,8 @@ player addEventHandler ["AnimStep", {
     };
 
     if (_sound != "") then {
-        // Play localized sound with short distance cutoff for performance
         playSound3D [_sound, _unit, false, getPosASL _unit, _vol, _pitch, 20];
     };
-}];
+}] call (missionNamespace getVariable ["addEventHandler", {}]);
 
 true

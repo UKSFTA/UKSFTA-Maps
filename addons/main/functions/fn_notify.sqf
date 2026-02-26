@@ -12,11 +12,11 @@ params [
 if (!hasInterface) exitWith {};
 
 private _color = "#4caf50"; // Info Green
-private _icon = "\A3\ui_f\data\map\mapcontrol	askIcon_ca.paa";
+private _icon = "\A3\ui_f\data\map\mapcontrol\taskIcon_ca.paa";
 
 switch (toUpper _type) do {
-    case "WARN": { _color = "#ff9800"; _icon = "\A3\ui_f\data\map\mapcontrol	askIconFailed_ca.paa"; };
-    case "ALERT": { _color = "#f44336"; _icon = "\A3\ui_f\data\map\mapcontrol	askIconCanceled_ca.paa"; };
+    case "WARN": { _color = "#ff9800"; _icon = "\A3\ui_f\data\map\mapcontrol\taskIconFailed_ca.paa"; };
+    case "ALERT": { _color = "#f44336"; _icon = "\A3\ui_f\data\map\mapcontrol\taskIconCanceled_ca.paa"; };
 };
 
 private _structuredText = parseText format [
@@ -25,6 +25,4 @@ private _structuredText = parseText format [
     _color, _msg
 ];
 
-// Display via native notification if CBA isn't present, or use custom UI if needed
-// For now, we use a structured hint for maximum visual impact
 hintSilent _structuredText;

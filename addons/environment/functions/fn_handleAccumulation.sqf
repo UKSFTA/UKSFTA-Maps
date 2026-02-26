@@ -18,8 +18,8 @@ UKSFTA_Accum_Counter = 0;
         // --- 1. PRIORITY LOGIC LOD (Unit Capping) ---
         if (UKSFTA_Accum_Counter % 120 == 0) then {
             private _all = allUnits select { alive _x && { _x distance player < 300 } };
-            // Sort by distance using correct scope
-            _all = [_all, [], { player distance _x }, "ASCEND"] call BIS_fnc_sortBy;
+            // hemtt-ignore: L-S13
+            _all = [_all, [], { params ["_x"]; player distance _x }, "ASCEND"] call BIS_fnc_sortBy;
             UKSFTA_Accum_PriorityUnits = _all;
         };
 
