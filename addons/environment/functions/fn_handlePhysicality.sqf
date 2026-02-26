@@ -46,8 +46,8 @@ LOG("Physicality Engine (PFH Mode) Starting...");
         };
 
         // --- 2c. ACE HEAT HAZE SYNERGY (Phase 21) ---
-        if (missionNamespace getVariable [QGVAR(ace_heatHaze), true]) then {
-            private _weapon = currentWeapon player;
+        // Additive Visual: Only runs if ACE Overheating is tracking temperature
+        if (missionNamespace getVariable [QGVAR(ace_heatHaze), true] && { !isNil "ace_overheating_fnc_updateTemperature" }) then {
             private _temp = player getVariable ["ace_overheating_temperature", 0];
             if (_temp > 150) then {
                 private _haze = player getVariable ["UKSFTA_WepHaze", objNull];

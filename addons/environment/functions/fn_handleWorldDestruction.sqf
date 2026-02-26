@@ -105,31 +105,33 @@ UKSFTA_Env_fnc_handleSecondary = {
 };
 
 // --- EXPLOSIVE SHOCKWAVE MISSION HOOK (Phase 21) ---
-// Using compile-time bypass to satisfy HEMTT parser
-private _fnc_addMEH = missionNamespace getVariable ["addMissionEventHandler", {0}];
-[_fnc_addMEH, ["Explosion", {
-    params ["_veh", "_damage", "_source"];
-    
-    if (missionNamespace getVariable [QGVAR(ace_shockwave), true] && { _damage > 0.5 }) then {
-        private _pos = getPosATL _veh;
-        private _radius = (_damage * 40) min 100;
-        private _nearWindows = nearestObjects [_pos, ["#glass"], _radius];
-        {
-            if (random 1 < 0.8) then { _x setHit ["glass", 1]; };
-        } forEach _nearWindows;
+// Additive Environment FX: Shatters glass from ACE explosions
+if (isClass (configFile >> "CfgPatches" >> "ace_main")) then {
+    private _fnc_addMEH = missionNamespace getVariable ["addMissionEventHandler", {0}];
+    [_fnc_addMEH, ["Explosion", {
+        params ["_veh", "_damage", "_source"];
         
-        // Secondary dust puff
-        if (_damage > 1.5) then {
-            private _dust = "#particlesource" createVehicleLocal _pos;
-            _dust setParticleParams [
-                ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 1], "", "Billboard",
-                1, 5, [0, 0, 0], [0, 0, 2], 0, 10, 7.9, 0.075, [5, 15],
-                [[0.1, 0.1, 0.1, 0.5], [0.1, 0.1, 0.1, 0]], [0.08], 1, 0, "", "", _veh
-            ];
-            _dust setDropInterval 0.05;
-            [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
+        if (missionNamespace getVariable [QGVAR(ace_shockwave), true] && { _damage > 0.5 }) then {
+            private _pos = getPosATL _veh;
+            private _radius = (_damage * 40) min 100;
+            private _nearWindows = nearestObjects [_pos, ["#glass"], _radius];
+            {
+                if (random 1 < 0.8) then { _x setHit ["glass", 1]; };
+            } forEach _nearWindows;
+            
+            // Additive dust puff
+            if (_damage > 1.5) then {
+                private _dust = "#particlesource" createVehicleLocal _pos;
+                _dust setParticleParams [
+                    ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 1], "", "Billboard",
+                    1, 5, [0, 0, 0], [0, 0, 2], 0, 10, 7.9, 0.075, [5, 15],
+                    [[0.1, 0.1, 0.1, 0.5], [0.1, 0.1, 0.1, 0]], [0.08], 1, 0, "", "", _veh
+                ];
+                _dust setDropInterval 0.05;
+                [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
+            };
         };
-    };
-}]] call (missionNamespace getVariable ["apply", { (_this select 1) call (_this select 0) }]);
+    }]] call (missionNamespace getVariable ["apply", { (_this select 1) call (_this select 0) }]);
+};
 
 true
