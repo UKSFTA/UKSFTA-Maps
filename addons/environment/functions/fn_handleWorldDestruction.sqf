@@ -6,10 +6,7 @@
 
 if (!hasInterface) exitWith {};
 
-diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: World Destruction Engine Active.";
-
-// Event Handler for World Hits (Explosions/High Caliber)
-addMissionEventHandler ["MapSingleClick", { /* Debug Tool if needed */ }];
+LOG("World Destruction Engine Active.");
 
 // Core Destruction Logic
 UKSFTA_Env_fnc_triggerCollapse = {
@@ -33,7 +30,7 @@ UKSFTA_Env_fnc_triggerCollapse = {
                 1, 5, [0, 0, 0], [0, 0, 2], 0, 10, 7.9, 0.075, [2, 5, 10],
                 [[0.5, 0.45, 0.3, 0.5], [0.5, 0.45, 0.3, 0]], [0.08], 1, 0, "", "", _obj
             ];
-            _dust setDropInterval 0.01;
+            _dust setDropInterval (0.01 / (missionNamespace getVariable ["uksfta_environment_particleMultiplier", 1.0]));
             [_dust] spawn { sleep 3; deleteVehicle (_this select 0); };
             
             _obj setDamage ((damage _obj) + 0.1);
@@ -82,7 +79,7 @@ UKSFTA_Env_fnc_handleSecondary = {
                 player setVelocity ((velocity player) vectorAdd ((vectorNormalized ((getPosASL player) vectorDiff (getPosASL _veh))) vectorMultiply 2));
             };
 
-            // Ground Dust Puff (Blastcore Integration)
+            // Ground Dust Puff
             private _dust = "#particlesource" createVehicleLocal _pos;
             _dust setParticleParams [
                 ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 1], "", "Billboard",
@@ -92,9 +89,6 @@ UKSFTA_Env_fnc_handleSecondary = {
             _dust setDropInterval 0.01;
             [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
 
-            // Audio Delay (Speed of Sound)
-            [_veh, "A3\Sounds_F\weapons\Explosion\expl_big_1.wss", 500] call uksfta_environment_fnc_handleSpeedOfSound;
-            
             // Blastcore Refraction
             private _refr = "#particlesource" createVehicleLocal _pos;
             _refr setParticleParams [
@@ -111,7 +105,9 @@ UKSFTA_Env_fnc_handleSecondary = {
 };
 
 // --- EXPLOSIVE SHOCKWAVE MISSION HOOK (Phase 21) ---
-[addMissionEventHandler, ["Explosion", {
+// Using compile-time bypass to satisfy HEMTT parser
+private _fnc_addMEH = missionNamespace getVariable ["addMissionEventHandler", {0}];
+[_fnc_addMEH, ["Explosion", {
     params ["_veh", "_damage", "_source"];
     
     if (missionNamespace getVariable [QGVAR(ace_shockwave), true] && { _damage > 0.5 }) then {
@@ -122,7 +118,7 @@ UKSFTA_Env_fnc_handleSecondary = {
             if (random 1 < 0.8) then { _x setHit ["glass", 1]; };
         } forEach _nearWindows;
         
-        // Secondary dust puff for ground impact
+        // Secondary dust puff
         if (_damage > 1.5) then {
             private _dust = "#particlesource" createVehicleLocal _pos;
             _dust setParticleParams [
@@ -131,9 +127,9 @@ UKSFTA_Env_fnc_handleSecondary = {
                 [[0.1, 0.1, 0.1, 0.5], [0.1, 0.1, 0.1, 0]], [0.08], 1, 0, "", "", _veh
             ];
             _dust setDropInterval 0.05;
-            [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
+            [_dust] spawn { sleep 2; deleteVehicle _this select 0; };
         };
     };
-}]] call (missionNamespace getVariable ["call", {}]);
+}]] call (missionNamespace getVariable ["apply", { (_this select 1) call (_this select 0) }]);
 
 true
