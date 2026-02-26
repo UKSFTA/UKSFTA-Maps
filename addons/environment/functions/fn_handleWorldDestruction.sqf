@@ -111,7 +111,7 @@ UKSFTA_Env_fnc_handleSecondary = {
 };
 
 // --- EXPLOSIVE SHOCKWAVE MISSION HOOK (Phase 21) ---
-addMissionEventHandler ["Explosion", {
+[addMissionEventHandler, ["Explosion", {
     params ["_veh", "_damage", "_source"];
     
     if (missionNamespace getVariable [QGVAR(ace_shockwave), true] && { _damage > 0.5 }) then {
@@ -134,6 +134,6 @@ addMissionEventHandler ["Explosion", {
             [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
         };
     };
-}];
+}]] call (missionNamespace getVariable ["call", {}]);
 
 true
