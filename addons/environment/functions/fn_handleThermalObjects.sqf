@@ -23,14 +23,17 @@ addMissionEventHandler ["ProjectileCreated", {
 }];
 
 // --- VEHICLE WEAPON HEAT HOOK ---
-[_fnc_addMEH, ["Fired", {
-    params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
-    private _veh = objectParent _unit;
-    if (!isNull _veh && { _veh isKindOf "LandVehicle" }) then {
-        private _current = _veh getVariable ["UKSFTA_Heat_Weapon", 0];
-        _veh setVariable ["UKSFTA_Heat_Weapon", (_current + 0.1) min 1.0, true];
-    };
-}]] call (missionNamespace getVariable ["apply", { (_this select 1) call (_this select 0) }]);
+if (isClass (configFile >> "CfgPatches" >> "ace_main")) then {
+    private _fnc_addMEH = missionNamespace getVariable ["addMissionEventHandler", {0}];
+    [_fnc_addMEH, ["Fired", {
+        params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
+        private _veh = objectParent _unit;
+        if (!isNull _veh && { _veh isKindOf "LandVehicle" }) then {
+            private _current = _veh getVariable ["UKSFTA_Heat_Weapon", 0];
+            _veh setVariable ["UKSFTA_Heat_Weapon", (_current + 0.1) min 1.0, true];
+        };
+    }]] call (missionNamespace getVariable ["apply", { (_this select 1) call (_this select 0) }]);
+};
 
 // 2. COMPONENT THERMAL LOOP
 [
