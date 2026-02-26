@@ -71,7 +71,7 @@ addMissionEventHandler ["ProjectileCreated", {
                 [[1, 1, 1, 0.8], [1, 1, 1, 0]], [0.08], 1, 0, "", "", objNull
             ];
             _water setDropInterval 0.01;
-            [_water] spawn { sleep 1; deleteVehicle (_this select 0); };
+            [_water] spawn { params ["_obj"]; sleep 1; deleteVehicle _obj; };
         } else {
             [_lastPos, ""] call uksfta_audio_fnc_spawnSpotterSplash;
         };
