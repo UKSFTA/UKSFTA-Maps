@@ -61,7 +61,8 @@ addMissionEventHandler ["ProjectileCreated", {
     };
 
     // 2. IMPACT MONITORING
-    [_projectile, _fnc_spawnSpotterSplash] spawn {
+    private _spotter = _fnc_spawnSpotterSplash;
+    [_projectile, _spotter] spawn {
         params ["_projectile", "_fnc_splash"];
         private _lastPos = getPosASL _projectile;
         
@@ -80,7 +81,7 @@ addMissionEventHandler ["ProjectileCreated", {
                 [[1, 1, 1, 0.8], [1, 1, 1, 0]], [0.08], 1, 0, "", "", objNull
             ];
             _water setDropInterval 0.01;
-            [_water] spawn { sleep 1; deleteVehicle _this select 0; };
+            [_water] spawn { sleep 1; deleteVehicle (_this select 0); };
         } else {
             [_lastPos, ""] call _fnc_splash;
         };
