@@ -42,6 +42,15 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics (Op
                     addCamShake [_bumpForce, 0.5, 15];
                 };
 
+                // --- 2. SURFACE TORQUE SCALING (RDT Synergy) ---
+                // Reduce engine power in soft terrain (Mud/Sand/Snow)
+                private _torqueMod = 1.0;
+                if (_surface find "mud" != -1 || _surface find "sand" != -1 || _surface find "snow" != -1) then {
+                    _torqueMod = 0.7; // 30% power loss in soft ground
+                    if (rain > 0.5) then { _torqueMod = 0.5; }; // Extreme loss in rain-softened mud
+                };
+                [_veh, _torqueMod] remoteExec ["setEnginePowerMultiplier", _veh];
+
                 // COMPONENT FATIGUE (Cached Hitpoints)
                 if (diag_frameCount % 120 == 0 && _speed > 60) then {
                     private _wheels = _veh getVariable ["UKSFTA_Drv_CachedWheels", []];

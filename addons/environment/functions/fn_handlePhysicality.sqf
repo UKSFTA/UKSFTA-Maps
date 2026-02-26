@@ -34,6 +34,18 @@ LOG("Physicality Engine (PFH Mode) Starting...");
             };
         };
 
+        // --- 2b. WEAPON RELIABILITY (DAGGER Synergy) ---
+        if (diag_frameCount % 300 == 0) then {
+            private _mud = player getVariable ["UKSFTA_Accum_Mud", 0];
+            if (_mud > 0.5 && {random 1 < (_mud * 0.05)}) then {
+                // Trigger ACE Jam if present
+                if (!isNil "ace_overheating_fnc_jamWeapon") then {
+                    [player, currentWeapon player] call ace_overheating_fnc_jamWeapon;
+                    ["Weapon malfunction due to environmental fouling.", "WARN"] call uksfta_main_fnc_notify;
+                };
+            };
+        };
+
         // --- 3. SENSOR REALISM (Throttled) ---
         if (diag_frameCount % 60 == 0 && {currentVisionMode player == 1}) then {
             private _nearFlares = player nearObjects ["FlareCore", 50];

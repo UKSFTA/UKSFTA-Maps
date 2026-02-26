@@ -33,6 +33,22 @@ player addEventHandler ["FiredMan", {
     // 3. DYNAMIC DRAG SCALING
     _projectile setVariable ["UKSFTA_Ballistics_DensityMod", _rhoRatio];
 
+    // --- 4. TRANSONIC INSTABILITY (RBO Synergy) ---
+    // Projectiles become unstable as they drop to subsonic speeds
+    [_projectile] spawn {
+        params ["_projectile"];
+        waitUntil {
+            sleep 0.1;
+            private _vel = vectorMagnitude (velocity _projectile);
+            isNull _projectile || { _vel < 360 && _vel > 300 }
+        };
+        if (!isNull _projectile) then {
+            // Apply slight random deflection to simulate instability
+            private _deflection = [(random 0.2 - 0.1), (random 0.2 - 0.1), (random 0.2 - 0.1)];
+            _projectile setVelocity ((velocity _projectile) vectorAdd _deflection);
+        };
+    };
+
     // TRACER THERMAL SIGNATURE
     if (getNumber (configFile >> "CfgAmmo" >> _ammo >> "tracerScale") > 0) then {
         _projectile setVariable ["UKSFTA_IsTracer", true];
