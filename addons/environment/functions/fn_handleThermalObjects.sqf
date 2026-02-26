@@ -22,6 +22,16 @@ addMissionEventHandler ["ProjectileCreated", {
     };
 }];
 
+// --- VEHICLE WEAPON HEAT HOOK ---
+addMissionEventHandler ["Fired", {
+    params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
+    private _veh = objectParent _unit;
+    if (!isNull _veh && { _veh isKindOf "LandVehicle" }) then {
+        private _current = _veh getVariable ["UKSFTA_Heat_Weapon", 0];
+        _veh setVariable ["UKSFTA_Heat_Weapon", (_current + 0.1) min 1.0, true];
+    };
+}];
+
 // 2. COMPONENT THERMAL LOOP
 [
     {
@@ -35,14 +45,20 @@ addMissionEventHandler ["ProjectileCreated", {
         // --- A. ENGINE BLOCK HEAT ---
         private _engineHeat = _veh getVariable ["UKSFTA_Heat_Engine", 0];
         if (_engineOn) then {
-            _engineHeat = (_engineHeat + 0.01) min 1.0; // Rapid heat-up
+            _engineHeat = (_engineHeat + 0.01) min 1.0;
         } else {
             private _coolRate = [0.002, 0.005] select (_biome == "ARCTIC");
             _engineHeat = (_engineHeat - _coolRate) max 0;
         };
         _veh setVariable ["UKSFTA_Heat_Engine", _engineHeat];
 
-        // --- B. WHEEL/TRACK FRICTION ---
+        // --- B. VEHICLE WEAPON HEAT (Phase 21 Addon) ---
+        // Track large caliber fire for thermal signatures
+        private _wepHeat = _veh getVariable ["UKSFTA_Heat_Weapon", 0];
+        _wepHeat = (_wepHeat - 0.005) max 0;
+        _veh setVariable ["UKSFTA_Heat_Weapon", _wepHeat];
+
+        // --- C. WHEEL/TRACK FRICTION ---
         private _fricHeat = _veh getVariable ["UKSFTA_Heat_Friction", 0];
         if (_speed > 5) then {
             _fricHeat = (_fricHeat + (_speed / 5000)) min 0.8;
@@ -51,24 +67,29 @@ addMissionEventHandler ["ProjectileCreated", {
         };
         _veh setVariable ["UKSFTA_Heat_Friction", _fricHeat];
 
-        // --- C. HULL SOLAR SOAK ---
+        // --- D. HULL SOLAR SOAK ---
         private _solarHeat = 0;
         if (_biome == "ARID") then {
             private _sunAlt = call uksfta_environment_fnc_getSunElevation;
             _solarHeat = (linearConversion [30, 90, _sunAlt, 0, 0.4, true]);
         };
 
-        // --- D. APPLY TO TI SIGNATURE ---
-        // We use setTIParameter to drive the material shader (Engine + Friction + Solar)
-        private _totalHeat = (_engineHeat * 0.6) + (_fricHeat * 0.3) + _solarHeat;
+        // --- E. APPLY TO TI SIGNATURE ---
+        private _totalHeat = (_engineHeat * 0.6) + (_fricHeat * 0.2) + (_wepHeat * 0.5) + _solarHeat;
         [_veh, [1, _totalHeat]] call (missionNamespace getVariable ["setTI", {params ["_o", "_v"];}]);
 
-        // --- E. DYNAMIC HEAT HAZE (Engine Location) ---
+        // --- F. DYNAMIC HEAT HAZE (Localized) ---
         private _haze = _veh getVariable ["UKSFTA_HeatHaze", objNull];
         if (_engineHeat > 0.3) then {
             if (isNull _haze) then {
                 _haze = "#particlesource" createVehicleLocal (getPosATL _veh);
-                _haze attachTo [_veh, [0, -2, 0.5]]; 
+                
+                // Attempt to find authentic attachment point
+                private _attachPoint = [0, -2, 0.5];
+                if (_veh selectionPosition "engine" isNotEqualTo [0,0,0]) then { _attachPoint = _veh selectionPosition "engine"; };
+                if (_veh selectionPosition "exhaust" isNotEqualTo [0,0,0]) then { _attachPoint = _veh selectionPosition "exhaust"; };
+                
+                _haze attachTo [_veh, _attachPoint]; 
                 _veh setVariable ["UKSFTA_HeatHaze", _haze];
             };
             _haze setParticleParams [
