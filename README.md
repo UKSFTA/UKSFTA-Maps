@@ -1,31 +1,40 @@
-# UKSFTA UKSFTA Realism Framework
+# UKSFTA Realism Framework
 
-A 100% autonomous, high-performance, and unified realism overhaul for Arma 3. 
-**Zero external dependencies.**
+A high-fidelity, performance-hardened realism suite for Arma 3, designed for Taskforce Alpha. The framework eliminates external dependencies through heuristic logic and internalized assets, providing a 100% self-contained simulation environment.
 
-## 💎 Features
-- **Heuristic Biome Engine**: Real-time terrain interrogation for 100% map compatibility.
-- **UKSFTA Kelvin Engine**: Solar-accurate color grading and atmospheric scattering.
-- **Advanced Physicality**: Stress-driven aiming, weight-based inertia, and realistic off-road driving.
-- **Acoustic Immersion**: Sound obstruction (walls/objects), ambient ducking, and high-fidelity sonic cracks.
-- **Autonomous Assets**: Internalized 74+ premium Blastcore models and 150+ JSRS/SFX audio files.
-- **Mod Bridge**: Active sync with ACE3, TFAR, ACRE, LAMBS, and VCOM.
+## 🛡️ Core Pillars
 
-## 🛠️ Installation
-1. Subscribe to the UKSFTA Maps Collection.
-2. Ensure `CBA_A3` is loaded (required for settings).
-3. (Optional) Load `ACE3` for medical and fatigue synchronization.
+### 1. Meteorological Suite (ISA Model)
+Driven by the **International Standard Atmosphere (ISA)** model. Real-world physics (Pressure, Air Density, and Moisture) drive all environmental transitions.
+- **Altitude-Aware Storms**: Localized blizzards and sandstorms triggered by altitude and wind pressure.
+- **Atmospheric Ballistics**: Projectile drag and wind-drift (Side-AirFriction) scale dynamically with real-time air density.
+- **Wind-Chill Factor**: Real-world formulas reduce effective temperature based on exposure and wind speed.
 
-## ⚙️ Configuration
-All modules can be toggled or fine-tuned via the **Addon Options (CBA Settings)** under:
-- `UKSFTA UKSFTA`
-- `UKSFTA Audio`
-- `UKSFTA Environment`
+### 2. Kinetic Synergy (ACE3 Integration)
+Additive enhancements that deeply hook into ACE3 modules without duplicating core logic.
+- **Weapon Mirage**: Refractive heat haze particles based on ACE overheating temperatures.
+- **Indoor Acoustic Trauma**: Severe blurring and audio muffling when firing heavy weapons in enclosed spaces without protection.
+- **Explosive Shockwaves**: Large-yield explosions realistically shatter nearby building windows.
 
-## 🛡️ Engineering Standards
-- **Diamond Grade Audit**: Verified 16-pillar logic simulation.
-- **Performance First**: Throttled 5-12s logic loops and 50m culling.
-- **GPG Signed**: All commits and releases are cryptographically verified.
+### 3. Physicality & Driving Dynamics
+- **Biometric Physicality**: Weapon sway and recoil scale with Stress, Fatigue, and Load.
+- **Advanced Driving**: Procedural terrain bumps, surface torque scaling (torque loss in mud/snow), and component fatigue.
+- **Bogging System**: Surface-aware vehicle entrapment in soft terrain, with towing recovery support.
+
+### 4. Acoustic & Visual Immersion
+- **Acoustic Obstruction**: Sound muffling through walls and objects using procedural visibility sampling.
+- **Dynamic Velocity Audio**: Transonic "wobble" audio for projectiles and engine "groan" under high load.
+- **Sovereign UI2Texture**: High-performance procedural layering of Wetness, Mud, Snow, and Blood on uniforms.
+
+## 🚀 Performance Engineering
+- **Priority Logic LOD**: Distance-based performance banding (0-50m, 50-300m, 300m+) ensures massive unit scalability.
+- **Strategic Caching**: Expensive engine commands (Surface Type, Hitpoints, LOS) are cached to maintain a "Zero-Lag" profile.
+- **Frame-Staggered PFH**: All core loops utilize CBA's Per-Frame Handler system to eliminate micro-stutters.
+
+## 🛠️ Technical Standards
+- **Zero-Warning Build**: 100% compliance with HEMTT Diamond Grade standards.
+- **GPG-Signed**: Every release and commit is cryptographically verified.
+- **Infrastructure**: Standardized CBA Macros and tiered logging backend.
 
 ---
-*UKSF Taskforce Alpha - 2026*
+*Developed by UKSFTA Strategic Engineering*

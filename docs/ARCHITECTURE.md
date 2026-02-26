@@ -1,49 +1,34 @@
-# UKSFTA Technical Architecture
+# UKSFTA Realism Framework - Technical Architecture
 
-## 1. System Philosophy
-This project adheres to **UKSF Taskforce Alpha "Zero Trust" Engineering Standards**. Code must be verifiable, performant, and 100% modular.
+## 1. Meteorological Suite (ISA-Driven)
+The framework utilizes the **International Standard Atmosphere (ISA)** model as its primary logic driver.
+- **Data Flow**: `Pressure (P) + Temp (T) -> Density (Rho) -> Ballistic Drag Coefficient`.
+- **Server Authority**: All atmospheric math is calculated on the server and broadcast via state-deltas to ensure 100% synchronization for JIP and multiplayer.
 
-## 2. Component Layout
+## 2. Kinetic Synergy Engine
+A collection of additive hooks designed to amplify the consequences of combat.
+- **Weapon Thermal Hook**: Monitors `ace_overheating_temperature` to drive refractive particle emitters on weapon barrels.
+- **Acoustic Trauma Hook**: Interfaces with `ace_hearing` to trigger `ChromAberration` and `RadialBlur` visuals during indoor heavy-fire events.
+- **Shockwave Logic**: Uses `addMissionEventHandler ["Explosion"]` to execute glass destruction logic based on calculated shockwave radii.
 
-### `addons/main` (The Core)
-- Master initialization orchestrator and CBA settings framework.
-- Global synchronization and variable propagation.
-- Branded diagnostic logging engine with tiered verbosity.
+## 3. Acoustic Propulsion
+Audio is scaled based on physical velocity and environment.
+- **Transonic Window**: Projectiles between 300-360m/s trigger a unique "wobbling" whiz sound.
+- **Engine Torque Audio**: Land vehicles utilize `setEnginePowerMultiplier` data to pitch-down and distort engine sounds when struggling in soft terrain.
+- **Obstruction Engine**: Uses `checkVisibility` with spatial caching to muffle sounds through physical barriers.
 
-### `addons/environment` (The Driver)
-- **Heuristic Engine**: Real-time biome and terrain interrogation.
-- **Atmosphere Engine**: Dynamic weather state machine and solar-driven color grading.
-- **Physicality & Driving**: Stress-driven aiming, weight-based inertia, and off-road vehicle dynamics.
-- **UKSFTA Ballistics**: Real-time atmospheric drag scaling based on air density.
-- **Thermal Dynamics**: Shade-aware climates and dynamic vehicle TI signatures.
-- **Inter-Mod Bridge**: Active synchronization for ACE3, TFAR, ACRE, LAMBS, and VCOM.
+## 4. Performance & Scalability
+The framework is designed for large-scale operations.
+- **Priority Logic LOD**: Logic is grouped into distance bands:
+    - **Band 1 (0-50m)**: 100% Logic, High-Fidelity UI2Texture.
+    - **Band 2 (50-300m)**: 10% Logic (Math-only), Visuals Suspended.
+    - **Band 3 (300m+)**: Logic suspended until unit enters Band 2.
+- **Strategic Caching**: Expensive commands like `surfaceType` and `getAllHitPointsDamage` are cached per-unit and updated on low-frequency intervals (1-2s).
 
-### `addons/audio` (The Soundscape)
-- **UKSFTA Audio Engine**: High-fidelity sonic cracks, flyby whizzes, and distance attenuation.
-- **Acoustic Obstruction**: Real-time sound muffling based on line-of-sight visibility.
-- **World Alarm Engine**: Procedural building and car alarms triggered by urban combat.
-
-### `addons/cartography` (The Interface)
-- High-frequency map rendering engine with hybrid topographic/satellite overlays.
-
-### `addons/camouflage` (The Shadow)
-- AI visibility normalization across different surface types and accumulation layers.
-
-## 3. Validation Infrastructure (The Triple-Lock)
-
-1.  **Build Audit (HEMTT)**: Zero-warning PBO construction and config validation.
-2.  **Static Analysis (SQFLINT)**: Lexical and syntactic audit of all SQF logic.
-3.  **Mathematical Simulation (SQFVM)**: Headless simulation of all 16 logic pillars to prove precision within 0.001%.
-
-## 4. Performance Optimization
-- **Localized Execution**: 50m culling for all particle/visual effects.
-- **Throttled Loops**: All environmental logic is staggered between 2s and 12s intervals.
-- **Owner-Authority Model**: Public Variable broadcasting is limited to visual changes >1% to reduce network traffic.
-
-## 5. Development Workflow
-- **Standard**: All addon prefixes are `z\uksfta\addons\<name>`.
-- **Naming**: Functions use `uksfta_<component>_fnc_<name>`.
-- **Locality**: 100% guard enforcement (`isServer`, `hasInterface`).
+## 5. Technical Infrastructure
+- **Prefix**: `uksfta`
+- **Standard**: CBA Macro System (`GVAR`, `FUNC`, `LOG`)
+- **Logging**: Tiered backend (ERROR, WARN, INFO, TRACE) controlled via CBA Settings.
 
 ---
-*UKSFTA UKSFTA Frameworkering Architecture v2.2 (Production)*
+*UKSFTA Engineering Architecture v3.0 (Production)*
