@@ -15,12 +15,35 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics (Op
         private _veh = objectParent player;
         if (!isNull _veh && { driver _veh == player } && { _veh isKindOf "LandVehicle" }) then {
             
-            // --- 0. CENTER OF MASS (Run Once) ---
-            if (isNil {_veh getVariable "UKSFTA_COM_Adjusted"}) then {
-                private _com = getCenterOfMass _veh;
-                _veh setCenterOfMass [_com select 0, _com select 1, (_com select 2) - 0.2];
-                _veh setVariable ["UKSFTA_COM_Adjusted", true];
+            // --- 0. ENGINE COOL-DOWN HOOK (Run Once per Vehicle) ---
+            if (isNil {_veh getVariable "UKSFTA_Engine_Hooked"}) then {
+                _veh addEventHandler ["Engine", {
+                    params ["_veh", "_engineState"];
+                    if (!_engineState) then {
+                        // Engine turned off, start cool-down clicking
+                        [_veh] spawn {
+                            params ["_veh"];
+                            // Click for 30-60 seconds
+                            private _duration = 30 + (random 30);
+                            private _startTime = time;
+                            while {time < (_startTime + _duration) && !isNull _veh && !isEngineOn _veh} do {
+                                // Random interval that increases as it 'cools'
+                                private _elapsed = time - _startTime;
+                                private _wait = 1 + (_elapsed / 5) + (random 2);
+                                sleep _wait;
+                                
+                                if (!isNull _veh && !isEngineOn _veh) then {
+                                    // High-pitched metallic trigger click (Authentic 'tink')
+                                    playSound3D ["A3\Sounds_F\weapons\Closure\sfx_trigger_1.wss", _veh, false, getPosASL _veh, 0.3, 2.5 + (random 0.5), 25]; 
+                                };
+                            };
+                        };
+                    };
+                }];
+                _veh setVariable ["UKSFTA_Engine_Hooked", true];
             };
+
+            // --- 0a. CENTER OF MASS (Run Once) ---
 
             private _speed = speed _veh;
             private _onRoad = isOnRoad _veh;
