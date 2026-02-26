@@ -46,6 +46,14 @@ player addEventHandler ["FiredMan", {
             // Apply slight random deflection to simulate instability
             private _deflection = [(random 0.2 - 0.1), (random 0.2 - 0.1), (random 0.2 - 0.1)];
             _projectile setVelocity ((velocity _projectile) vectorAdd _deflection);
+
+            // --- TRANSONIC AUDIO FEEDBACK ---
+            // Play a unique 'unstable' whiz sound at the projectile's location
+            private _sound = selectRandom [
+                "A3\Sounds_F\weapons\Closure\sfx_bullet_whiz_01.wss",
+                "A3\Sounds_F\weapons\Closure\sfx_bullet_whiz_02.wss"
+            ];
+            playSound3D [_sound, _projectile, false, getPosASL _projectile, 2, 0.8 + (random 0.2), 50];
         };
     };
 

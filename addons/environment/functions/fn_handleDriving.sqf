@@ -48,6 +48,12 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Driving Dynamics (Op
                 if (_surface find "mud" != -1 || _surface find "sand" != -1 || _surface find "snow" != -1) then {
                     _torqueMod = 0.7; // 30% power loss in soft ground
                     if (rain > 0.5) then { _torqueMod = 0.5; }; // Extreme loss in rain-softened mud
+                    
+                    // --- AUDITORY FEEDBACK ---
+                    if (diag_frameCount % 30 == 0) then {
+                        private _pitch = 0.8 + (_torqueMod * 0.2);
+                        playSound3D ["A3\Sounds_F\vehicles\soft\Offroad_01\Offroad_01_ext_engine_high.wss", _veh, false, getPosASL _veh, 0.5, _pitch, 100];
+                    };
                 };
                 [_veh, _torqueMod] remoteExec ["setEnginePowerMultiplier", _veh];
 
