@@ -8,14 +8,12 @@ if (!hasInterface) exitWith {};
 
 LOG("Impact Engine (Long-Range Optimized) Active.");
 
-// --- LONG-RANGE FEEDBACK CONSTANTS ---
-private _fnc_spawnSpotterSplash = {
+// --- LONG-RANGE FEEDBACK SUITE ---
+uksfta_audio_fnc_spawnSpotterSplash = {
     params ["_pos", "_surface"];
     
-    // Only spawn if shooter is far away (>800m) to provide feedback
     if (player distance _pos < 800) exitWith {};
 
-    // High-visibility dust column for long-range spotting
     private _dust = "#particlesource" createVehicleLocal _pos;
     _dust setParticleParams [
         ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 0], "", "Billboard",
@@ -24,7 +22,6 @@ private _fnc_spawnSpotterSplash = {
     ];
     _dust setDropInterval 0.01;
     
-    // Add refractive shockwave for visibility
     private _refr = "#particlesource" createVehicleLocal _pos;
     _refr setParticleParams [
         ["\A3\data_f\ParticleEffects\Universal\Refract.p3d", 1, 0, 1], "", "Billboard", 1, 0.5, 
@@ -39,12 +36,10 @@ private _fnc_spawnSpotterSplash = {
 addMissionEventHandler ["ProjectileCreated", {
     params ["_projectile"];
     
-    // Only track rounds fired by the player or their vehicle
     private _parents = getShotParents _projectile;
     private _shooter = _parents select 0;
     if (_shooter != player && { vehicle player != _shooter }) exitWith {};
 
-    // 1. ENHANCED TRACER (Visual Persistence)
     private _type = typeOf _projectile;
     if (getNumber(configFile >> "CfgAmmo" >> _type >> "tracerScale") > 0) then {
         private _glow = "#particlesource" createVehicleLocal [0,0,0];
@@ -54,16 +49,13 @@ addMissionEventHandler ["ProjectileCreated", {
             [[1, 1, 1, 1], [1, 1, 1, 0]], [1], 0, 0, "", "", _projectile
         ];
         _glow setDropInterval 0.001;
-        // High draw distance for 2.5km+ visibility
         _glow setParticleCircle [0, [0, 0, 0]];
-        // Force rendering at distance
         [_glow, _projectile] spawn { sleep 10; deleteVehicle (_this select 0); };
     };
 
     // 2. IMPACT MONITORING
-    private _spotter = _fnc_spawnSpotterSplash;
-    [_projectile, _spotter] spawn {
-        params ["_projectile", "_fnc_splash"];
+    [_projectile] spawn {
+        params ["_projectile"];
         private _lastPos = getPosASL _projectile;
         
         waitUntil {
@@ -71,9 +63,7 @@ addMissionEventHandler ["ProjectileCreated", {
             isNull _projectile
         };
 
-        // If it was over water, spawn water splash, else ground splash
         if (surfaceIsWater _lastPos) then {
-            // Specialized water splash for long range
             private _water = "#particlesource" createVehicleLocal _lastPos;
             _water setParticleParams [
                 ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 13, 7, 0], "", "Billboard",
@@ -83,7 +73,7 @@ addMissionEventHandler ["ProjectileCreated", {
             _water setDropInterval 0.01;
             [_water] spawn { sleep 1; deleteVehicle (_this select 0); };
         } else {
-            [_lastPos, ""] call _fnc_splash;
+            [_lastPos, ""] call uksfta_audio_fnc_spawnSpotterSplash;
         };
     };
 }];

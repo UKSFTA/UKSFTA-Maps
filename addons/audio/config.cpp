@@ -27,6 +27,7 @@ class CfgFunctions {
             class handleObstruction {};
             class handleWorldAlarms {};
             class handleBulletImpacts {};
+            class spawnSpotterSplash {};
         };
     };
 };
