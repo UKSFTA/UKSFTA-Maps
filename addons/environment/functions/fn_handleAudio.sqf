@@ -49,6 +49,20 @@ diag_log text "[UKSF TASKFORCE ALPHA] <INFO> [ENVIRONMENT]: Audio Engine Active.
             2 fadeEnvironment 1.0;
         };
 
+        // --- 4. ACE ACOUSTIC TRAUMA SYNERGY (Phase 21) ---
+        if (isNil "UKSFTA_Audio_TraumaHooked" && {missionNamespace getVariable [QGVAR(ace_acousticTrauma), true]}) then {
+            player addEventHandler ["Fired", {
+                params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
+                if (_unit == player && { !([player] call (missionNamespace getVariable ["ace_hearing_fnc_hasEarPlugs", {false}])) }) then {
+                    // Check if indoors (Re-use logic)
+                    if (player call (missionNamespace getVariable ["insideBuilding", {false}])) then {
+                        [player, 0, objNull, objNull, objNull, "", ""] spawn uksfta_environment_fnc_handleConcussion;
+                    };
+                };
+            }];
+            UKSFTA_Audio_TraumaHooked = true;
+        };
+
         sleep 5;
     };
 };

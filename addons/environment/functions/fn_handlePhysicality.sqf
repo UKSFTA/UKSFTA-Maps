@@ -38,11 +38,33 @@ LOG("Physicality Engine (PFH Mode) Starting...");
         if (diag_frameCount % 300 == 0) then {
             private _mud = player getVariable ["UKSFTA_Accum_Mud", 0];
             if (_mud > 0.5 && {random 1 < (_mud * 0.05)}) then {
-                // Trigger ACE Jam if present
                 if (!isNil "ace_overheating_fnc_jamWeapon") then {
                     [player, currentWeapon player] call ace_overheating_fnc_jamWeapon;
                     ["Weapon malfunction due to environmental fouling.", "WARN"] call uksfta_main_fnc_notify;
                 };
+            };
+        };
+
+        // --- 2c. ACE HEAT HAZE SYNERGY (Phase 21) ---
+        if (missionNamespace getVariable [QGVAR(ace_heatHaze), true]) then {
+            private _weapon = currentWeapon player;
+            private _temp = player getVariable ["ace_overheating_temperature", 0];
+            if (_temp > 150) then {
+                private _haze = player getVariable ["UKSFTA_WepHaze", objNull];
+                if (isNull _haze) then {
+                    _haze = "#particlesource" createVehicleLocal (getPosVisual player);
+                    _haze attachTo [player, [0, 0.5, 0], "weapon"];
+                    player setVariable ["UKSFTA_WepHaze", _haze];
+                };
+                private _intensity = (linearConversion [150, 600, _temp, 0.1, 1.0, true]);
+                _haze setParticleParams [
+                    ["\A3\data_f\ParticleEffects\Universal\Refract.p3d", 1, 0, 1], "", "Billboard", 1, 0.5, 
+                    [0, 0, 0], [0, 0, 0], 0, 10, 7.9, 0, [0.1 * _intensity], [[1, 1, 1, 1]], [0.08], 1, 0, "", "", player
+                ];
+                _haze setDropInterval (0.1 / _intensity);
+            } else {
+                private _haze = player getVariable ["UKSFTA_WepHaze", objNull];
+                if (!isNull _haze) then { deleteVehicle _haze; player setVariable ["UKSFTA_WepHaze", objNull]; };
             };
         };
 

@@ -1,12 +1,14 @@
 #include "script_component.hpp"
 /**
- * UKSFTA Core - CBA Settings Framework (Standardized)
+ * UKSFTA Core - CBA Settings Framework (Production)
  */
 
 private _catCore = "UKSFTA: Framework Core";
 private _catAudio = "UKSFTA: Acoustic Immersion";
 private _catEnv = "UKSFTA: Environment & FX";
 private _catPhys = "UKSFTA: Physicality & Driving";
+private _catAI = "UKSFTA: AI & Sensors";
+private _catACE = "UKSFTA: Kinetic Synergy (ACE)";
 
 // --- 1. CORE SYSTEM ---
 [
@@ -59,6 +61,44 @@ private _catPhys = "UKSFTA: Physicality & Driving";
     QGVAR(physDriving), "CHECKBOX",
     ["Advanced Driving Dynamics", "Procedural off-road bumps, wheel fatigue, and bogging risk."],
     _catPhys, true
+] call CBA_fnc_addSetting;
+
+// --- 5. AI & SENSORS ---
+[
+    "uksfta_ai_enableReactivity", "CHECKBOX",
+    ["AI Predatory Reactivity", "Force AI (LAMBS/VCOM) to investigate triggered alarms and near-miss flybys."],
+    _catAI, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_sensor_enableNoise", "CHECKBOX",
+    ["Meteorological Sensor Noise", "Adds grain and bloom to Thermal/NVG based on humidity and temperature."],
+    _catAI, true
+] call CBA_fnc_addSetting;
+
+[
+    "uksfta_sensor_enableDirtyLens", "CHECKBOX",
+    ["Dirty Lens Hook (ACE)", "Link uniform accumulation (Mud/Ash) to ACE Goggles dirt/condensation."],
+    _catAI, true
+] call CBA_fnc_addSetting;
+
+// --- 6. KINETIC SYNERGY (ACE HOOKS) ---
+[
+    QGVAR(ace_heatHaze), "CHECKBOX",
+    ["Enhanced Weapon Mirage", "Link ACE overheating temperature to visual barrel heat haze/mirage."],
+    _catACE, true
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(ace_acousticTrauma), "CHECKBOX",
+    ["Indoor Acoustic Trauma", "Severe blurring/muffling when firing heavy weapons indoors without protection."],
+    _catACE, true
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(ace_shockwave), "CHECKBOX",
+    ["Explosive Shockwaves", "Environment-aware shockwaves that shatter nearby glass from ACE explosions."],
+    _catACE, true
 ] call CBA_fnc_addSetting;
 
 LOG("CBA Settings Framework Initialized.");

@@ -110,4 +110,30 @@ UKSFTA_Env_fnc_handleSecondary = {
     };
 };
 
+// --- EXPLOSIVE SHOCKWAVE MISSION HOOK (Phase 21) ---
+addMissionEventHandler ["Explosion", {
+    params ["_veh", "_damage", "_source"];
+    
+    if (missionNamespace getVariable [QGVAR(ace_shockwave), true] && { _damage > 0.5 }) then {
+        private _pos = getPosATL _veh;
+        private _radius = (_damage * 40) min 100;
+        private _nearWindows = nearestObjects [_pos, ["#glass"], _radius];
+        {
+            if (random 1 < 0.8) then { _x setHit ["glass", 1]; };
+        } forEach _nearWindows;
+        
+        // Secondary dust puff for ground impact
+        if (_damage > 1.5) then {
+            private _dust = "#particlesource" createVehicleLocal _pos;
+            _dust setParticleParams [
+                ["\A3\Data_F\ParticleEffects\Universal\Universal", 16, 12, 8, 1], "", "Billboard",
+                1, 5, [0, 0, 0], [0, 0, 2], 0, 10, 7.9, 0.075, [5, 15],
+                [[0.1, 0.1, 0.1, 0.5], [0.1, 0.1, 0.1, 0]], [0.08], 1, 0, "", "", _veh
+            ];
+            _dust setDropInterval 0.05;
+            [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
+        };
+    };
+}];
+
 true
