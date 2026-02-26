@@ -36,7 +36,7 @@ if (damage _veh > _initialDmg) then {
 };
 
 diag_log "📍 STAGE 2: Surface-Aware Bogging (Mud Check)";
-_veh setVariable ["UKSFTA_Drv_CachedSurface", "mud_texture.paa"];
+_veh setVariable ["UKSFTA_Drv_CachedSurface", "z\uksfta\addons\environment\data\mud_ca.paa"];
 // Simulate slow speed in mud
 private _stuckChance = (15 - 5) / 500; // 2% chance per tick
 private _isStuck = false;
