@@ -127,7 +127,7 @@ private _fnc_addMEH = missionNamespace getVariable ["addMissionEventHandler", {0
                 [[0.1, 0.1, 0.1, 0.5], [0.1, 0.1, 0.1, 0]], [0.08], 1, 0, "", "", _veh
             ];
             _dust setDropInterval 0.05;
-            [_dust] spawn { sleep 2; deleteVehicle _this select 0; };
+            [_dust] spawn { sleep 2; deleteVehicle (_this select 0); };
         };
     };
 }]] call (missionNamespace getVariable ["apply", { (_this select 1) call (_this select 0) }]);
