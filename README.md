@@ -1,27 +1,26 @@
 # UKSFTA Maps
 
-**Specialized terrains and environmental assets for the UKSF Taskforce Alpha Community.**
+Specialised terrains and environmental assets for UKSFTA operations.
 
-This repository contains high-performance terrains and environmental modifications designed specifically for UKSFTA operations.
+This repository contains terrains and environmental modifications designed
+for UKSFTA operations.
 
-## 🛠 Features
+## Features
 
-- **Strategic Terrains**: Custom map assets optimized for large-scale unit operations.
-- **Visual Fidelity**: High-quality SAT and Mask data for immersive environments.
-- **Unified Prefix**: Integrated seamlessly into the `z\uksfta` global namespace.
+- Strategic Terrains: Custom map assets for large-scale unit operations.
+- Visual Fidelity: SAT and Mask data for environments.
+- Unified Prefix: Integrated into the `z\\uksfta` global namespace.
 
-## 📋 Requirements
+## Requirements
 
-- **CBA_A3**: Community Base Addons.
-- **UKSFTA Core**: Required for unit-standard environmental assets.
+- CBA_A3: Community Base Addons.
+- UKSFTA Core: Required for unit-standard environmental assets.
 
-## 🔧 Technical Logic
+## Technical
 
-- **VFS Prefix**: `z\uksfta\maps`
-- **Build System**: Automated via [**UKSFTA-Tools**](https://github.com/UKSFTA/UKSFTA-Tools).
+- VFS Prefix: `z\\uksfta\\maps`
+- Build System: Automated via [UKSFTA-Tools](https://github.com/UKSFTA/UKSFTA-Tools).
 
-## ⚖ License
+## Licence
 
-This project is licensed under the **Arma Public License - Share Alike (APL-SA)**. See the `LICENSE` file for full details.
-
-**Operational Status**: 🛡️  Real-time Sync Active
+This project is licensed under the Arma Public License (APL). See the LICENSE file.
