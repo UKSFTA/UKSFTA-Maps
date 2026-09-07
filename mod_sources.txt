@@ -2,15 +2,46 @@
 # Format: URL/ID # Tag (Optional)
 # Example: 450814997 # Weekend Ops, Core
 
-# Training Map
+# Training Maps
 https://steamcommunity.com/sharedfiles/filedetails/?id=2983546566 # Training Map | Dagger Island
+#
+https://steamcommunity.com/sharedfiles/filedetails/?id=2214384530 # Scottish Highlands 
+#
+https://steamcommunity.com/sharedfiles/filedetails/?id=2026526896 # Copehill Down, England
+#
+https://steamcommunity.com/sharedfiles/filedetails/?id=2782377874 # MOUT Training Facility
+
+# Assets
+https://steamcommunity.com/sharedfiles/filedetails/?id=3336740643 # Milsim Structures
+https://steamcommunity.com/sharedfiles/filedetails/?id=3555295736 # Modular Cages & Armory
+https://steamcommunity.com/sharedfiles/filedetails/?id=2975882889 # Modular Shoothouse Parts
+https://steamcommunity.com/sharedfiles/filedetails/?id=2958273599 # Modular Warehouse Parts
+https://steamcommunity.com/sharedfiles/filedetails/?id=3716493672 # Modular Ship Interior
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=1960024802 # PLP All in One
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=686802825 # Eden Objects
+https://steamcommunity.com/sharedfiles/filedetails/?id=882231372 # Eden Extended Objects
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=962938144 # MBG Buildings Killhouses (Arma3 Remaster)
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=941263726 # Sullen Skies for CUP Terrains
+https://steamcommunity.com/sharedfiles/filedetails/?id=2216393505 # Sullen Skies - Scottish Highlands
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=2822758266 # Deformer
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=520618345 # Jbad
 
 # Main Campaign
-https://steamcommunity.com/sharedfiles/filedetails/?id=2852097448 # Main Campaign | Zagorsk
+https://steamcommunity.com/sharedfiles/filedetails/?id=909547724 # LYTHIUM
 
 # Side Operations
-https://steamcommunity.com/sharedfiles/filedetails/?id=1128256978 # Side Operation | Chernarus Redux
+https://steamcommunity.com/sharedfiles/filedetails/?id=1726494027 # Kujari
+https://steamcommunity.com/sharedfiles/filedetails/?id=3078351739 # Kunduz River
+https://steamcommunity.com/sharedfiles/filedetails/?id=682140680 # kerama Islands
+https://steamcommunity.com/sharedfiles/filedetails/?id=2829330653 # North Takistan
 
 [ignore]
 # List mods to exclude from download/sync below
+https://steamcommunity.com/sharedfiles/filedetails/?id=450814997 # Core | CBA_A3
 https://steamcommunity.com/sharedfiles/filedetails/?id=583496184 # Terrain | CUP Terrains - Core
