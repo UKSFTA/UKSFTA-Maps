@@ -36,7 +36,7 @@ jobs:
 
       - name: Run HEMTT build
         if: steps.check_files.outputs.is_mod == 'true'
-        run: bash build.sh build
+        run: hemtt build
 
       - name: Mod Size Report
         if: steps.check_files.outputs.is_mod == 'true'
