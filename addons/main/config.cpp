@@ -1,4 +1,6 @@
-#include "script_component.hpp"
+#include "script_version.hpp"
+
+#define QUOTE(var) #var
 
 class CfgPatches {
     class ADDON {
@@ -7,18 +9,10 @@ class CfgPatches {
         weapons[] = {};
         requiredVersion = 1.62;
         requiredAddons[] = {};
-        author = "UKSF Taskforce Alpha";
-        VERSION_CONFIG;
-    };
-};
-
-class CfgFunctions {
-    class uksfta_main {
-        tag = "uksfta_main";
-        class functions {
-            file = "z\uksfta\addons\main\functions";
-            class preInit { preInit = 1; };
-            class telemetry {};
-        };
+        author = "UKSF Taskforce Alpha Team";
+        authors[] = {"UKSF Taskforce Alpha Team"};
+        version = QUOTE(MAJOR.MINOR.PATCHLVL);
+        versionStr = QUOTE(MAJOR.MINOR.PATCHLVL);
+        versionAr[] = {MAJOR,MINOR,PATCHLVL};
     };
 };
